@@ -29,6 +29,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import misc.Animation;
 import misc.Block;
@@ -252,12 +253,6 @@ public class GUI extends javax.swing.JFrame {
         jButton6 = new javax.swing.JButton();
         jScrollPane23 = new javax.swing.JScrollPane();
         errorScanResults = new javax.swing.JTextArea();
-        helpDialog = new javax.swing.JDialog();
-        jScrollPane24 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jLabel46 = new javax.swing.JLabel();
-        jScrollPane25 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
         editorPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -306,7 +301,6 @@ public class GUI extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         runProjectButton = new javax.swing.JMenuItem();
         runProjectAtLevelButton = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
         statusIndicator = new javax.swing.JMenu();
         downloadUpdateButton = new javax.swing.JMenu();
 
@@ -744,7 +738,6 @@ public class GUI extends javax.swing.JFrame {
         objectEditorDialog.setTitle("Object Editor");
         objectEditorDialog.setBounds(new java.awt.Rectangle(0, 0, 1000, 750));
         objectEditorDialog.setModalExclusionType(java.awt.Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
-        objectEditorDialog.setPreferredSize(new java.awt.Dimension(1000, 750));
         objectEditorDialog.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 objectEditorDialogWindowClosing(evt);
@@ -2442,51 +2435,6 @@ public class GUI extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        helpDialog.setTitle("Help");
-        helpDialog.setBounds(new java.awt.Rectangle(0, 0, 840, 630));
-        helpDialog.setResizable(false);
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        jTextArea1.setRows(5);
-        jScrollPane24.setViewportView(jTextArea1);
-
-        jLabel46.setText("Choose a help topic:");
-
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "[Welcome]", "[Important Stuff]", "[Basics]", "    Tools", "       - Select", "       - Camera", "       - Move", "       - Resize", "    Sidebar", "       - Object Gallery", "       - Object Properties", "       - Level Properties", "[Project]", "    Saving your project", "    Error checking", "[Levels]", "    Level Chooser", "    Level Editor", "       - Lighting", "       - Audio", "       - Scripts", "[Objects]", "    Using the Object Gallery", "    Object Editor", "        - Basics", "        - Scripts", "        - Animations", "        - Dialogue", "[Scripting]", "    Using commands", "    Command parametres", "    Available commands", "[Assets]", "    Importing assets", "    The assets folder", "[Testing]", "    Running your project", "        - From the current level", "        - From the beginning" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane25.setViewportView(jList1);
-
-        javax.swing.GroupLayout helpDialogLayout = new javax.swing.GroupLayout(helpDialog.getContentPane());
-        helpDialog.getContentPane().setLayout(helpDialogLayout);
-        helpDialogLayout.setHorizontalGroup(
-            helpDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(helpDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(helpDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel46)
-                    .addComponent(jScrollPane25, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane24, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        helpDialogLayout.setVerticalGroup(
-            helpDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, helpDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(helpDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane24)
-                    .addGroup(helpDialogLayout.createSequentialGroup()
-                        .addComponent(jLabel46)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane25, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setBackground(new java.awt.Color(1, 1, 1));
         setBounds(new java.awt.Rectangle(150, 150, 1170, 790));
@@ -2977,19 +2925,6 @@ public class GUI extends javax.swing.JFrame {
 
         menuBar.add(jMenu3);
 
-        jMenu4.setText("Help");
-        jMenu4.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jMenu4MouseClicked(evt);
-            }
-        });
-        jMenu4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenu4ActionPerformed(evt);
-            }
-        });
-        menuBar.add(jMenu4);
-
         statusIndicator.setEnabled(false);
         statusIndicator.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         menuBar.add(statusIndicator);
@@ -3363,7 +3298,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void downloadUpdateButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_downloadUpdateButtonMouseClicked
         try {
-            Desktop.getDesktop().browse(new URL("http://computerology.bitbucket.org/tools/editor/index.html").toURI());
+            Desktop.getDesktop().browse(new URL("https://computerology.bitbucket.io/tools/editor/index.html").toURI());
         } catch (URISyntaxException ex) {
             //Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MalformedURLException ex) {
@@ -3717,14 +3652,6 @@ public class GUI extends javax.swing.JFrame {
     private void runProjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runProjectButtonActionPerformed
         GUI.runProject(Scene.LEVELS.get(0).NAME);
     }//GEN-LAST:event_runProjectButtonActionPerformed
-
-    private void jMenu4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu4ActionPerformed
-        
-    }//GEN-LAST:event_jMenu4ActionPerformed
-
-    private void jMenu4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu4MouseClicked
-        showDialog(helpDialog);
-    }//GEN-LAST:event_jMenu4MouseClicked
 
     private void ambientSoundVolumeSliderMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ambientSoundVolumeSliderMouseDragged
         Scene.CURRENT_LEVEL.AMBIENT_VOLUME = ambientSoundVolumeSlider.getValue();
@@ -4977,18 +4904,18 @@ public class GUI extends javax.swing.JFrame {
         boolean game_exists = new File(Scene.USER_HOME+"/level_editor/jars/test.jar").exists();
         File game_data = new File(Scene.USER_HOME+"/level_editor/jars/test.properties");
         if (game_exists == false || updates[0]) {
-            DownloadThread.downloadThreaded("http://computerology.bitbucket.org/tools/editor/test.jar", Scene.USER_HOME+"/level_editor/jars/test.jar");
+            DownloadThread.downloadThreaded("https://computerology.bitbucket.io/tools/editor/test.jar", Scene.USER_HOME+"/level_editor/jars/test.jar");
             game_data.delete();
             return;
         }
 
         try {
-            //Scene.DOWNLOAD_THREAD.download("http://computerology.bitbucket.org/index.html", "C:/Users/Jeremy/Desktop/index.html");
+            //Scene.DOWNLOAD_THREAD.download("https://computerology.bitbucket.io/index.html", "C:/Users/Jeremy/Desktop/index.html");
             GUI.statusIndicator.setText("Starting game...");
             Process p = Runtime.getRuntime()
             .exec("java -jar \""+Scene.USER_HOME+"/level_editor/jars/test.jar\" \""+Scene.USER_HOME+"/level_editor/projects/"+Scene.PROJECT_NAME+"\" \""+level_name+"\"");
             BufferedReader reader =
-            new BufferedReader(new InputStreamReader(p.getInputStream()));
+                new BufferedReader(new InputStreamReader(p.getInputStream()));
             window.setVisible(false);
             System.out.println("---START OF GAME OUTPUT---");
             String results = "";
@@ -5011,28 +4938,13 @@ public class GUI extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Windows".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            // select Look and Feel
+            UIManager.setLookAndFeel("com.jtattoo.plaf.aero.AeroLookAndFeel");
         }
-        //</editor-fold>
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
         Scene.loadAssets();
         
         /* Create and display the form */
@@ -5138,7 +5050,6 @@ public class GUI extends javax.swing.JFrame {
     private static javax.swing.JLabel framePreview;
     static javax.swing.JList galleryList;
     static javax.swing.JList galleryListSidebar;
-    private static javax.swing.JDialog helpDialog;
     private static javax.swing.JLabel inCurrentLevelLabel;
     private static javax.swing.JLabel inCurrentProjectLabel;
     private javax.swing.JButton jButton1;
@@ -5182,18 +5093,15 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel43;
     private javax.swing.JLabel jLabel44;
     private javax.swing.JLabel jLabel45;
-    private javax.swing.JLabel jLabel46;
     private javax.swing.JLabel jLabel49;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JList jList1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
@@ -5224,8 +5132,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane19;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane23;
-    private javax.swing.JScrollPane jScrollPane24;
-    private javax.swing.JScrollPane jScrollPane25;
     private javax.swing.JScrollPane jScrollPane26;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -5236,7 +5142,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JPanel levelAudioPanel;
     private static javax.swing.JColorChooser levelColorPicker;
     private javax.swing.JDialog levelEditorDialog;

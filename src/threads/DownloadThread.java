@@ -109,7 +109,7 @@ public class DownloadThread extends Thread {
     public static boolean[] checkForUpdates() {
         GUI.downloadUpdateButton.setVisible(false);
         boolean game = false, editor = false;
-        if (!download("http://computerology.bitbucket.org/tools/editor/info.properties", Scene.USER_HOME+"/level_editor/jars/info.properties")) {
+        if (!download("https://computerology.bitbucket.io/tools/editor/info.properties", Scene.USER_HOME+"/level_editor/jars/info.properties")) {
             JOptionPane.showMessageDialog(null, "Could not connect to the update server!\n"
                     + "Use this program at your own risk; what you see may\n"
                     + "not reflect the most recent version.");
