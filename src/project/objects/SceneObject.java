@@ -1,65 +1,51 @@
-package scene;
+package project.objects;
 
-import misc.Script;
-import misc.Animation;
+import project.objects.components.Animation;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
-import misc.Dialogue;
-import misc.Flow;
+import project.objects.components.Dialogue;
+import project.objects.components.Flow;
+import project.Project;
 
 public class SceneObject {
     
     private double world_x, world_y, world_w, world_h;
-    public String NAME, CLASS;
-    public int LAYER = 1;
-    public boolean GRAVITY, COLLIDES, LOCKED;
+    private String name, type;
+    private int layer = 1;
+    private boolean grav, collides, locked;
     
-    public ArrayList<Script> SCRIPTS = new ArrayList<Script>();
     public ArrayList<Animation> ANIMATIONS = new ArrayList<Animation>();
     public ArrayList<Dialogue> DIALOGUES = new ArrayList<Dialogue>();
     public ArrayList<Flow> FLOWS = new ArrayList<Flow>();
     
     boolean hitbox = false;
     
-    public String TEXTURE_NAME;
+    public String texture;
     
     public SceneObject(int world_x, int world_y, int world_w, int world_h, String name) {
         this.world_x = world_x;
         this.world_y = world_y;
         this.world_w = world_w;
         this.world_h = world_h;
-        this.NAME = name;
-        this.CLASS = "";
-        this.LAYER = 2;
-        this.GRAVITY = false;
-        this.COLLIDES = true;
-        this.TEXTURE_NAME = "";
+        this.name = name;
+        this.type = "";
+        this.layer = 2;
+        this.grav = false;
+        this.collides = true;
+        this.texture = "";
     }
     
     public SceneObject() {
-        this.LAYER = 2;
-        this.GRAVITY = false;
-        this.CLASS = "";
-        this.COLLIDES = true;
-        this.NAME = "";
-        this.TEXTURE_NAME = "";
-    }
-    
-    public ArrayList<String> getErrors() {
-        ArrayList<String> list = new ArrayList<String>();
-        boolean disconnect = true;
-        for (SceneObject o: Scene.OBJECT_GALLERY) { if (o.CLASS.equals(CLASS)) disconnect = false; }
-        if (disconnect && !isHitbox()) list.add("        Object type '"+CLASS+"' cannot be found in the Gallery!\n");
-        if (Scene.OBJECT_TEXTURE_NAMES.indexOf(TEXTURE_NAME) == -1 && !isHitbox()) 
-            list.add("Texture file '"+TEXTURE_NAME+".png' cannot be found in the assets folder!\n");
-        for (Script s: SCRIPTS) { list.addAll(s.getErrors()); }
-        for (Animation s: ANIMATIONS) { list.addAll(s.getErrors()); }
-        for (Dialogue s: DIALOGUES) { list.addAll(s.getErrors()); }
-        return list;
+        this.layer = 2;
+        this.grav = false;
+        this.type = "";
+        this.collides = true;
+        this.name = "";
+        this.texture = "";
     }
     
     public void setHitbox(boolean b) {
@@ -80,36 +66,27 @@ public class SceneObject {
         }
     }
     
-    public boolean dialogueExists(String name) {
+    public boolean containsDialogue(String name) {
         for (Dialogue o: DIALOGUES) {
-            if (o.NAME.equals(name)) {
+            if (o.getName().equals(name)) {
                 return true;
             }
         }
         return false;
     }
     
-    public boolean animationExists(String name) {
+    public boolean containsAnimation(String name) {
         for (Animation o: ANIMATIONS) {
-            if (o.NAME.equals(name)) {
+            if (o.getName().equals(name)) {
                 return true;
             }
         }
         return false;
     }
     
-    public boolean flowExists(String name) {
+    public boolean containsFlow(String name) {
         for (Flow o: FLOWS) {
-            if (o.NAME.equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public boolean scriptExists(String name) {
-        for (Script o: SCRIPTS) {
-            if (o.NAME.equals(name)) {
+            if (o.getName().equals(name)) {
                 return true;
             }
         }
@@ -149,16 +126,16 @@ public class SceneObject {
     }
     
     public int[] getOnscreenCoordinates() {
-        return new int[]{(int)(Scene.ORIGIN_X+(world_x*Scene.ZOOM)), 
-                (int)(Scene.ORIGIN_Y+(world_y*Scene.ZOOM))};
+        return new int[]{(int)(Project.getOriginX()+(world_x*Project.ZOOM)), 
+                (int)(Project.getOriginY()+(world_y*Project.ZOOM))};
     }
     
     public int getOnscreenWidth() {
-        return (int)(world_w*Scene.ZOOM);
+        return (int)(world_w*Project.ZOOM);
     }
     
     public int getOnscreenHeight() {
-        return (int)(world_h*Scene.ZOOM);
+        return (int)(world_h*Project.ZOOM);
     }
     
     public int[] getDimensions() {
@@ -171,26 +148,21 @@ public class SceneObject {
      */
     public SceneObject copy() {
         SceneObject o = new SceneObject();
-        o.TEXTURE_NAME = this.TEXTURE_NAME;
-        o.CLASS = this.CLASS;
-        o.NAME = this.NAME+Math.abs(new Random().nextInt() % 10000);
+        o.texture = this.texture;
+        o.class = this.class;
+        o.name = this.name+Math.abs(new Random().nextInt() % 10000);
         o.LAYER = this.LAYER;
         o.GRAVITY = this.GRAVITY;
         o.COLLIDES = this.COLLIDES;
         o.hitbox = this.hitbox;
-        o.SCRIPTS.clear();
-        for (Script s: this.SCRIPTS) {
-            Script new_s = new Script();
-            s.copyTo(new_s);
-            o.SCRIPTS.add(new_s);
-            new_s.setParent(o);
-        }
+
         o.ANIMATIONS.clear();
         for (Animation a: this.ANIMATIONS) {
             Animation new_a = new Animation();
             a.copyTo(new_a);
             o.ANIMATIONS.add(new_a);
         }
+        
         o.DIALOGUES.clear();
         for (Dialogue d: this.DIALOGUES) {
             Dialogue new_d = new Dialogue();
@@ -199,6 +171,7 @@ public class SceneObject {
             new_d.setParent(o);
             System.out.println("Adding "+new_d+" to "+o);
         }
+        
         o.FLOWS.clear();
         for (Flow f: this.FLOWS) {
             Flow new_f = new Flow();
@@ -206,6 +179,7 @@ public class SceneObject {
             o.FLOWS.add(new_f);
             new_f.setParent(o);
         }
+        
         o.setWorldX(this.getWorldCoordinates()[0] + 5);
         o.setWorldY(this.getWorldCoordinates()[1] + 5);
         o.setWidth(this.getDimensions()[0]);
@@ -215,45 +189,45 @@ public class SceneObject {
     
     public void draw(Graphics g) {
         BufferedImage texture = null;
-        if (Scene.OBJECT_TEXTURE_NAMES.contains(TEXTURE_NAME)) {
-            texture = Scene.OBJECT_TEXTURES.get(Scene.OBJECT_TEXTURE_NAMES.indexOf(TEXTURE_NAME));
+        if (Project.OBJECT_TEXTURE_NAMES.contains(this.texture)) {
+            texture = Project.OBJECT_TEXTURES.get(Project.OBJECT_TEXTURE_NAMES.indexOf(this.texture));
         }
         
         if (isHitbox()) {
             g.setColor(new Color(50, 50, 100, 100));
             g.fillRect(
-                    (int)(Scene.ORIGIN_X+((int)world_x*Scene.ZOOM)), 
-                    (int)(Scene.ORIGIN_Y+((int)world_y*Scene.ZOOM)), 
-                    (int)((int)world_w*Scene.ZOOM),
-                    (int)((int)world_h*Scene.ZOOM));
+                    (int)(Project.ORIGIN_X+((int)world_x*Project.ZOOM)), 
+                    (int)(Project.ORIGIN_Y+((int)world_y*Project.ZOOM)), 
+                    (int)((int)world_w*Project.ZOOM),
+                    (int)((int)world_h*Project.ZOOM));
         } else {
-            if (texture != null && Scene.OBJECT_TEXTURE_NAMES.contains(TEXTURE_NAME)) {
+            if (texture != null && Project.OBJECT_TEXTURE_NAMES.contains(this.texture)) {
                 g.setColor(Color.white);
-                g.drawImage(texture.getScaledInstance((int)((int)world_w*Scene.ZOOM),
-                        (int)((int)world_h*Scene.ZOOM), Image.SCALE_FAST), (int)(Scene.ORIGIN_X+((int)world_x*Scene.ZOOM)), 
-                        (int)(Scene.ORIGIN_Y+((int)world_y*Scene.ZOOM)), null);
+                g.drawImage(texture.getScaledInstance((int)((int)world_w*Project.ZOOM),
+                        (int)((int)world_h*Project.ZOOM), Image.SCALE_FAST), (int)(Project.ORIGIN_X+((int)world_x*Project.ZOOM)), 
+                        (int)(Project.ORIGIN_Y+((int)world_y*Project.ZOOM)), null);
             } else {
                 g.setColor(Color.red);
                 g.drawRect(
-                    (int)(Scene.ORIGIN_X+((int)world_x*Scene.ZOOM)), 
-                    (int)(Scene.ORIGIN_Y+((int)world_y*Scene.ZOOM)), 
-                    (int)((int)world_w*Scene.ZOOM),
-                    (int)((int)world_h*Scene.ZOOM));
-                g.drawLine((int)(Scene.ORIGIN_X+((int)world_x*Scene.ZOOM)), 
-                    (int)(Scene.ORIGIN_Y+((int)world_y*Scene.ZOOM)),
-                    (int)(Scene.ORIGIN_X+((int)world_x*Scene.ZOOM))+(int)((int)world_w*Scene.ZOOM), 
-                    (int)(Scene.ORIGIN_Y+((int)world_y*Scene.ZOOM))+(int)((int)world_h*Scene.ZOOM));
+                    (int)(Project.ORIGIN_X+((int)world_x*Project.ZOOM)), 
+                    (int)(Project.ORIGIN_Y+((int)world_y*Project.ZOOM)), 
+                    (int)((int)world_w*Project.ZOOM),
+                    (int)((int)world_h*Project.ZOOM));
+                g.drawLine((int)(Project.ORIGIN_X+((int)world_x*Project.ZOOM)), 
+                    (int)(Project.ORIGIN_Y+((int)world_y*Project.ZOOM)),
+                    (int)(Project.ORIGIN_X+((int)world_x*Project.ZOOM))+(int)((int)world_w*Project.ZOOM), 
+                    (int)(Project.ORIGIN_Y+((int)world_y*Project.ZOOM))+(int)((int)world_h*Project.ZOOM));
                 g.setColor(Color.white);
-                Scene.drawString(TEXTURE_NAME+".png", getOnscreenCoordinates()[0], getOnscreenCoordinates()[1], g);
+                Project.drawString(this.texture+".png", getOnscreenCoordinates()[0], getOnscreenCoordinates()[1], g);
             }
         }
-        if (this.equals(Scene.SELECTED_OBJECT)) {
+        if (this.equals(Project.SELECTED_OBJECT)) {
             g.setColor(Color.cyan.darker());
             g.drawRect(
-                (int)(Scene.ORIGIN_X+((int)world_x*Scene.ZOOM))-1, 
-                (int)(Scene.ORIGIN_Y+((int)world_y*Scene.ZOOM))-1, 
-                (int)((int)world_w*Scene.ZOOM)+2,
-                (int)((int)world_h*Scene.ZOOM)+2);
+                (int)(Project.ORIGIN_X+((int)world_x*Project.ZOOM))-1, 
+                (int)(Project.ORIGIN_Y+((int)world_y*Project.ZOOM))-1, 
+                (int)((int)world_w*Project.ZOOM)+2,
+                (int)((int)world_h*Project.ZOOM)+2);
         }
     }
     

@@ -1,8 +1,9 @@
-package misc;
+package project.objects.components;
 
 import java.util.ArrayList;
 import java.util.Random;
-import scene.Scene;
+import misc.MiscMath;
+import project.Project;
 
 public class Block {
     
@@ -128,7 +129,7 @@ public class Block {
             this.dots = new boolean[]{false, false, false, false, false};
         } else {
             String input = (input_map+"").replace("t", "true\n").replace("f", "false\n");
-            ArrayList<String> inputs = Scene.parseString(input);
+            ArrayList<String> inputs = Project.parseString(input);
             this.dots = new boolean[]{Boolean.parseBoolean(inputs.get(0)),
                 Boolean.parseBoolean(inputs.get(1)),
                 Boolean.parseBoolean(inputs.get(2)),

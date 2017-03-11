@@ -1,41 +1,23 @@
-package misc;
+package project.objects.components;
 
 import java.util.ArrayList;
-import scene.Scene;
-import scene.SceneObject;
+import project.Level;
+import project.Project;
+import project.objects.SceneObject;
 
 public class Flow {
     
-    ArrayList<Block> blocks;
-    Level parent_level = null;
-    SceneObject parent_object = null;
+    private ArrayList<Block> blocks;
+    private Level parent_level = null;
+    private SceneObject parent_object = null;
     
-    public String NAME;
-    public boolean RUN_ON_SPAWN;
+    private String name;
+    private boolean run_on_spawn, locked = false;
     
     public Flow() {
         this.blocks = new ArrayList<Block>();
-        this.RUN_ON_SPAWN = false;
-        this.NAME = "";
-    }
-    
-    /**
-     * Refactors all of the matching instances of Flow, only if editing a gallery object.
-     * Will only refactor a flow to match new_flow if the flow is equal to compare_to.
-     * @param new_flow The flow to match the others with...
-     * @param compare_to ...but only if the flow in question is equal to compare_to.
-     */
-    public static void refactor(Flow new_flow, Flow compare_to) {
-        System.out.println("Refactoring all valid flows.");
-        if (Scene.OBJECT_GALLERY.contains(Scene.ACTIVE_EDIT_OBJECT)) {
-            for (SceneObject o: Scene.getObjectsByType(Scene.ACTIVE_EDIT_OBJECT.CLASS)) {
-                for (Flow f: o.FLOWS) {
-                    if (f.equalTo(compare_to)) {
-                        new_flow.copyTo(f);
-                    }
-                }
-            }
-        }
+        this.run_on_spawn = false;
+        this.name = "";
     }
     
     public Block getBlock(int index) {
@@ -52,7 +34,7 @@ public class Flow {
     
     public void addBlock(Block b) {
         if (blocks.contains(b) == false) blocks.add(b);
-        System.out.println("Added Block "+b.category +" "+ b.title+" to Flow "+this.NAME);
+        System.out.println("Added Block "+b.category +" "+ b.title+" to Flow "+this.name);
     }
     
     public Block getBlockByID(int id) {
@@ -79,7 +61,7 @@ public class Flow {
     }
     
     public boolean equalTo(Flow f) {
-        if (!NAME.equals(f.NAME)) return false;
+        if (!name.equals(f.name)) return false;
         for (Block b: blocks) {
             if (!b.equalTo(b)) return false;
         }
@@ -93,7 +75,7 @@ public class Flow {
     public void copyTo(Flow f) {
         f.parent_level = parent_level;
         f.parent_object = parent_object;
-        f.NAME = NAME;
+        f.name = name;
         f.blocks.clear();
         for (Block b: blocks) {
             Block new_b = new Block();
