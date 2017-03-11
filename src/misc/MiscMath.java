@@ -1,5 +1,7 @@
 package misc;
 
+import java.util.ArrayList;
+
 public class MiscMath {
     
     /**
@@ -135,6 +137,27 @@ public class MiscMath {
         double min_width = (w/2)+r, min_height = (h/2)+r;
         return MiscMath.distanceBetween(r_x, 0, cx, 0) < min_width 
                 && MiscMath.distanceBetween(r_y, 0, cy, 0) < min_height;
+    }
+    
+    public static String integersToString(ArrayList<Integer> int_arr) {
+        String c = "";
+        for (int s: int_arr) {
+            c+=s+" ";
+        }
+        return c.trim();
+    }
+    
+    /**
+     * Returns a String object containing every element in the specified array, separated by "\n". Used for writing to the save file.
+     * @param str_arr
+     * @return A String object.
+     */
+    public static String mergeStrings(ArrayList<String> str_arr) {
+        String c = "";
+        for (String s: str_arr) {
+            c+=s+"\n";
+        }
+        return c;
     }
 
 }

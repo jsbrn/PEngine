@@ -751,10 +751,15 @@
                                       <Component id="objectGravityCheckbox" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Component id="objectCollidesCheckbox" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="jToggleButton3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="jLabel37" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel37" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
                               </Group>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -765,10 +770,11 @@
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="objectGravityCheckbox" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="objectCollidesCheckbox" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jToggleButton3" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jLabel37" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="57" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="49" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -801,6 +807,11 @@
                         <Property name="text" type="java.lang.String" value="(only applies to local edits and new instances)"/>
                       </Properties>
                     </Component>
+                    <Component class="javax.swing.JToggleButton" name="jToggleButton3">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Lock"/>
+                      </Properties>
+                    </Component>
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JPanel" name="jPanel2">
@@ -825,8 +836,12 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="objectTypeField" alignment="0" pref="228" max="32767" attributes="0"/>
-                                  <Component id="objectTextureField" max="32767" attributes="0"/>
                                   <Component id="objectNameField" alignment="0" max="32767" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="objectTextureField" max="32767" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jToggleButton1" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -843,6 +858,7 @@
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel31" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="objectTextureField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jToggleButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
@@ -900,6 +916,11 @@
                         <Property name="text" type="java.lang.String" value="Object name:"/>
                       </Properties>
                     </Component>
+                    <Component class="javax.swing.JToggleButton" name="jToggleButton1">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Lock"/>
+                      </Properties>
+                    </Component>
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JPanel" name="jPanel3">
@@ -926,7 +947,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="exportToGalleryButton" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="107" max="32767" attributes="0"/>
+                              <EmptySpace pref="104" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -1063,7 +1084,8 @@
                                       <Component id="duplicateFlowButton" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="deleteFlowButton" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="jToggleButton4" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Component id="jScrollPane19" alignment="0" pref="301" max="32767" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
@@ -1091,6 +1113,7 @@
                                   <Component id="newFlowButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="duplicateFlowButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="deleteFlowButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jToggleButton4" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="runOnSpawnCheckbox" min="-2" max="-2" attributes="0"/>
@@ -1186,6 +1209,11 @@
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
                       </AuxValues>
+                    </Component>
+                    <Component class="javax.swing.JToggleButton" name="jToggleButton4">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Lock"/>
+                      </Properties>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -1693,7 +1721,8 @@
                                       <Component id="duplicateAnimationButton" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="deleteAnimationButton" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                      <EmptySpace pref="43" max="32767" attributes="0"/>
+                                      <Component id="jToggleButton5" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jLabel17" min="-2" max="-2" attributes="0"/>
@@ -1720,6 +1749,7 @@
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="newAnimationButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="deleteAnimationButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jToggleButton5" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -1804,6 +1834,11 @@
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
                       </AuxValues>
+                    </Component>
+                    <Component class="javax.swing.JToggleButton" name="jToggleButton5">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Lock"/>
+                      </Properties>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -1977,7 +2012,8 @@
                                       <Component id="duplicateDialogueButton" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="deleteDialogueButton" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="jToggleButton6" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jLabel23" min="-2" max="-2" attributes="0"/>
@@ -2003,6 +2039,7 @@
                                   <Component id="newDialogueButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="deleteDialogueButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="duplicateDialogueButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jToggleButton6" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -2076,6 +2113,11 @@
                     <Component class="javax.swing.JLabel" name="jLabel23">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Name:"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JToggleButton" name="jToggleButton6">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Lock"/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -3499,7 +3541,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <Component id="editorPanel" min="-2" pref="328" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="sceneCanvas" max="32767" attributes="0"/>
           </Group>
       </Group>

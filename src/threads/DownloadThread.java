@@ -1,8 +1,6 @@
 package threads;
 
 import gui.GUI;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,7 +13,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import scene.Scene;
+import project.Project;
 
 public class DownloadThread extends Thread {
     
@@ -23,14 +21,14 @@ public class DownloadThread extends Thread {
     static boolean downloading = false;
     static DownloadThread thread;
     
-    public static int LEVEL_EDITOR_ID = 8;
+    public static int LEVEL_EDITOR_ID = 10;
     
     private DownloadThread(){}
     
     /**
      * Downloads a file in the main thread. Only use this for smaller files.
      * @param source The source URL.
-     * @param dest The destination filepath.
+     * @param dest The destination file path.
      */
     public static boolean download(String source, String dest) {
         System.out.println("Downloading...");
@@ -109,7 +107,7 @@ public class DownloadThread extends Thread {
     public static boolean[] checkForUpdates() {
         GUI.downloadUpdateButton.setVisible(false);
         boolean game = false, editor = false;
-        if (!download("https://computerology.bitbucket.io/tools/editor/info.properties", Scene.USER_HOME+"/level_editor/jars/info.properties")) {
+        if (!download("https://computerology.bitbucket.io/tools/editor/info.properties", Project.USER_HOME+"/level_editor/jars/info.properties")) {
             JOptionPane.showMessageDialog(null, "Could not connect to the update server!\n"
                     + "Use this program at your own risk; what you see may\n"
                     + "not reflect the most recent version.");
@@ -117,22 +115,22 @@ public class DownloadThread extends Thread {
         }
         Properties prop = new Properties(), prop2 = new Properties();
         try {
-            FileInputStream f = new FileInputStream(Scene.USER_HOME+"/level_editor/jars/info.properties");
+            FileInputStream f = new FileInputStream(Project.USER_HOME+"/level_editor/jars/info.properties");
             prop.load(f);
             int gid = Integer.parseInt(prop.getProperty("gameID"));
             int eid = Integer.parseInt(prop.getProperty("editorID"));
             f.close();
-            new File(Scene.USER_HOME+"/level_editor/jars/info.properties").deleteOnExit();
+            new File(Project.USER_HOME+"/level_editor/jars/info.properties").deleteOnExit();
             System.out.println("Server level_editor: "+eid+", Local level_editor: "+LEVEL_EDITOR_ID);
             if (eid > LEVEL_EDITOR_ID) { editor = true; }
             if (editor) { JOptionPane.showMessageDialog(null, "A new version of the level editor is available!\n"
                     + "It is strongly recommended that you download it\nbefore continuing.");}
             //if the local game info DNE then do not show there is an update
-            if (new File(Scene.USER_HOME+"/level_editor/jars/test.properties").exists() == false) {
+            if (new File(Project.USER_HOME+"/level_editor/jars/test.properties").exists() == false) {
                 GUI.downloadUpdateButton.setVisible(editor);
                 return new boolean[]{false, editor};
             }
-            f = new FileInputStream(Scene.USER_HOME+"/level_editor/jars/test.properties");
+            f = new FileInputStream(Project.USER_HOME+"/level_editor/jars/test.properties");
             prop2.load(f);
             int lgid = Integer.parseInt(prop2.getProperty("updateID"));
             System.out.println("Server game: "+gid+", Local game: "+lgid);

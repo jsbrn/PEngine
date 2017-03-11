@@ -1,46 +1,34 @@
-package misc;
+package project;
 
 import java.util.ArrayList;
-import scene.SceneObject;
+import project.objects.SceneObject;
 
 public class Level {
     
-    public ArrayList<SceneObject> ALL_OBJECTS, DISTANT_OBJECTS, BACKGROUND_OBJECTS, NORMAL_OBJECTS, FOREGROUND_OBJECTS;
+    private ArrayList<SceneObject> all_objects, distant_objects, bg_objects, mid_objects, fg_objects;
     private ArrayList[] layers;
     
-    public String NAME = "", AMBIENT_SOUND = "", BG_MUSIC = "";
-    public int R1 = 0, G1 = 0, B1 = 0, R2 = 0, G2 = 0, B2 = 0, 
-            R3 = 0, G3 = 0, B3 = 0, AMBIENT_INTENSITY = 0, WIDTH = 128, HEIGHT = 128, ZOOM = 4;
-    public boolean LOOP_BG_MUSIC = true, LOOP_AMBIENT_SOUND = true, PLAY_BG_MUSIC_AUTOMATICALLY = true,
-            PLAY_AMBIENT_SOUND_AUTOMATICALLY = true;
-    public float MUSIC_VOLUME = 1, AMBIENT_VOLUME = 1;
+    private String name = "", ambient_sound = "", bg_music = "";
+    private int[] bg_color_top, bg_color_bottom, lighting_color;
+    private int lighting_intensity = 0, width = 128, height = 128, zoom = 4;
+    private boolean loop_bg_music = true, loop_ambient_sound = true, auto_bg_music = true,
+            auto_ambient_sound = true;
+    private float bg_music_vol = 1, ambient_sound_volume = 1;
     
-    public int[] SPAWN_COORD = {0, 0}, CAM_COORD = {0, 0};
-    
-    public ArrayList<Script> SCRIPTS;
+    private int[] player_spawn = {0, 0}, camera_spawn = {0, 0};
     
     public Level() {
-        this.ALL_OBJECTS = new ArrayList<SceneObject>();
-        this.DISTANT_OBJECTS = new ArrayList<SceneObject>();
-        this.BACKGROUND_OBJECTS = new ArrayList<SceneObject>();
-        this.NORMAL_OBJECTS = new ArrayList<SceneObject>();
-        this.FOREGROUND_OBJECTS = new ArrayList<SceneObject>();
-        this.SCRIPTS = new ArrayList<Script>();
-        this.layers = new ArrayList[]{DISTANT_OBJECTS, BACKGROUND_OBJECTS, NORMAL_OBJECTS, FOREGROUND_OBJECTS};
-    }
-    
-    public boolean scriptExists(String name) {
-        for (Script o: SCRIPTS) {
-            if (o.NAME.equals(name)) {
-                return true;
-            }
-        }
-        return false;
+        this.all_objects = new ArrayList<SceneObject>();
+        this.distant_objects = new ArrayList<SceneObject>();
+        this.bg_objects = new ArrayList<SceneObject>();
+        this.mid_objects = new ArrayList<SceneObject>();
+        this.fg_objects = new ArrayList<SceneObject>();
+        this.layers = new ArrayList[]{distant_objects, bg_objects, mid_objects, fg_objects};
     }
     
     public void add(SceneObject o) {
-        if (ALL_OBJECTS.contains(o) == false) {
-            ALL_OBJECTS.add(o);
+        if (all_objects.contains(o) == false) {
+            all_objects.add(o);
             moveToLayer(o.LAYER, o);
         }
     }
@@ -58,7 +46,7 @@ public class Level {
     }
     
     public void removeObject(SceneObject o) {
-        ALL_OBJECTS.remove(o);
+        all_objects.remove(o);
         for (int i = 0; i != layers().length; i++) {
             layers()[i].remove(o);
         }
@@ -79,7 +67,7 @@ public class Level {
     
     public void moveToLayer(int layer, SceneObject o) {
         for (int i = 0; i != layers().length; i++) {
-            if (i != o.LAYER) {
+            if (i != o.layer) {
                 layers()[i].remove(o);
             } else {
                 if (layers()[i].contains(o) == false) {
@@ -87,6 +75,20 @@ public class Level {
                 }
             }
         }
+    }
+    
+    public void resize(double x, double y) {
+        width = (int)(width + x < 1 ? 1 : width + x);
+        height = (int)(height + y < 1 ? 1 : height + y);
+    }
+    
+    public boolean containsObject(String name) {
+        for (SceneObject o: all_objects) {
+            if (o.name.equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public ArrayList[] layers() {

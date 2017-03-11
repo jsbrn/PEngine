@@ -1,7 +1,7 @@
 package threads;
 
 import gui.GUI;
-import misc.Animation;
+import project.objects.components.Animation;
 
 public class PreviewThread extends Thread {
     
@@ -29,8 +29,8 @@ public class PreviewThread extends Thread {
     public void setAnimation(Animation a) {
         newest_anim = a;
         anim = new Animation();
-        anim.WIDTHS.addAll(newest_anim.WIDTHS);
-        anim.HEIGHTS.addAll(newest_anim.HEIGHTS);
+        anim.widths.addAll(newest_anim.widths);
+        anim.heights.addAll(newest_anim.heights);
         anim.SPRITE_NAME = newest_anim.SPRITE_NAME;
         reset();
     }
@@ -38,8 +38,8 @@ public class PreviewThread extends Thread {
     public void reset() {
         index = 0;
         last_time = System.currentTimeMillis();
-        if (anim.WIDTHS.isEmpty() == false) {
-            duration = anim.WIDTHS.get(index);
+        if (anim.widths.isEmpty() == false) {
+            duration = anim.widths.get(index);
         } else {
             duration = 0;
         }
@@ -85,13 +85,13 @@ public class PreviewThread extends Thread {
             if (!paused) {
                 System.out.println("Index: "+index+", duration: "+duration);
                 if (System.currentTimeMillis() >= last_time+duration) {
-                    if (index >= anim.WIDTHS.size()) {
+                    if (index >= anim.widths.size()) {
                         reset();
                     } else { 
                         duration = anim.FRAME_DURATION;
                         last_time = System.currentTimeMillis();
                         index++;
-                        if (index >= anim.WIDTHS.size()) {
+                        if (index >= anim.widths.size()) {
                             reset();
                         }
                         GUI.animationFrameChooser.setSelectedIndex(index);
