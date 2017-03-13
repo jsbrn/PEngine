@@ -3855,9 +3855,9 @@ public class GUI extends javax.swing.JFrame {
                 /*REMOVE THIS ANIMATION FROM ALL INSTANCES OF THE EDITED OBJECT*/
                 if (Project.ACTIVE_EDIT_OBJECT.CLASS.isEmpty()) return;
                 for (SceneObject o: Project.getObjectsByType(Project.ACTIVE_EDIT_OBJECT.CLASS)) {
-                    for (Animation s: o.ANIMATIONS) {
+                    for (Animation s: o.animations) {
                         if (s.equalTo(anim)) {
-                            o.ANIMATIONS.remove(s);
+                            o.animations.remove(s);
                             break;
                         }
                     }
@@ -3885,14 +3885,14 @@ public class GUI extends javax.swing.JFrame {
             if (Project.ACTIVE_EDIT_OBJECT.CLASS.isEmpty()) return;
             for (SceneObject o: Project.getObjectsByType(Project.ACTIVE_EDIT_OBJECT.CLASS)) {
                 boolean add = true;
-                for (Animation s: o.ANIMATIONS) {
+                for (Animation s: o.animations) {
                     if (s.NAME.equals(anim.NAME)) {
                         add = false;
                     }
                 }
                 Animation s = new Animation();
                 anim.copyTo(s);
-                if (add) o.ANIMATIONS.add(s);
+                if (add) o.animations.add(s);
             }
         }
         fillAnimationChooser();
@@ -3909,14 +3909,14 @@ public class GUI extends javax.swing.JFrame {
             if (Project.ACTIVE_EDIT_OBJECT.CLASS.isEmpty()) return;
             for (SceneObject o: Project.getObjectsByType(Project.ACTIVE_EDIT_OBJECT.CLASS)) {
                 boolean add = true;
-                for (Animation s: o.ANIMATIONS) {
+                for (Animation s: o.animations) {
                     if (s.NAME.equals(anim.NAME)) {
                         add = false;
                     }
                 }
                 Animation s = new Animation();
                 anim.copyTo(s);
-                if (add) o.ANIMATIONS.add(s);
+                if (add) o.animations.add(s);
             }
         }
         fillAnimationChooser();
@@ -4094,7 +4094,7 @@ public class GUI extends javax.swing.JFrame {
             if (Project.ACTIVE_EDIT_OBJECT.CLASS.isEmpty()) return;
             for (SceneObject o: Project.getObjectsByType(Project.ACTIVE_EDIT_OBJECT.CLASS)) {
                 boolean add = true;
-                for (Dialogue s: o.DIALOGUES) {
+                for (Dialogue s: o.dialogues) {
                     if (s.NAME.equals(anim.NAME)) {
                         add = false;
                     }
@@ -4102,7 +4102,7 @@ public class GUI extends javax.swing.JFrame {
                 Dialogue s = new Dialogue();
                 anim.copyTo(s);
                 s.setParent(o);
-                if (add) o.DIALOGUES.add(s);
+                if (add) o.dialogues.add(s);
             }
         }
         dialogueChooser.setListData(anim_names.toArray());
@@ -4122,9 +4122,9 @@ public class GUI extends javax.swing.JFrame {
                 /*REMOVE THIS DIALOGUE FROM ALL INSTANCES OF THE EDITED OBJECT*/
                 if (Project.ACTIVE_EDIT_OBJECT.CLASS.isEmpty()) return;
                 for (SceneObject o: Project.getObjectsByType(Project.ACTIVE_EDIT_OBJECT.CLASS)) {
-                    for (Dialogue s: o.DIALOGUES) {
+                    for (Dialogue s: o.dialogues) {
                         if (s.equalTo(dialogue)) {
-                            o.DIALOGUES.remove(s);
+                            o.dialogues.remove(s);
                             break;
                         }
                     }
@@ -4150,7 +4150,7 @@ public class GUI extends javax.swing.JFrame {
         if (Project.OBJECT_GALLERY.contains(Project.ACTIVE_EDIT_OBJECT)) {
             for (SceneObject o: Project.getObjectsByType(Project.ACTIVE_EDIT_OBJECT.CLASS)) {
                 boolean add = true;
-                for (Dialogue s: o.DIALOGUES) {
+                for (Dialogue s: o.dialogues) {
                     if (s.NAME.equals(dialogue.NAME)) {
                         add = false;
                     }
@@ -4159,7 +4159,7 @@ public class GUI extends javax.swing.JFrame {
                     Dialogue s = new Dialogue();
                     dialogue.copyTo(s);
                     s.setParent(o);
-                    o.DIALOGUES.add(s);
+                    o.dialogues.add(s);
                 }
             }
         }
@@ -4354,9 +4354,9 @@ public class GUI extends javax.swing.JFrame {
                 /*REMOVE THIS ANIMATION FROM ALL INSTANCES OF THE EDITED OBJECT*/
                 if (Project.ACTIVE_EDIT_OBJECT.CLASS.isEmpty()) return;
                 for (SceneObject o: Project.getObjectsByType(Project.ACTIVE_EDIT_OBJECT.CLASS)) {
-                    for (Flow f: o.FLOWS) {
+                    for (Flow f: o.flows) {
                         if (f.equalTo(flow)) {
-                            o.FLOWS.remove(f);
+                            o.flows.remove(f);
                             break;
                         }
                     }
@@ -4392,14 +4392,14 @@ public class GUI extends javax.swing.JFrame {
             if (Project.ACTIVE_EDIT_OBJECT.CLASS.isEmpty()) return;
             for (SceneObject o: Project.getObjectsByType(Project.ACTIVE_EDIT_OBJECT.CLASS)) {
                 boolean add = true;
-                for (Flow s: o.FLOWS) {
+                for (Flow s: o.flows) {
                     if (s.NAME.equals(flow.NAME)) {
                         add = false;
                     }
                 }
                 Flow s = new Flow();
                 flow.copyTo(s);
-                if (add) o.FLOWS.add(s);
+                if (add) o.flows.add(s);
             }
         }
         flowChooser.setListData(flow_names.toArray());
@@ -4419,14 +4419,14 @@ public class GUI extends javax.swing.JFrame {
             if (Project.ACTIVE_EDIT_OBJECT.CLASS.isEmpty()) return;
             for (SceneObject o: Project.getObjectsByType(Project.ACTIVE_EDIT_OBJECT.CLASS)) {
                 boolean add = true;
-                for (Flow s: o.FLOWS) {
+                for (Flow s: o.flows) {
                     if (s.NAME.equals(flow.NAME)) {
                         add = false;
                     }
                 }
                 Flow s = new Flow();
                 flow.copyTo(s);
-                if (add) o.FLOWS.add(s);
+                if (add) o.flows.add(s);
             }
         }
         flowChooser.setListData(flow_names.toArray());
@@ -4445,7 +4445,7 @@ public class GUI extends javax.swing.JFrame {
             /**APPLY THE RENAME TO ALL SCRIPTS WITH MATCHING NAMES AND CONTENTS**/
             if (Project.OBJECT_GALLERY.contains(Project.ACTIVE_EDIT_OBJECT)) {
                 for (SceneObject o: Project.getObjectsByType(Project.ACTIVE_EDIT_OBJECT.CLASS)) {
-                    for (Flow s: o.FLOWS) {
+                    for (Flow s: o.flows) {
                         if (flow.equalTo(s)) {
                             s.NAME = flowNameField.getText();
                         }

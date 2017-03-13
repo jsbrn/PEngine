@@ -1,6 +1,9 @@
 package project.objects.components;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 import project.Level;
 import project.Project;
 import project.objects.SceneObject;
@@ -58,6 +61,19 @@ public class Flow {
     public void setParent(SceneObject o) {
         parent_level = null;
         parent_object = o;
+    }
+    
+    public void save(BufferedWriter bw) {
+        try {
+            bw.write("f\n");
+            bw.write("n="+name+"\n");
+            bw.write("r="+run_on_spawn+"\n");
+            bw.write("lk="+locked+"\n");
+            for (Block b: blocks) { b.save(bw); }
+            bw.write("/f\n");
+        } catch (IOException ex) {
+            Logger.getLogger(Animation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
     }
     
     public boolean equalTo(Flow f) {

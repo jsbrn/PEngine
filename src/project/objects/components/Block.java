@@ -1,7 +1,11 @@
 package project.objects.components;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import misc.MiscMath;
 import project.Project;
 
@@ -225,6 +229,28 @@ public class Block {
     
     public String getCategory() {
         return category;
+    }
+    
+    public void save(BufferedWriter bw) {
+        try {
+            bw.write("b\n");
+            bw.write("id="+id+"\n");
+            
+            String dc = ""; for (int i : dot_conns) dc += i+" ";
+            bw.write("dc="+dc);
+            
+            String pc = ""; for (int i : param_conns) pc += i+" ";
+            bw.write("pc="+pc+"\n");
+            
+            for (String[] o : values) {
+                bw.write("v="+o[0]+"\n");
+            }
+            
+            bw.write("/b");
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Animation.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public boolean equalTo(Block b) {

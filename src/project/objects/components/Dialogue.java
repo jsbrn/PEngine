@@ -1,6 +1,10 @@
 package project.objects.components;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import project.objects.SceneObject;
 
 public class Dialogue {
@@ -49,6 +53,11 @@ public class Dialogue {
     public void setParent(SceneObject o) {
         parent_object = o;
     }
+    
+    public void save(BufferedWriter bw) {
+        System.err.print("Dialogue saving / loading not implemented.");
+    }
+    
     
     public boolean equalTo(Dialogue d) {
         if (!name.equals(d.name)) return false;

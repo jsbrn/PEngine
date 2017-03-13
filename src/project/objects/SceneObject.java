@@ -5,8 +5,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import misc.Assets;
 import project.objects.components.Dialogue;
 import project.objects.components.Flow;
 import project.Project;
@@ -18,9 +23,9 @@ public class SceneObject {
     private int layer = 1;
     private boolean grav, collides, locked;
     
-    public ArrayList<Animation> ANIMATIONS = new ArrayList<Animation>();
-    public ArrayList<Dialogue> DIALOGUES = new ArrayList<Dialogue>();
-    public ArrayList<Flow> FLOWS = new ArrayList<Flow>();
+    public ArrayList<Animation> animations = new ArrayList<Animation>();
+    public ArrayList<Dialogue> dialogues = new ArrayList<Dialogue>();
+    private ArrayList<Flow> flows = new ArrayList<Flow>();
     
     boolean hitbox = false;
     
@@ -67,7 +72,7 @@ public class SceneObject {
     }
     
     public boolean containsDialogue(String name) {
-        for (Dialogue o: DIALOGUES) {
+        for (Dialogue o: dialogues) {
             if (o.getName().equals(name)) {
                 return true;
             }
@@ -76,7 +81,7 @@ public class SceneObject {
     }
     
     public boolean containsAnimation(String name) {
-        for (Animation o: ANIMATIONS) {
+        for (Animation o: animations) {
             if (o.getName().equals(name)) {
                 return true;
             }
@@ -85,7 +90,7 @@ public class SceneObject {
     }
     
     public boolean containsFlow(String name) {
-        for (Flow o: FLOWS) {
+        for (Flow o: flows) {
             if (o.getName().equals(name)) {
                 return true;
             }
@@ -142,6 +147,34 @@ public class SceneObject {
         return new int[]{(int)world_w, (int)world_h};
     }
     
+    public void save(BufferedWriter bw) {
+        try {
+            bw.write("so\n");
+            
+            bw.write("x="+world_x+"\n");
+            bw.write("y="+world_y+"\n");
+            bw.write("w="+world_w+"\n");
+            bw.write("h="+world_h+"\n");
+            bw.write("n="+name+"\n");
+            bw.write("t="+type+"\n");
+            bw.write("lk="+locked+"\n");
+            bw.write("tx="+texture+"\n");
+            bw.write("h="+hitbox+"\n");
+            bw.write("g="+grav+"\n");
+            bw.write("c="+collides+"\n");
+            bw.write("l="+layer+"\n");
+            
+            for (Flow f: flows) f.save(bw);
+            for (Animation a: animations) a.save(bw);
+            for (Dialogue d: dialogues) d.save(bw);
+            
+            bw.write("/so");
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Animation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     /**
      * Creates a new object with exactly the same content, except for the name.
      * @return SceneObject
@@ -149,34 +182,34 @@ public class SceneObject {
     public SceneObject copy() {
         SceneObject o = new SceneObject();
         o.texture = this.texture;
-        o.class = this.class;
+        o.type = this.type;
         o.name = this.name+Math.abs(new Random().nextInt() % 10000);
-        o.LAYER = this.LAYER;
-        o.GRAVITY = this.GRAVITY;
-        o.COLLIDES = this.COLLIDES;
+        o.layer = this.layer;
+        o.grav = this.grav;
+        o.collides = this.collides;
         o.hitbox = this.hitbox;
 
-        o.ANIMATIONS.clear();
-        for (Animation a: this.ANIMATIONS) {
+        o.animations.clear();
+        for (Animation a: this.animations) {
             Animation new_a = new Animation();
             a.copyTo(new_a);
-            o.ANIMATIONS.add(new_a);
+            o.animations.add(new_a);
         }
         
-        o.DIALOGUES.clear();
-        for (Dialogue d: this.DIALOGUES) {
+        o.dialogues.clear();
+        for (Dialogue d: this.dialogues) {
             Dialogue new_d = new Dialogue();
             d.copyTo(new_d);
-            o.DIALOGUES.add(new_d);
+            o.dialogues.add(new_d);
             new_d.setParent(o);
             System.out.println("Adding "+new_d+" to "+o);
         }
         
-        o.FLOWS.clear();
-        for (Flow f: this.FLOWS) {
+        o.flows.clear();
+        for (Flow f: this.flows) {
             Flow new_f = new Flow();
             f.copyTo(new_f);
-            o.FLOWS.add(new_f);
+            o.flows.add(new_f);
             new_f.setParent(o);
         }
         
@@ -189,8 +222,8 @@ public class SceneObject {
     
     public void draw(Graphics g) {
         BufferedImage texture = null;
-        if (Project.OBJECT_TEXTURE_NAMES.contains(this.texture)) {
-            texture = Project.OBJECT_TEXTURES.get(Project.OBJECT_TEXTURE_NAMES.indexOf(this.texture));
+        if (Assets.OBJECT_TEXTURE_NAMES.contains(this.texture)) {
+            texture = Assets.OBJECT_TEXTURES.get(Assets.OBJECT_TEXTURE_NAMES.indexOf(this.texture));
         }
         
         if (isHitbox()) {
@@ -201,7 +234,7 @@ public class SceneObject {
                     (int)((int)world_w*Project.ZOOM),
                     (int)((int)world_h*Project.ZOOM));
         } else {
-            if (texture != null && Project.OBJECT_TEXTURE_NAMES.contains(this.texture)) {
+            if (texture != null && Assets.OBJECT_TEXTURE_NAMES.contains(this.texture)) {
                 g.setColor(Color.white);
                 g.drawImage(texture.getScaledInstance((int)((int)world_w*Project.ZOOM),
                         (int)((int)world_h*Project.ZOOM), Image.SCALE_FAST), (int)(Project.ORIGIN_X+((int)world_x*Project.ZOOM)), 

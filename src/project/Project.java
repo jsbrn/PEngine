@@ -4,6 +4,7 @@ import project.objects.SceneObject;
 import gui.GUI;
 import project.objects.components.Animation;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -22,16 +23,29 @@ public class Project {
     
     private static Project project;
     
-    private ArrayList<Level> levels = new ArrayList<Level>();
+    private String name; 
+    private ArrayList<Level> levels;
     private Level current_level;
-    private ArrayList<SceneObject> object_gallery = new ArrayList<SceneObject>();
+    private ArrayList<SceneObject> object_gallery;
     
-    public Project() {
-        
+    public Project(String name) {
+        this.name = name;
+        this.object_gallery = new ArrayList<SceneObject>();
+        this.levels = new ArrayList<Level>();
+        SceneObject player = new SceneObject();
+        player.setHitbox(false);
+        player.setType("Player");
+        player.setName("player");
+        player.gravity(true);
+        player.collides(true);
+        this.object_gallery.add(player);
+        Level home = new Level();
+        home.name = "home";
+        levels.add(home);
     }
     
     public static Project getProject() { return project; }
-    public static void newProject() { project = new Project(); }
+    public static void newProject(String name) { project = new Project(name); }
     public static boolean doesProjectExist(String project_name) {
         return new File(Assets.USER_HOME+"/level_editor/projects/"+project_name+"/").exists();
     }
@@ -79,71 +93,8 @@ public class Project {
         return null;
     }*/
     
-    public static void saveProject(boolean verbose) {
-        createProjectDirs(Project.PROJECT_NAME);
-        Properties prop = new Properties();
-        prop.setProperty("LvlCount", levels.size()+"");
-        prop.setProperty("GallObjCount", object_gallery.size()+"");
-        for (int g = 0; g != object_gallery.size(); g++) {
-            saveObject(object_gallery.get(g), -1, g, prop, true);
-        }
-        for(int l = 0; l != levels.size(); l++) {
-            //level properties
-            Level level = levels.get(l);
-            prop.setProperty("Lvl"+l+"TopBGColor", level.R1+" "+level.G1+" "+level.B1);
-            prop.setProperty("Lvl"+l+"BottomBGColor", level.R2+" "+level.G2+" "+level.B2);
-            prop.setProperty("Lvl"+l+"AmbientColor", level.R3+" "+level.G3+" "+level.B3);
-            prop.setProperty("Lvl"+l+"AmbientIntensity", ""+level.lighting_intensity);
-            prop.setProperty("Lvl"+l+"AmbientSound", level.ambient_sound);
-            prop.setProperty("Lvl"+l+"LoopBGMusic", ""+level.loop_bg_music);
-            prop.setProperty("Lvl"+l+"LoopAmbientSound", ""+level.loop_ambient_sound);
-            prop.setProperty("Lvl"+l+"Zoom", ""+level.zoom);
-            prop.setProperty("Lvl"+l+"BGMusicVolume", ""+level.bg_music_vol);
-            prop.setProperty("Lvl"+l+"AmbientSoundVolume", ""+level.ambient_sound_volume);
-            prop.setProperty("Lvl"+l+"AutoBGMusic", ""+level.auto_bg_music);
-            prop.setProperty("Lvl"+l+"AutoAmbientSound", ""+level.auto_ambient_sound);
-            prop.setProperty("Lvl"+l+"ID", level.name);
-            prop.setProperty("Lvl"+l+"Spawn", level.player_spawn[0]+" "+level.player_spawn[1]);
-            prop.setProperty("Lvl"+l+"CameraPosition", level.camera_spawn[0]+" "+level.camera_spawn[1]);
-            prop.setProperty("Lvl"+l+"Music", level.bg_music);
-            prop.setProperty("Lvl"+l+"ObjectCount", level.all_objects.size()+"");
-            prop.setProperty("Lvl"+l+"Width", (int)level.width+"");
-            prop.setProperty("Lvl"+l+"Height", (int)level.height+"");
-
-            //objects
-            for (int i = 0; i != level.all_objects.size(); i++) {
-                saveObject(level.all_objects.get(i), l, i, prop, false);
-            }
-        }
+    public void save(BufferedWriter bw, boolean verbose) {
         
-        //save to file and close the stream
-        try {
-            FileOutputStream f = new FileOutputStream(Project.USER_HOME+"/level_editor/projects/"+PROJECT_NAME+"/project.txt");
-            prop.store(f, null);
-            f.close();
-            if (verbose) JOptionPane.showMessageDialog(null, "Project '"+Project.PROJECT_NAME+"' has been saved successfully!");
-        } catch (IOException ex) {
-            if (verbose) JOptionPane.showMessageDialog(null, "Error writing to file!\n"+ex.getLocalizedMessage());
-        }
-    }
-    
-    public static void newProject() {
-        PROJECT_NAME = "project"+Math.abs(new Random().nextInt());
-        levels.clear();
-        object_gallery.clear();
-        SceneObject player_template = new SceneObject();
-        player_template.setHitbox(false);
-        player_template.CLASS = "Player";
-        player_template.NAME = "player";
-        player_template.GRAVITY = true;
-        player_template.COLLIDES = true;
-        object_gallery.add(player_template);
-        Level home = new Level();
-        home.name = "home";
-        levels.add(home);
-        switchToLevel(home.name);
-        GUI.updateWindowTitle();
-        GUI.refreshGalleryListings();
     }
     
     private void createProjectDirs(String project_name) {
@@ -240,26 +191,26 @@ public class Project {
         prop.setProperty(prefix+"Obj"+oindex+"Type", o.CLASS);
         prop.setProperty(prefix+"Obj"+oindex+"IsHitbox", o.isHitbox()+"");
 
-        prop.setProperty(prefix+"Obj"+oindex+"AnimCount", o.ANIMATIONS.size()+"");
-        for (int ii = 0; ii != o.ANIMATIONS.size(); ii++) {
-            prop.setProperty(prefix+"Obj"+oindex+"Anim"+ii+"Name", o.ANIMATIONS.get(ii).NAME+"");
-            prop.setProperty(prefix+"Obj"+oindex+"Anim"+ii+"SpriteName", o.ANIMATIONS.get(ii).SPRITE_NAME+"");
-            prop.setProperty(prefix+"Obj"+oindex+"Anim"+ii+"Widths", Project.integersToString(o.ANIMATIONS.get(ii).widths));
-            prop.setProperty(prefix+"Obj"+oindex+"Anim"+ii+"Heights", Project.integersToString(o.ANIMATIONS.get(ii).heights));
-            prop.setProperty(prefix+"Obj"+oindex+"Anim"+ii+"FrmDur", o.ANIMATIONS.get(ii).FRAME_DURATION+"");
-            prop.setProperty(prefix+"Obj"+oindex+"Anim"+ii+"Loops", o.ANIMATIONS.get(ii).loop+"");
+        prop.setProperty(prefix+"Obj"+oindex+"AnimCount", o.animations.size()+"");
+        for (int ii = 0; ii != o.animations.size(); ii++) {
+            prop.setProperty(prefix+"Obj"+oindex+"Anim"+ii+"Name", o.animations.get(ii).NAME+"");
+            prop.setProperty(prefix+"Obj"+oindex+"Anim"+ii+"SpriteName", o.animations.get(ii).SPRITE_NAME+"");
+            prop.setProperty(prefix+"Obj"+oindex+"Anim"+ii+"Widths", Project.integersToString(o.animations.get(ii).widths));
+            prop.setProperty(prefix+"Obj"+oindex+"Anim"+ii+"Heights", Project.integersToString(o.animations.get(ii).heights));
+            prop.setProperty(prefix+"Obj"+oindex+"Anim"+ii+"FrmDur", o.animations.get(ii).FRAME_DURATION+"");
+            prop.setProperty(prefix+"Obj"+oindex+"Anim"+ii+"Loops", o.animations.get(ii).loop+"");
         }
-        prop.setProperty(prefix+"Obj"+oindex+"DlgCount", o.DIALOGUES.size()+"");
-        for (int ii = 0; ii != o.DIALOGUES.size(); ii++) {
-            prop.setProperty(prefix+"Obj"+oindex+"Dlg"+ii+"Name", o.DIALOGUES.get(ii).NAME+"");
+        prop.setProperty(prefix+"Obj"+oindex+"DlgCount", o.dialogues.size()+"");
+        for (int ii = 0; ii != o.dialogues.size(); ii++) {
+            prop.setProperty(prefix+"Obj"+oindex+"Dlg"+ii+"Name", o.dialogues.get(ii).NAME+"");
         }
-        prop.setProperty(prefix+"Obj"+oindex+"FlowCount", o.FLOWS.size()+"");
-        for (int ii = 0; ii != o.FLOWS.size(); ii++) {
-            prop.setProperty(prefix+"Obj"+oindex+"Flow"+ii+"Name", o.FLOWS.get(ii).NAME+"");
-            prop.setProperty(prefix+"Obj"+oindex+"Flow"+ii+"Run", o.FLOWS.get(ii).RUN_ON_SPAWN+"");
-            prop.setProperty(prefix+"Obj"+oindex+"Flow"+ii+"BlockCount", o.FLOWS.get(ii).blockCount()+"");
-            for (int iii = 0; iii != o.FLOWS.get(ii).blockCount(); iii++) {
-                Block b = o.FLOWS.get(ii).getBlock(iii);
+        prop.setProperty(prefix+"Obj"+oindex+"FlowCount", o.flows.size()+"");
+        for (int ii = 0; ii != o.flows.size(); ii++) {
+            prop.setProperty(prefix+"Obj"+oindex+"Flow"+ii+"Name", o.flows.get(ii).NAME+"");
+            prop.setProperty(prefix+"Obj"+oindex+"Flow"+ii+"Run", o.flows.get(ii).RUN_ON_SPAWN+"");
+            prop.setProperty(prefix+"Obj"+oindex+"Flow"+ii+"BlockCount", o.flows.get(ii).blockCount()+"");
+            for (int iii = 0; iii != o.flows.get(ii).blockCount(); iii++) {
+                Block b = o.flows.get(ii).getBlock(iii);
                 prop.setProperty(prefix+"Obj"+oindex+"Flow"+ii+"Block"+iii+"Title", b.title()+"");
                 prop.setProperty(prefix+"Obj"+oindex+"Flow"+ii+"Block"+iii+"Cat", b.getCategory());
                 prop.setProperty(prefix+"Obj"+oindex+"Flow"+ii+"Block"+iii+"Coords", b.getCoords()[0]+" "+b.getCoords()[1]);
@@ -300,7 +251,7 @@ public class Project {
         int anim_count = Integer.parseInt(prop.getProperty(prefix+"Obj"+oindex+"AnimCount"));
         for (int ii = 0; ii != anim_count; ii++) {
             Animation s = new Animation();
-            o.ANIMATIONS.add(s);
+            o.animations.add(s);
             s.NAME = prop.getProperty(prefix+"Obj"+oindex+"Anim"+ii+"Name");
             s.SPRITE_NAME = prop.getProperty(prefix+"Obj"+oindex+"Anim"+ii+"SpriteName");
             s.widths = parseIntegers(prop.getProperty(prefix+"Obj"+oindex+"Anim"+ii+"Widths"), true);
@@ -311,13 +262,13 @@ public class Project {
         int dialogue_count = Integer.parseInt(prop.getProperty(prefix+"Obj"+oindex+"DlgCount"));
         for (int ii = 0; ii != dialogue_count; ii++) {
             Dialogue d = new Dialogue();
-            o.DIALOGUES.add(d);
+            o.dialogues.add(d);
             d.NAME = prop.getProperty(prefix+"Obj"+oindex+"Dlg"+ii+"Name");
         }
         int flow_count = Integer.parseInt(prop.getProperty(prefix+"Obj"+oindex+"FlowCount"));
         for (int ii = 0; ii != flow_count; ii++) {
             Flow d = new Flow();
-            o.FLOWS.add(d);
+            o.flows.add(d);
             d.NAME = prop.getProperty(prefix+"Obj"+oindex+"Flow"+ii+"Name");
             d.RUN_ON_SPAWN = Boolean.parseBoolean(prop.getProperty(prefix+"Obj"+oindex+"Flow"+ii+"Run"));
             int block_count = Integer.parseInt(prop.getProperty(prefix+"Obj"+oindex+"Flow"+ii+"BlockCount"));

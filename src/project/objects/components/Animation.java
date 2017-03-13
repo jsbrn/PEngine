@@ -1,6 +1,11 @@
 package project.objects.components;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import misc.MiscMath;
 import project.Project;
 import project.objects.SceneObject;
 
@@ -39,6 +44,21 @@ public class Animation {
         new_a.heights.clear();
         new_a.widths.addAll(widths);
         new_a.heights.addAll(heights);
+    }
+    
+    public void save(BufferedWriter bw) {
+        try {
+            bw.write("a\n");
+            bw.write("n="+name+"\n");
+            bw.write("s="+spritesheet+"\n");
+            bw.write("w="+MiscMath.integersToString(widths)+"\n");
+            bw.write("h="+MiscMath.integersToString(heights)+"\n");
+            bw.write("lk="+locked+"\n");
+            bw.write("lp="+loop+"\n");
+            bw.write("/a\n");
+        } catch (IOException ex) {
+            Logger.getLogger(Animation.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     /**
