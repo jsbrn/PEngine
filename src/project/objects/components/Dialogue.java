@@ -35,6 +35,10 @@ public class Dialogue {
         link_to_type = -1;
     }
     
+    public String getName() {
+        return name;
+    }
+    
     public void addEvent(int evt_type) {
         queue.add(evt_type+"");
         speech.add("");

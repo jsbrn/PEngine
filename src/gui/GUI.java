@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package gui;
 
 import java.awt.Color;
@@ -30,9 +26,9 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import misc.Assets;
 import project.objects.components.Animation;
 import project.objects.components.Block;
-import misc.BlockList;
 import project.objects.components.Dialogue;
 import project.objects.components.Flow;
 import threads.DownloadThread;
@@ -41,10 +37,6 @@ import threads.PreviewThread;
 import project.Project;
 import project.objects.SceneObject;
 
-/**
- *
- * @author jeremy
- */
 public class GUI extends javax.swing.JFrame {
     
     static GUI window;
@@ -285,7 +277,6 @@ public class GUI extends javax.swing.JFrame {
         camPosField = new javax.swing.JTextField();
         levelZoomSlider = new javax.swing.JSlider();
         jLabel45 = new javax.swing.JLabel();
-        sceneCanvas = new gui.SceneCanvas();
         menuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
@@ -2995,130 +2986,16 @@ public class GUI extends javax.swing.JFrame {
 
     private void sceneCanvasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sceneCanvasKeyPressed
         
-        if (Project.SELECTED_OBJECT != null) {
-            if (evt.getKeyCode() == KeyEvent.VK_DELETE) {
-                Project.removeObject(Project.SELECTED_OBJECT);
-            }
-        }
         
-        if (evt.getKeyCode() == KeyEvent.VK_1) {
-            Project.SELECTED_TOOL = Project.SELECT_TOOL;
-            selectButton.setEnabled(false);
-            cameraButton.setEnabled(true);
-            moveButton.setEnabled(true);
-            resizeButton.setEnabled(true);
-        }
-        if (evt.getKeyCode() == KeyEvent.VK_2) {
-            Project.SELECTED_TOOL = Project.CAMERA_TOOL;
-            selectButton.setEnabled(true);
-            cameraButton.setEnabled(false);
-            moveButton.setEnabled(true);
-            resizeButton.setEnabled(true);
-        }
-        if (evt.getKeyCode() == KeyEvent.VK_3) {
-            Project.SELECTED_TOOL = Project.MOVE_TOOL;
-            selectButton.setEnabled(true);
-            cameraButton.setEnabled(true);
-            moveButton.setEnabled(false);
-            resizeButton.setEnabled(true);
-        }
-        if (evt.getKeyCode() == KeyEvent.VK_4) {
-            Project.SELECTED_TOOL = Project.RESIZE_TOOL;
-            selectButton.setEnabled(true);
-            cameraButton.setEnabled(true);
-            moveButton.setEnabled(true);
-            resizeButton.setEnabled(false);
-        }
-        
-        if (evt.getKeyChar() == '=') { //plus sign w/o shift
-            Project.zoomCamera(1);
-        }
-        if (evt.getKeyChar() == '-') {
-            Project.zoomCamera(-1);
-        }
-        
-        if (Project.SELECTED_TOOL == Project.CAMERA_TOOL) {
-            if (evt.getKeyChar() == 'x') {
-                Project.ORIGIN_X = 10;
-                Project.ORIGIN_Y = 10;
-                Project.ZOOM = 8;
-            } else if (evt.getKeyChar() == 'c') {
-                Project.ORIGIN_X = 10;
-                Project.ORIGIN_Y = 10;
-            }
-        } else if (Project.SELECTED_TOOL == Project.MOVE_TOOL) {
-            if (Project.SELECTED_OBJECT != null) {
-                if (evt.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    Project.SELECTED_OBJECT.move(1, 0);
-                }
-                if (evt.getKeyCode() == KeyEvent.VK_LEFT) {
-                    Project.SELECTED_OBJECT.move(-1, 0);
-                }
-                if (evt.getKeyCode() == KeyEvent.VK_UP) {
-                    Project.SELECTED_OBJECT.move(0, -1);
-                }
-                if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
-                    Project.SELECTED_OBJECT.move(0, 1);
-                }
-            }
-        } else if (Project.SELECTED_TOOL == Project.RESIZE_TOOL) {
-            if (Project.SELECTED_OBJECT != null) {
-                if (Project.SELECTED_OBJECT.TEXTURE_NAME.length() == 0) {
-                    if (evt.getKeyCode() == KeyEvent.VK_RIGHT) {
-                        Project.SELECTED_OBJECT.resize(1, 0);
-                    }
-                    if (evt.getKeyCode() == KeyEvent.VK_LEFT) {
-                        Project.SELECTED_OBJECT.resize(-1, 0);
-                    }
-                    if (evt.getKeyCode() == KeyEvent.VK_UP) {
-                        Project.SELECTED_OBJECT.resize(0, -1);
-                    }
-                    if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
-                        Project.SELECTED_OBJECT.resize(0, 1);
-                    }
-                }
-            }
-        }
-        sceneCanvas.repaint();
     }//GEN-LAST:event_sceneCanvasKeyPressed
 
     private void sceneCanvasMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sceneCanvasMouseMoved
-        Project.LAST_MOUSE_X = evt.getX();
-        Project.LAST_MOUSE_Y = evt.getY();
+        sceneCanvas.setLastMousePosition(evt.getX(), evt.getY());
         sceneCanvas.repaint();
     }//GEN-LAST:event_sceneCanvasMouseMoved
 
     private void sceneCanvasMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sceneCanvasMouseDragged
-        sceneCanvas.grabFocus();
-        if (Project.SELECTED_TOOL == Project.CAMERA_TOOL) {
-            Project.moveCamera(evt.getX()-Project.LAST_MOUSE_X, evt.getY()-Project.LAST_MOUSE_Y);
-
-        } else if (Project.SELECTED_TOOL == Project.MOVE_TOOL) {
-            if (Project.SELECTED_OBJECT == null) Project.SELECTED_OBJECT = Project.getObject(evt.getX(), evt.getY());
-            refreshObjectProperties();
-            if (Project.SELECTED_OBJECT != null) {
-                double move_x = (evt.getX()-Project.LAST_MOUSE_X)/(double)Project.ZOOM;
-                double move_y = (evt.getY()-Project.LAST_MOUSE_Y)/(double)Project.ZOOM;
-                Project.SELECTED_OBJECT.move(move_x, move_y);
-            } else {
-                Project.SELECTED_OBJECT = Project.getObject(evt.getX(), evt.getY());
-            }
-        } else if (Project.SELECTED_TOOL == Project.RESIZE_TOOL) {
-            if (Project.SELECTED_OBJECT != null) {
-                if (Project.SELECTED_OBJECT.isHitbox()) {
-                    double move_x = (evt.getX()-Project.LAST_MOUSE_X)/(double)Project.ZOOM;
-                    double move_y = (evt.getY()-Project.LAST_MOUSE_Y)/(double)Project.ZOOM;
-                    Project.SELECTED_OBJECT.resize(move_x, move_y);
-                }
-            } else {
-                double move_x = (evt.getX()-Project.LAST_MOUSE_X)/(double)Project.ZOOM;
-                double move_y = (evt.getY()-Project.LAST_MOUSE_Y)/(double)Project.ZOOM;
-                Project.resizeLevel(move_x, move_y);
-            }
-        }
-        sceneCanvas.repaint();            
-        Project.LAST_MOUSE_X = evt.getX();
-        Project.LAST_MOUSE_Y = evt.getY();
+        
     }//GEN-LAST:event_sceneCanvasMouseDragged
 
     private void sceneCanvasMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sceneCanvasMouseReleased
@@ -3168,7 +3045,7 @@ public class GUI extends javax.swing.JFrame {
     private void camPosFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_camPosFieldFocusLost
         String s = camPosField.getText();
         ArrayList<Integer> values = Project.parseIntegers(s, true);
-        Project.CURRENT_LEVEL.CAM_COORD[0] = values.get(0);Project.CURRENT_LEVEL.CAM_COORD[1] = values.get(1);
+        getSceneCanvas().getCurrentLevel().CAM_COORD[0] = values.get(0);Project.CURRENT_LEVEL.CAM_COORD[1] = values.get(1);
         sceneCanvas.repaint();
     }//GEN-LAST:event_camPosFieldFocusLost
 
@@ -3367,7 +3244,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        if (!Project.doesProjectExist(Project.PROJECT_NAME)) {
+        if (!Project.existsOnDisk(Project.PROJECT_NAME)) {
             Project.createProjectDirs(Project.PROJECT_NAME);
         }
         Project.saveProject(true);
@@ -3398,7 +3275,7 @@ public class GUI extends javax.swing.JFrame {
                     projectManagerDialog);
             return;
         }
-        Project.deleteDirectory(new File(Project.USER_HOME+"/level_editor/projects/"+project));
+        Project.deleteFromDisk(new File(Project.USER_HOME+"/level_editor/projects/"+project));
         GUI.refreshProjectListings();
         projectList.setSelectedIndex(index);
         if (projectList.getSelectedIndex() > projectList.getMaxSelectionIndex()) {
@@ -3605,7 +3482,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        if (Project.doesProjectExist(Project.PROJECT_NAME)) {
+        if (Project.existsOnDisk(Project.PROJECT_NAME)) {
             Project.loadAssets();
             JOptionPane.showMessageDialog(null, 
                     Project.OBJECT_TEXTURES.size()+" object textures loaded!\n"
@@ -4702,7 +4579,7 @@ public class GUI extends javax.swing.JFrame {
     public static void updateWindowTitle() {
         String title = "Platformer Creator 1.1 [Beta]";
         title += " / "+Project.PROJECT_NAME;
-        if (!Project.doesProjectExist(Project.PROJECT_NAME)) title += " *";
+        if (!Project.existsOnDisk(Project.PROJECT_NAME)) title += " *";
         if (Project.CURRENT_LEVEL != null) title += " / "+Project.CURRENT_LEVEL.NAME;
         window.setTitle(title);
     }
@@ -4924,10 +4801,10 @@ public class GUI extends javax.swing.JFrame {
     
     public static void runProject(String level_name) {
         boolean[] updates = DownloadThread.checkForUpdates();
-        boolean game_exists = new File(Project.USER_HOME+"/level_editor/jars/test.jar").exists();
-        File game_data = new File(Project.USER_HOME+"/level_editor/jars/test.properties");
+        boolean game_exists = new File(Assets.USER_HOME+"/level_editor/jars/test.jar").exists();
+        File game_data = new File(Assets.USER_HOME+"/level_editor/jars/test.properties");
         if (game_exists == false || updates[0]) {
-            DownloadThread.downloadThreaded("https://computerology.bitbucket.io/tools/editor/test.jar", Project.USER_HOME+"/level_editor/jars/test.jar");
+            DownloadThread.downloadThreaded("https://computerology.bitbucket.io/tools/editor/test.jar", Assets.USER_HOME+"/level_editor/jars/test.jar");
             game_data.delete();
             return;
         }
@@ -4936,7 +4813,7 @@ public class GUI extends javax.swing.JFrame {
             //Scene.DOWNLOAD_THREAD.download("https://computerology.bitbucket.io/index.html", "C:/Users/Jeremy/Desktop/index.html");
             GUI.statusIndicator.setText("Starting game...");
             Process p = Runtime.getRuntime()
-            .exec("java -jar \""+Project.USER_HOME+"/level_editor/jars/test.jar\" \""+Project.USER_HOME+"/level_editor/projects/"+Project.PROJECT_NAME+"\" \""+level_name+"\"");
+            .exec("java -jar \""+Assets.USER_HOME+"/level_editor/jars/test.jar\" \""+Assets.USER_HOME+"/level_editor/projects/"+Assets.PROJECT_NAME+"\" \""+level_name+"\"");
             BufferedReader reader =
                 new BufferedReader(new InputStreamReader(p.getInputStream()));
             window.setVisible(false);
@@ -4968,20 +4845,19 @@ public class GUI extends javax.swing.JFrame {
         catch (Exception ex) {
             ex.printStackTrace();
         }
-        Project.loadAssets();
+        Assets.load();
         
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                BlockList.init();
-                Project.USER_HOME = System.getProperty("user.home");
+                Assets.USER_HOME = System.getProperty("user.home");
                 window = new GUI();
                 window.setVisible(true);
-                File home = new File(Project.USER_HOME+"/level_editor/");
+                File home = new File(Assets.USER_HOME+"/level_editor/");
                 home.mkdir();
-                File projects = new File(Project.USER_HOME+"/level_editor/projects");
+                File projects = new File(Assets.USER_HOME+"/level_editor/projects");
                 projects.mkdir();
-                File jars = new File(Project.USER_HOME+"/level_editor/jars");
+                File jars = new File(Assets.USER_HOME+"/level_editor/jars");
                 jars.mkdir();
                 Project.newProject();
                 updateWindowTitle();
@@ -5228,7 +5104,7 @@ public class GUI extends javax.swing.JFrame {
     public static javax.swing.JDialog saveConfirmDialog;
     private static javax.swing.JLabel saveDialogContextLabel;
     private static javax.swing.JButton scanForErrorsButton;
-    private static gui.SceneCanvas sceneCanvas;
+    static final gui.SceneCanvas sceneCanvas = new gui.SceneCanvas();
     private javax.swing.JButton selectButton;
     static javax.swing.JButton sendBackwardsButton;
     private javax.swing.JButton spawnButton;

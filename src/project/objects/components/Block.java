@@ -11,10 +11,10 @@ import project.Project;
 
 public class Block {
     
-    boolean[] dots; //in, out, yes, no, ok
-    int[] dot_conns, param_conns; //the actual connections
+    private boolean[] dots; //in, out, yes, no, ok
+    private int[] dot_conns, param_conns; //the actual connections
     
-    String[][] values; //parametres use this. a value is {value, name, type}
+    private String[][] values; //parametres use this. a value is {value, name, type}
     String output_type; //the type of value that the OUT connection supplies
     
     String title, category, type;
@@ -33,6 +33,10 @@ public class Block {
         this.param_conns = new int[0];
         this.values = new String[0][3];
         this.output_type = "";
+    }
+    
+    public String getTitle() {
+        return title;
     }
     
     /**

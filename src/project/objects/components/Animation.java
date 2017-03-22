@@ -20,6 +20,10 @@ public class Animation {
         
     }
     
+    public String getName() {
+        return name;
+    }
+    
     public void removeFrame(int i) {
         widths.remove(i);
         heights.remove(i);

@@ -27,7 +27,7 @@ public class Assets {
     
     public static Block getBlock(String title, String category) {
         for (Block b: blocks) {
-            if (b.title.equals(title) && b.category.contains(category)) return b;
+            if (b.getTitle().equals(title) && b.getCategory().contains(category)) return b;
         }
         return null;
     }
@@ -36,7 +36,7 @@ public class Assets {
      * Loads all assets from the project's 'objects' folder, into the OBJECT_TEXTURES list. Clears all previously loaded assets
      * first. Uses Scene.PROJECT_NAME in the directory.
      */
-    public void load() {
+    public static void load() {
         File object_textures = new File(USER_HOME+"/level_editor/projects/"+PROJECT_NAME+"/assets/textures/objects");
         File anim_textures = new File(USER_HOME+"/level_editor/projects/"+PROJECT_NAME+"/assets/textures/animations");
         OBJECT_TEXTURES.clear();
@@ -46,6 +46,12 @@ public class Assets {
         addToAssets(object_textures, OBJECT_TEXTURE_NAMES, OBJECT_TEXTURES);
         addToAssets(anim_textures, ANIMATION_TEXTURE_NAMES, ANIMATION_TEXTURES);
         initBlockList();
+    }
+    
+    public static void mkdirs() {
+        new File(Assets.USER_HOME+"/level_editor").mkdir();
+        new File(Assets.USER_HOME+"/level_editor/jars").mkdir();
+        new File(Assets.USER_HOME+"/level_editor/projects").mkdir();
     }
     
     private static void initBlockList() {   

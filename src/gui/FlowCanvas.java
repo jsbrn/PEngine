@@ -13,13 +13,14 @@ public class FlowCanvas extends JPanel {
     private int origin_x = 0, origin_y = 0, last_mouse_x = 0, last_mouse_y = 0;
     private int selected_dot = -1;
     private int last_mouse_click_x = 0, last_mouse_click_y = 0;
+    private Block selected_block;
     
     public FlowCanvas() {
 
     }
     
     public static Block getBlock(int x, int y) {
-        Flow f = Project.ACTIVE_EDIT_OBJECT.FLOWS.get(GUI.flowChooser.getSelectedIndex());
+        Flow f = GUI.getSceneCanvas().getActiveObject().get(GUI.flowChooser.getSelectedIndex());
         for (int i = 0; i != f.blockCount(); i++) {
             Block b = f.getBlock(i);
             if (MiscMath.pointIntersects(x, y, b.getCoords()[0]-20, b.getCoords()[1]-20, b.dimensions()[0]+40, b.dimensions()[1]+40)) {
@@ -41,10 +42,10 @@ public class FlowCanvas extends JPanel {
             }
         }
 
-        if (Project.ACTIVE_EDIT_OBJECT == null) return;
+        if (GUI.getSceneCanvas().getActiveObject() == null) return;
         int flow_index = GUI.flowChooser.getSelectedIndex();
         if (flow_index > -1) {
-            Flow f = Project.ACTIVE_EDIT_OBJECT.FLOWS.get(flow_index);
+            Flow f = GUI.getSceneCanvas().getActiveObject().FLOWS.get(flow_index);
             g.setColor(Color.black);
             for (int i = 0; i != f.blockCount(); i++) {
                 Block b = f.getBlock(i);
@@ -62,7 +63,7 @@ public class FlowCanvas extends JPanel {
                     g.drawString(value, r_x + 5, r_y + 30 + (20*p));
                 }
                 g.drawRect(r_x, r_y, b_width, b_height);
-                if (b.equals(SELECTED_BLOCK)) {
+                if (b.equals(selected_block)) {
                     g.setColor(Color.red);
                     g.drawRect(origin_x + b.getCoords()[0] - 21, origin_y + b.getCoords()[1] - 21, b.dimensions()[0] + 42, 
                             b.dimensions()[1] + 42);
@@ -150,7 +151,7 @@ public class FlowCanvas extends JPanel {
             }
             
             //draw the line
-            if (SELECTED_BLOCK != null && FlowCanvas.selected_dot > -1) {
+            if (selected_block != null && selected_dot > -1) {
                 g.setColor(new Color(0, 0, 0, 100));
                 g.drawLine(origin_x + last_mouse_click_x, origin_y + last_mouse_click_y, last_mouse_x, last_mouse_y);
             }

@@ -5,8 +5,9 @@ import project.objects.SceneObject;
 
 public class Level {
     
-    private ArrayList<SceneObject> all_objects, distant_objects, bg_objects, mid_objects, fg_objects;
-    private ArrayList[] layers;
+    public static final int ALL_OBJECTS = 0, DISTANT_OBJECTS = 1, BACKGROUND_OBJECTS = 2, 
+            MIDDLE_OBJECTS = 3, FOREGROUND_OBJECTS = 4;
+    private ArrayList[] objects;
     
     private String name = "", ambient_sound = "", bg_music = "";
     private int[] bg_color_top, bg_color_bottom, lighting_color;
@@ -18,24 +19,38 @@ public class Level {
     private int[] player_spawn = {0, 0}, camera_spawn = {0, 0};
     
     public Level() {
-        this.all_objects = new ArrayList<SceneObject>();
-        this.distant_objects = new ArrayList<SceneObject>();
-        this.bg_objects = new ArrayList<SceneObject>();
-        this.mid_objects = new ArrayList<SceneObject>();
-        this.fg_objects = new ArrayList<SceneObject>();
-        this.layers = new ArrayList[]{distant_objects, bg_objects, mid_objects, fg_objects};
+        this.objects = new ArrayList[5];
+        for (int i = 0; i < objects.length; i++) {
+            this.objects[i] = new ArrayList<SceneObject>();
+        }
     }
     
+    public int[] playerSpawn() { return player_spawn; }
+    public int[] cameraSpawn() { return camera_spawn; }
+    
+    public int[] getTopBGColor() { return bg_color_top; }
+    public int[] getBottomBGColor() { return bg_color_bottom; }
+    public int[] getLightingColor() { return lighting_color; }
+    public int getLightIntensity() { return lighting_intensity; }
+    
+    public int[] dimensions() { return new int[]{width, height}; }
+    public int getZoom() { return zoom; }
+    
+    public ArrayList<SceneObject> getObjects(int layer) { return objects[layer]; }
+    
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    
     public void add(SceneObject o) {
-        if (all_objects.contains(o) == false) {
-            all_objects.add(o);
-            moveToLayer(o.LAYER, o);
+        if (getObjects(ALL_OBJECTS).contains(o) == false) {
+            getObjects(ALL_OBJECTS).add(o);
+            moveToLayer(o.getLayer(), o);
         }
     }
     
     public void moveForward(SceneObject o) {
         for (int i = 0; i != layers().length; i++) {
-            if (i == o.LAYER) {
+            if (i == o.getLayer()) {
                 int orig = layers()[i].indexOf(o);
                 if (orig < layers()[i].size()-1) {
                     layers()[i].remove(o);
@@ -46,7 +61,7 @@ public class Level {
     }
     
     public void removeObject(SceneObject o) {
-        all_objects.remove(o);
+        getObjects(ALL_OBJECTS).remove(o);
         for (int i = 0; i != layers().length; i++) {
             layers()[i].remove(o);
         }
@@ -54,7 +69,7 @@ public class Level {
     
     public void moveBackward(SceneObject o) {
         for (int i = 0; i != layers().length; i++) {
-            if (i == o.LAYER) {
+            if (i == o.getLayer()) {
                 int orig = layers()[i].indexOf(o);
                 if (orig > 0) {
                     Object prev = layers()[i].get(orig-1);
@@ -67,7 +82,7 @@ public class Level {
     
     public void moveToLayer(int layer, SceneObject o) {
         for (int i = 0; i != layers().length; i++) {
-            if (i != o.layer) {
+            if (i != o.getLayer()) {
                 layers()[i].remove(o);
             } else {
                 if (layers()[i].contains(o) == false) {
@@ -83,8 +98,8 @@ public class Level {
     }
     
     public boolean containsObject(String name) {
-        for (SceneObject o: all_objects) {
-            if (o.name.equals(name)) {
+        for (SceneObject o: getObjects(ALL_OBJECTS)) {
+            if (o.getName().equals(name)) {
                 return true;
             }
         }
@@ -92,6 +107,6 @@ public class Level {
     }
     
     public ArrayList[] layers() {
-        return layers;
+        return objects;
     }
 }

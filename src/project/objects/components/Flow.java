@@ -23,6 +23,10 @@ public class Flow {
         this.name = "";
     }
     
+    public String getName() {
+        return name;
+    }
+    
     public Block getBlock(int index) {
         return blocks.get(index);
     }
