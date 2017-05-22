@@ -50,12 +50,22 @@ public class Project {
         return new File(Assets.USER_HOME+"/level_editor/projects/"+project_name+"/").exists();
     }
     
+    public SceneObject getGalleryObject(int i) { return object_gallery.get(i); }
     public void addGalleryObject(SceneObject o) {
         if (!object_gallery.contains(o)) object_gallery.add(o);
     }
-    
     public void removeGalleryObject(SceneObject o) {
         if (object_gallery.contains(o)) object_gallery.remove(o);
+    }
+    public boolean containsGalleryObject(SceneObject o) {
+        return object_gallery.contains(o);
+    }
+    
+    public boolean containsLevel(String level_name) {
+        for (Level l: levels) {
+            if (l.getName().equals(level_name)) return true;
+        }
+        return false;
     }
     
     public ArrayList<SceneObject> getObjectsByType(String type) {
@@ -89,23 +99,6 @@ public class Project {
             }
         }
     }
-    
-    /*public SceneObject getObject(int onscreen_x, int onscreen_y) {
-        ArrayList<SceneObject> all_objects = new ArrayList<SceneObject>();
-        all_objects.addAll(current_level.distant_objects);
-        all_objects.addAll(current_level.bg_objects);
-        all_objects.addAll(current_level.mid_objects);
-        all_objects.addAll(current_level.fg_objects);
-        for (int i = all_objects.size()-1; i != -1; i--) {
-            SceneObject o = all_objects.get(i);
-            int[] on_screen = o.getOnscreenCoordinates();
-            if (MiscMath.pointIntersects(onscreen_x, onscreen_y, 
-                    on_screen[0], on_screen[1], o.getOnscreenWidth(), o.getOnscreenHeight())) {
-                return o;
-            }
-        }
-        return null;
-    }*/
     
     public void save(BufferedWriter bw, boolean verbose) {
         

@@ -8,6 +8,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import javax.swing.JPanel;
 import misc.MiscMath;
 import project.Level;
@@ -63,11 +65,18 @@ public class SceneCanvas extends JPanel {
         origin_x += (w_x_after-w_x_before)*zoom;
         origin_y += (w_y_after-w_y_before)*zoom;
     }
+    
+    public double getZoom() { return zoom; }
 
+    /*
+     * DRAWING THE COMPONENT
+     */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, (int)getWidth(), (int)getHeight());
+        
+        if (Project.getProject() == null) return;
         
         Level current_level = Project.getProject().getCurrentLevel();
         
@@ -86,32 +95,14 @@ public class SceneCanvas extends JPanel {
             g.fillRect(0, y*height, getWidth(), getHeight());
         }
         
-        for (SceneObject o: current_level.getObjects(Level.DISTANT_OBJECTS)) {
-            if (MiscMath.rectanglesIntersect(o.getOnscreenCoordinates()[0], o.getOnscreenCoordinates()[1], 
-                    o.getOnscreenWidth(), o.getOnscreenHeight(), 
-                    0, 0, (int)getWidth(), (int)getHeight()) || o.getOnscreenHeight() > getHeight() || o.getOnscreenWidth() > getWidth()) {
-                o.draw(g);
-            }
-        }
-        for (SceneObject o: current_level.getObjects(Level.BACKGROUND_OBJECTS)) {
-            if (MiscMath.rectanglesIntersect(o.getOnscreenCoordinates()[0], o.getOnscreenCoordinates()[1], 
-                    o.getOnscreenWidth(), o.getOnscreenHeight(), 
-                    0, 0, (int)getWidth(), (int)getHeight()) || o.getOnscreenHeight() > getHeight() || o.getOnscreenWidth() > getWidth()) {
-                o.draw(g);
-            }
-        }
-        for (SceneObject o: current_level.getObjects(Level.MIDDLE_OBJECTS)) {
-            if (MiscMath.rectanglesIntersect(o.getOnscreenCoordinates()[0], o.getOnscreenCoordinates()[1], 
-                    o.getOnscreenWidth(), o.getOnscreenHeight(), 
-                    0, 0, (int)getWidth(), (int)getHeight()) || o.getOnscreenHeight() > getHeight() || o.getOnscreenWidth() > getWidth()) {
-                o.draw(g);
-            }
-        }
-        for (SceneObject o: current_level.getObjects(Level.FOREGROUND_OBJECTS)) {
-            if (MiscMath.rectanglesIntersect(o.getOnscreenCoordinates()[0], o.getOnscreenCoordinates()[1], 
-                    o.getOnscreenWidth(), o.getOnscreenHeight(), 
-                    0, 0, (int)getWidth(), (int)getHeight()) || o.getOnscreenHeight() > getHeight() || o.getOnscreenWidth() > getWidth()) {
-                o.draw(g);
+        //draw all objects
+        for (int layer = 1; layer <= 4; layer++) {
+            for (SceneObject o: current_level.getObjects(layer)) {
+                if (MiscMath.rectanglesIntersect(o.getOnscreenCoordinates()[0], o.getOnscreenCoordinates()[1], 
+                        o.getOnscreenWidth(), o.getOnscreenHeight(), 
+                        0, 0, (int)getWidth(), (int)getHeight()) || o.getOnscreenHeight() > getHeight() || o.getOnscreenWidth() > getWidth()) {
+                    o.draw(g);
+                }
             }
         }
         
@@ -146,7 +137,7 @@ public class SceneCanvas extends JPanel {
             drawString("Press C to move camera to origin", 8, (int)getHeight()-30, g);
             drawString("Press X to reset camera", 8, (int)getHeight()-50, g);
         }
-    }  
+    }
     
     public static void drawString(String str, int x, int y, Graphics g) {
         g.setColor(Color.gray.darker());
@@ -172,26 +163,26 @@ public class SceneCanvas extends JPanel {
                     moveCamera(e.getX()-last_mouse_x, e.getY()-last_mouse_y);
 
                 } else if (selected_tool == MOVE_TOOL) {
-                    if (selected_object == null) selected_object = Project.getObject(evt.getX(), evt.getY());
+                    if (selected_object == null) selected_object = Project.getProject().getCurrentLevel().getObject(e.getX(), e.getY());
                     GUI.refreshObjectProperties();
                     if (selected_object != null) {
                         double move_x = (e.getX()-last_mouse_x)/(double)zoom;
                         double move_y = (e.getY()-last_mouse_y)/(double)zoom;
                         selected_object.move(move_x, move_y);
                     } else {
-                        selected_object = Project.getProject().getCurrentLevel()akhsgakjsgdjkasgde.getX(), e.getY());
+                        selected_object = Project.getProject().getCurrentLevel().getObject(e.getX(), e.getY());
                     }
-                } else if (selected_tool == Project.RESIZE_TOOL) {
+                } else if (selected_tool == RESIZE_TOOL) {
                     if (selected_object != null) {
                         if (selected_object.isHitbox()) {
-                            double move_x = (evt.getX()-Project.LAST_MOUSE_X)/(double)Project.ZOOM;
-                            double move_y = (evt.getY()-Project.LAST_MOUSE_Y)/(double)Project.ZOOM;
+                            double move_x = (e.getX()-last_mouse_x)/(double)zoom;
+                            double move_y = (e.getY()-last_mouse_y)/(double)zoom;
                             selected_object.resize(move_x, move_y);
                         }
                     } else {
-                        double move_x = (evt.getX()-Project.LAST_MOUSE_X)/(double)Project.ZOOM;
-                        double move_y = (evt.getY()-Project.LAST_MOUSE_Y)/(double)Project.ZOOM;
-                        Project.resizeLevel(move_x, move_y);
+                        double move_x = (e.getX()-last_mouse_x)/(double)zoom;
+                        double move_y = (e.getY()-last_mouse_y)/(double)zoom;
+                        Project.getProject().getCurrentLevel().resize(move_x, move_y);
                     }
                 }
                 repaint();            
@@ -200,6 +191,50 @@ public class SceneCanvas extends JPanel {
 
             @Override
             public void mouseMoved(MouseEvent e) {
+                setLastMousePosition(e.getX(), e.getY());
+                repaint();
+            }
+            
+        });
+        
+        this.addMouseWheelListener(new MouseWheelListener() {
+
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                zoomCamera(-e.getWheelRotation());
+                repaint();
+                grabFocus();
+            }
+            
+        });
+        
+        this.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                selected_object = Project.getProject().getCurrentLevel().getObject(e.getX(), e.getY());
+                GUI.refreshObjectProperties();
+                repaint();
+                grabFocus();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
             
@@ -227,10 +262,10 @@ public class SceneCanvas extends JPanel {
                 }
                 
                 selected_tool = e.getKeyCode();
-                selectButton.setEnabled(selected_tool == 1);
-                cameraButton.setEnabled(selected_tool == 2);
-                moveButton.setEnabled(selected_tool == 3);
-                resizeButton.setEnabled(selected_tool == 4);
+                /*GUI.selectButton.setEnabled(selected_tool == 1);
+                GUI.cameraButton.setEnabled(selected_tool == 2);
+                GUI.moveButton.setEnabled(selected_tool == 3);
+                GUI.resizeButton.setEnabled(selected_tool == 4);*/
 
                 //zoom if zoom key pressed
                 zoomCamera(e.getKeyChar() == '=' ? 1 : (e.getKeyChar() == '-' ? -1 : 0));
