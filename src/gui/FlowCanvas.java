@@ -18,6 +18,14 @@ public class FlowCanvas extends JPanel {
     public FlowCanvas() {
 
     }
+
+    public Block getSelected_block() {
+        return selected_block;
+    }
+
+    public void setSelected_block(Block selected_block) {
+        this.selected_block = selected_block;
+    }
     
     public static Block getBlock(int x, int y) {
         Flow f = GUI.getSceneCanvas().getActiveObject().get(GUI.flowChooser.getSelectedIndex());

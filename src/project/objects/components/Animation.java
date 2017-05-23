@@ -19,10 +19,33 @@ public class Animation {
     public Animation() {
         
     }
+
+    public ArrayList<Integer> getWidths() {
+        return widths;
+    }
+
+    public ArrayList<Integer> getHeights() {
+        return heights;
+    }
+
+    public String getSpritesheet() {
+        return spritesheet;
+    }
+
+    public void setSpritesheet(String spritesheet) {
+        this.spritesheet = spritesheet;
+    }
     
     public String getName() {
         return name;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public void loop(boolean b) { loop = b; }
+    public boolean loops() { return loop; }
     
     public void removeFrame(int i) {
         widths.remove(i);

@@ -9,6 +9,10 @@ import java.util.logging.Logger;
 import misc.MiscMath;
 import project.Project;
 
+/**
+ * TODO: Import the new Block class (and Flows) from SFS 2.0.
+ * @author Jeremy
+ */
 public class Block {
     
     private boolean[] dots; //in, out, yes, no, ok
@@ -137,12 +141,7 @@ public class Block {
             this.dots = new boolean[]{false, false, false, false, false};
         } else {
             String input = (input_map+"").replace("t", "true\n").replace("f", "false\n");
-            ArrayList<String> inputs = Project.parseString(input);
-            this.dots = new boolean[]{Boolean.parseBoolean(inputs.get(0)),
-                Boolean.parseBoolean(inputs.get(1)),
-                Boolean.parseBoolean(inputs.get(2)),
-                Boolean.parseBoolean(inputs.get(3)),
-                Boolean.parseBoolean(inputs.get(4))};
+            
         }
         this.dot_conns = new int[5];
         this.param_conns = new int[values.length];

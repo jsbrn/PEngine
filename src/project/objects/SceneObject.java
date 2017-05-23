@@ -283,4 +283,11 @@ public class SceneObject {
         }
     }
     
+    public ArrayList<Animation> getAnimations() { return animations; }
+
+    public ArrayList<Dialogue> getDialogues() { return dialogues; }
+
+    public ArrayList<Flow> getFlows() { return flows; }
+    
+    
 }

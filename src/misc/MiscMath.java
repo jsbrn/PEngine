@@ -159,5 +159,11 @@ public class MiscMath {
         }
         return c;
     }
+    
+    public static int[] parseIntegers(String[] s) {
+        int[] nums = new int[s.length];
+        for (int i = 0; i < s.length; i++) nums[i] = Integer.parseInt(s[i]);
+        return nums;
+    }
 
 }

@@ -9,7 +9,7 @@ public class Level {
     
     public static final int ALL_OBJECTS = 0, DISTANT_OBJECTS = 1, BACKGROUND_OBJECTS = 2, 
             MIDDLE_OBJECTS = 3, FOREGROUND_OBJECTS = 4;
-    private ArrayList<SceneObject> layers[];
+    private final ArrayList<SceneObject> layers[];
     
     private String name = "", ambient_sound = "", bg_music = "";
     private Color bg_color_top, bg_color_bottom, lighting_color;
@@ -17,7 +17,7 @@ public class Level {
     private double lighting_intensity = 0;
     private boolean loop_bg_music = true, loop_ambient_sound = true, auto_bg_music = true,
             auto_ambient_sound = true;
-    private float bg_music_vol = 1, ambient_sound_volume = 1;
+    private float bg_music_vol = 1, bg_ambience_vol = 1;
     
     private int[] player_spawn = {0, 0}, camera_spawn = {0, 0};
     
@@ -27,6 +27,16 @@ public class Level {
             this.layers[i] = new ArrayList<SceneObject>();
         }
     }
+    
+    public boolean loopBGMusic() { return loop_bg_music; }
+    public boolean loopBGAmbience() { return loop_ambient_sound; }
+    public boolean autoPlayBGMusic() { return auto_bg_music; }
+    public boolean autoPlayBGAmbience() { return auto_ambient_sound; }
+    
+    public void loopBGMusic(boolean b) { loop_bg_music = b; }
+    public void loopBGAmbience(boolean b) { loop_ambient_sound = b; }
+    public void autoPlayBGAmbience(boolean b) { auto_ambient_sound = b; }
+    public void autoPlayBGMusic(boolean b) { auto_bg_music = b; }
     
     public int[] playerSpawn() { return player_spawn; }
     public int[] cameraSpawn() { return camera_spawn; }
@@ -43,8 +53,22 @@ public class Level {
     public void setBottomBGColor(Color c) { bg_color_bottom = c; }
     public void setLightingIntensity(double i) { lighting_intensity = i; }
     
+    public void setAmbientSound(String filename) { ambient_sound = filename; }
+    public void setBGMusic(String filename) { bg_music = filename; }
+    public String getAmbientSound() { return ambient_sound; }
+    public String getBGMusic() { return bg_music; }
+    
+    public void setBGMusicVolume(float v) { bg_music_vol = v; }
+    public void setBGAmbienceVolume(float v) { bg_ambience_vol = v; }
+
+    public float getBGAmbienceVolume() { return bg_ambience_vol; }
+
+    public float getBGMusicVolume() { return bg_music_vol; }
+    
+    
     public int[] dimensions() { return new int[]{width, height}; }
     public int getZoom() { return zoom; }
+    public void setZoom(int z) { zoom = z; }
     
     public ArrayList<SceneObject> getObjects(int layer) { return layers[layer]; }
     
