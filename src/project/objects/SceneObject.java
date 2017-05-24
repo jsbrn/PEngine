@@ -1,6 +1,7 @@
 package project.objects;
 
 import gui.GUI;
+import gui.SceneCanvas;
 import project.objects.components.Animation;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -98,6 +99,14 @@ public class SceneObject {
         }
         return false;
     }
+
+    public String getTexture() {
+        return texture;
+    }
+
+    public void setTexture(String texture) {
+        this.texture = texture;
+    }
     
     public void resize(double x, double y) {
         world_w += x; world_h += y;
@@ -150,16 +159,16 @@ public class SceneObject {
     }
     
     public int[] getOnscreenCoordinates() {
-        return new int[]{(int)(GUI.getSceneCanvas().getOriginX()+(world_x*GUI.getSceneCanvas().ZOOM)), 
-                (int)(GUI.getSceneCanvas().getOriginY()+(world_y*GUI.getSceneCanvas().ZOOM))};
+        return new int[]{(int)(GUI.getSceneCanvas().getOriginX()+(world_x*GUI.getSceneCanvas().getZoom())), 
+                (int)(GUI.getSceneCanvas().getOriginY()+(world_y*GUI.getSceneCanvas().getZoom()))};
     }
     
     public int getOnscreenWidth() {
-        return (int)(world_w*GUI.getSceneCanvas().ZOOM);
+        return (int)(world_w*GUI.getSceneCanvas().getZoom());
     }
     
     public int getOnscreenHeight() {
-        return (int)(world_h*GUI.getSceneCanvas().ZOOM);
+        return (int)(world_h*GUI.getSceneCanvas().getZoom());
     }
     
     public int[] getDimensions() {
@@ -195,11 +204,10 @@ public class SceneObject {
     }
     
     /**
-     * Creates a new object with exactly the same content, except for the name.
-     * @return SceneObject
+     * Copies all properties and values (except for the unique name) to the specified object.
+     * @param o The specified object.
      */
-    public SceneObject copy() {
-        SceneObject o = new SceneObject();
+    public void copyTo(SceneObject o) {
         o.texture = this.texture;
         o.type = this.type;
         o.name = this.name+Math.abs(new Random().nextInt() % 10000);
@@ -236,7 +244,6 @@ public class SceneObject {
         o.setWorldY(this.getWorldCoordinates()[1] + 5);
         o.setWidth(this.getDimensions()[0]);
         o.setHeight(this.getDimensions()[1]);
-        return o;
     }
     
     public void draw(Graphics g) {
@@ -245,41 +252,43 @@ public class SceneObject {
             texture = Assets.OBJECT_TEXTURES.get(Assets.OBJECT_TEXTURE_NAMES.indexOf(this.texture));
         }
         
+        SceneCanvas canvas = GUI.getSceneCanvas();
+        
         if (isHitbox()) {
             g.setColor(new Color(50, 50, 100, 100));
             g.fillRect(
-                    (int)(GUI.getSceneCanvas().ORIGIN_X+((int)world_x*GUI.getSceneCanvas().ZOOM)), 
-                    (int)(GUI.getSceneCanvas().ORIGIN_Y+((int)world_y*GUI.getSceneCanvas().ZOOM)), 
-                    (int)((int)world_w*GUI.getSceneCanvas().ZOOM),
-                    (int)((int)world_h*GUI.getSceneCanvas().ZOOM));
+                    (int)(canvas.getOriginX()+((int)world_x*canvas.getZoom())), 
+                    (int)(canvas.getOriginY()+((int)world_y*canvas.getZoom())), 
+                    (int)((int)world_w*canvas.getZoom()),
+                    (int)((int)world_h*canvas.getZoom()));
         } else {
             if (texture != null && Assets.OBJECT_TEXTURE_NAMES.contains(this.texture)) {
                 g.setColor(Color.white);
-                g.drawImage(texture.getScaledInstance((int)((int)world_w*Project.ZOOM),
-                        (int)((int)world_h*Project.ZOOM), Image.SCALE_FAST), (int)(Project.ORIGIN_X+((int)world_x*Project.ZOOM)), 
-                        (int)(Project.ORIGIN_Y+((int)world_y*Project.ZOOM)), null);
+                g.drawImage(texture.getScaledInstance((int)((int)world_w*canvas.getZoom()),
+                        (int)((int)world_h*canvas.getZoom()), Image.SCALE_FAST), (int)(canvas.getOriginX()+((int)world_x*canvas.getZoom())), 
+                        (int)(canvas.getOriginY()+((int)world_y*canvas.getZoom())), null);
             } else {
                 g.setColor(Color.red);
                 g.drawRect(
-                    (int)(GUI.getSceneCanvas().ORIGIN_X+((int)world_x*GUI.getSceneCanvas().ZOOM)), 
-                    (int)(GUI.getSceneCanvas().ORIGIN_Y+((int)world_y*GUI.getSceneCanvas().ZOOM)), 
-                    (int)((int)world_w*GUI.getSceneCanvas().ZOOM),
-                    (int)((int)world_h*GUI.getSceneCanvas().ZOOM));
-                g.drawLine((int)(GUI.getSceneCanvas().ORIGIN_X+((int)world_x*GUI.getSceneCanvas().ZOOM)), 
-                    (int)(GUI.getSceneCanvas().ORIGIN_Y+((int)world_y*GUI.getSceneCanvas().ZOOM)),
-                    (int)(GUI.getSceneCanvas().ORIGIN_X+((int)world_x*GUI.getSceneCanvas().ZOOM))+(int)((int)world_w*GUI.getSceneCanvas().ZOOM), 
-                    (int)(GUI.getSceneCanvas().ORIGIN_Y+((int)world_y*GUI.getSceneCanvas().ZOOM))+(int)((int)world_h*GUI.getSceneCanvas().ZOOM));
+                    (int)(canvas.getOriginX()+((int)world_x*canvas.getZoom())), 
+                    (int)(canvas.getOriginY()+((int)world_y*canvas.getZoom())), 
+                    (int)((int)world_w*canvas.getZoom()),
+                    (int)((int)world_h*canvas.getZoom()));
+                g.drawLine((int)(canvas.getOriginX()+((int)world_x*canvas.getZoom())), 
+                    (int)(canvas.getOriginY()+((int)world_y*canvas.getZoom())),
+                    (int)(canvas.getOriginX()+((int)world_x*canvas.getZoom()))+(int)((int)world_w*canvas.getZoom()), 
+                    (int)(canvas.getOriginY()+((int)world_y*canvas.getZoom()))+(int)((int)world_h*canvas.getZoom()));
                 g.setColor(Color.white);
-                GUI.getSceneCanvas().drawString(this.texture+".png", getOnscreenCoordinates()[0], getOnscreenCoordinates()[1], g);
+                canvas.drawString(this.texture+".png", getOnscreenCoordinates()[0], getOnscreenCoordinates()[1], g);
             }
         }
-        if (this.equals(GUI.getSceneCanvas().getSelectedObject())) {
+        if (this.equals(canvas.getSelectedObject())) {
             g.setColor(Color.cyan.darker());
             g.drawRect(
-                (int)(GUI.getSceneCanvas().ORIGIN_X+((int)world_x*GUI.getSceneCanvas().ZOOM))-1, 
-                (int)(GUI.getSceneCanvas().ORIGIN_Y+((int)world_y*GUI.getSceneCanvas().ZOOM))-1, 
-                (int)((int)world_w*GUI.getSceneCanvas().ZOOM)+2,
-                (int)((int)world_h*GUI.getSceneCanvas().ZOOM)+2);
+                (int)(canvas.getOriginX()+((int)world_x*canvas.getZoom()))-1, 
+                (int)(canvas.getOriginY()+((int)world_y*canvas.getZoom()))-1, 
+                (int)((int)world_w*canvas.getZoom())+2,
+                (int)((int)world_h*canvas.getZoom())+2);
         }
     }
     

@@ -10,25 +10,17 @@ import misc.MiscMath;
 
 public class FlowCanvas extends JPanel {
 
-    private int origin_x = 0, origin_y = 0, last_mouse_x = 0, last_mouse_y = 0;
-    private int selected_dot = -1;
-    private int last_mouse_click_x = 0, last_mouse_click_y = 0;
-    private Block selected_block;
+    public static int ORIGIN_X = 0, ORIGIN_Y = 0, LAST_MOUSE_X = 0, LAST_MOUSE_Y = 0;
+    public static int SELECTED_DOT = -1;
+    public static int LAST_MOUSE_CLICK_X = 0, LAST_MOUSE_CLICK_Y = 0;
+    public static Block SELECTED_BLOCK;
     
     public FlowCanvas() {
 
     }
-
-    public Block getSelected_block() {
-        return selected_block;
-    }
-
-    public void setSelected_block(Block selected_block) {
-        this.selected_block = selected_block;
-    }
     
     public static Block getBlock(int x, int y) {
-        Flow f = GUI.getSceneCanvas().getActiveObject().get(GUI.flowChooser.getSelectedIndex());
+        Flow f = GUI.getSceneCanvas().getActiveObject().getFlows().get(GUI.flowChooser.getSelectedIndex());
         for (int i = 0; i != f.blockCount(); i++) {
             Block b = f.getBlock(i);
             if (MiscMath.pointIntersects(x, y, b.getCoords()[0]-20, b.getCoords()[1]-20, b.dimensions()[0]+40, b.dimensions()[1]+40)) {
@@ -41,24 +33,24 @@ public class FlowCanvas extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.black);
-        if (origin_x > 0) origin_x = 0; if (origin_y > 0) origin_y = 0;
-        int width = (this.getWidth()+(20*5))-origin_x;
-        int height = (this.getHeight()+(20*5))-origin_y;
+        if (ORIGIN_X > 0) ORIGIN_X = 0; if (ORIGIN_Y > 0) ORIGIN_Y = 0;
+        int width = (this.getWidth()+(20*5))-ORIGIN_X;
+        int height = (this.getHeight()+(20*5))-ORIGIN_Y;
         for (int i = 0; i != width/20; i++) {
             for (int j = 0; j != height/20; j++) {
-                g.drawRect((i*20)+origin_x, (j*20)+origin_y, 2, 2);
+                g.drawRect((i*20)+ORIGIN_X, (j*20)+ORIGIN_Y, 2, 2);
             }
         }
 
         if (GUI.getSceneCanvas().getActiveObject() == null) return;
         int flow_index = GUI.flowChooser.getSelectedIndex();
         if (flow_index > -1) {
-            Flow f = GUI.getSceneCanvas().getActiveObject().FLOWS.get(flow_index);
+            Flow f = GUI.getSceneCanvas().getActiveObject().getFlows().get(flow_index);
             g.setColor(Color.black);
             for (int i = 0; i != f.blockCount(); i++) {
                 Block b = f.getBlock(i);
                 int b_width = b.dimensions()[0], b_height = b.dimensions()[1];
-                int r_x = origin_x+b.getCoords()[0], r_y = origin_y+b.getCoords()[1];
+                int r_x = ORIGIN_X+b.getCoords()[0], r_y = ORIGIN_Y+b.getCoords()[1];
                 g.setColor(new Color(0, 0, 0, 100));
                 g.fillRect(r_x+3, r_y+3, b_width, b_height);
                 g.setColor(Color.white);
@@ -71,9 +63,9 @@ public class FlowCanvas extends JPanel {
                     g.drawString(value, r_x + 5, r_y + 30 + (20*p));
                 }
                 g.drawRect(r_x, r_y, b_width, b_height);
-                if (b.equals(selected_block)) {
+                if (b.equals(SELECTED_BLOCK)) {
                     g.setColor(Color.red);
-                    g.drawRect(origin_x + b.getCoords()[0] - 21, origin_y + b.getCoords()[1] - 21, b.dimensions()[0] + 42, 
+                    g.drawRect(ORIGIN_X + b.getCoords()[0] - 21, ORIGIN_Y + b.getCoords()[1] - 21, b.dimensions()[0] + 42, 
                             b.dimensions()[1] + 42);
                 }
                 //draw the IN/OUT/YES/NO/OK dots
@@ -95,7 +87,7 @@ public class FlowCanvas extends JPanel {
                     Block dest = f.getBlockByID(b.dotConns()[1]);
                     if (dest != null) {
                         g.setColor(Color.BLUE.darker());
-                        g.drawLine(r_x+40, r_y+b_height+10, origin_x+dest.getCoords()[0]+15, origin_y+dest.getCoords()[1]-10);
+                        g.drawLine(r_x+40, r_y+b_height+10, ORIGIN_X+dest.getCoords()[0]+15, ORIGIN_Y+dest.getCoords()[1]-10);
                     }
                 }
                 if (b.dots()[2]) {
@@ -108,7 +100,7 @@ public class FlowCanvas extends JPanel {
                     Block dest = f.getBlockByID(b.dotConns()[2]);
                     if (dest != null) {
                         g.setColor(Color.GREEN.darker());
-                        g.drawLine(r_x+b_width-15, r_y+b_height+10, origin_x+dest.getCoords()[0]+15, origin_y+dest.getCoords()[1]-10);
+                        g.drawLine(r_x+b_width-15, r_y+b_height+10, ORIGIN_X+dest.getCoords()[0]+15, ORIGIN_Y+dest.getCoords()[1]-10);
                     }
                 }
                 if (b.dots()[3]) {
@@ -121,7 +113,7 @@ public class FlowCanvas extends JPanel {
                     Block dest = f.getBlockByID(b.dotConns()[3]);
                     if (dest != null) {
                         g.setColor(Color.red.darker());
-                        g.drawLine(r_x+b_width+10, r_y+b_height-15, origin_x+dest.getCoords()[0]+15, origin_y+dest.getCoords()[1]-10);
+                        g.drawLine(r_x+b_width+10, r_y+b_height-15, ORIGIN_X+dest.getCoords()[0]+15, ORIGIN_Y+dest.getCoords()[1]-10);
                     }
                 }
                 if (b.dots()[4]) {
@@ -134,7 +126,7 @@ public class FlowCanvas extends JPanel {
                     Block dest = f.getBlockByID(b.dotConns()[4]);
                     if (dest != null) {
                         g.setColor(Color.black);
-                        g.drawLine(r_x+15, r_y+b_height+10, origin_x+dest.getCoords()[0]+15, origin_y+dest.getCoords()[1]-10);
+                        g.drawLine(r_x+15, r_y+b_height+10, ORIGIN_X+dest.getCoords()[0]+15, ORIGIN_Y+dest.getCoords()[1]-10);
                     }
                 }
                 for (int p = 0; p != b.paramCount(); p++) {
@@ -146,22 +138,22 @@ public class FlowCanvas extends JPanel {
                     g.drawString("P"+(p+1), r_x - 15, r_y + 20 + (p*20));
                     g.setColor(Color.yellow.darker());
                     Block pb = f.getBlockByID(b.getParametreConnection(p));
-                    if (pb != null) g.drawLine(r_x-10, r_y+(p*20)+15, origin_x+pb.getCoords()[0]+40, origin_y+pb.getCoords()[1]+pb.dimensions()[1]+10);
-                    if (MiscMath.pointIntersects(last_mouse_x, last_mouse_y, r_x-20, r_y+(p*20)+5, 20, 20)) {
+                    if (pb != null) g.drawLine(r_x-10, r_y+(p*20)+15, ORIGIN_X+pb.getCoords()[0]+40, ORIGIN_Y+pb.getCoords()[1]+pb.dimensions()[1]+10);
+                    if (MiscMath.pointIntersects(LAST_MOUSE_X, LAST_MOUSE_Y, r_x-20, r_y+(p*20)+5, 20, 20)) {
                         g.setColor(new Color(0, 0, 0, 255));
                         String desc = b.getParametre(p, 1)+" ("+b.getParametre(p, 2)+")";
-                        g.fillRect(last_mouse_x+10, last_mouse_y-30, 15+desc.length()*5, 25);
+                        g.fillRect(LAST_MOUSE_X+10, LAST_MOUSE_Y-30, 15+desc.length()*5, 25);
                         g.setColor(Color.white);
-                        g.drawString(desc, last_mouse_x+15, last_mouse_y-15);
+                        g.drawString(desc, LAST_MOUSE_X+15, LAST_MOUSE_Y-15);
                     }
                 }
                 
             }
             
             //draw the line
-            if (selected_block != null && selected_dot > -1) {
+            if (SELECTED_BLOCK != null && SELECTED_DOT > -1) {
                 g.setColor(new Color(0, 0, 0, 100));
-                g.drawLine(origin_x + last_mouse_click_x, origin_y + last_mouse_click_y, last_mouse_x, last_mouse_y);
+                g.drawLine(ORIGIN_X + LAST_MOUSE_CLICK_X, ORIGIN_Y + LAST_MOUSE_CLICK_Y, LAST_MOUSE_X, LAST_MOUSE_Y);
             }
             
         }

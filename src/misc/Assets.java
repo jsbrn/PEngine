@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import project.objects.components.Block;
+import threads.DownloadThread;
+import threads.PreviewThread;
 
 public class Assets {
     
@@ -16,15 +18,15 @@ public class Assets {
     public static ArrayList<BufferedImage> OBJECT_TEXTURES = new ArrayList<BufferedImage>(),
             ANIMATION_TEXTURES = new ArrayList<BufferedImage>();
     
+    public static PreviewThread PREVIEW_THREAD;
+    
     private static Block[] blocks;
     
     public static int size() { return blocks.length; }
-    
     public static Block getBlock(int index) {
         if (index > -1 && index < blocks.length) return blocks[index];
         return null;
     }
-    
     public static Block getBlock(String title, String category) {
         for (Block b: blocks) {
             if (b.getTitle().equals(title) && b.getCategory().contains(category)) return b;
@@ -34,9 +36,12 @@ public class Assets {
     
     /**
      * Loads all assets from the project's 'objects' folder, into the OBJECT_TEXTURES list. Clears all previously loaded assets
-     * first. Uses Scene.PROJECT_NAME in the directory.
+     * first. Should be called on every new project load.
      */
     public static void load() {
+        USER_HOME = System.getProperty("user.home");
+        PREVIEW_THREAD = new PreviewThread();
+        PREVIEW_THREAD.start();
         File object_textures = new File(USER_HOME+"/level_editor/projects/"+PROJECT_NAME+"/assets/textures/objects");
         File anim_textures = new File(USER_HOME+"/level_editor/projects/"+PROJECT_NAME+"/assets/textures/animations");
         OBJECT_TEXTURES.clear();

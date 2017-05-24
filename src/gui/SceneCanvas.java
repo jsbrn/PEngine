@@ -81,7 +81,9 @@ public class SceneCanvas extends JPanel {
         Level current_level = Project.getProject().getCurrentLevel();
         
         if (current_level == null) return;
-        int top[] = current_level.getTopBGColor(), bottom[] = current_level.getBottomBGColor();
+        Color top_color = current_level.getTopBGColor(), bttm_color = current_level.getBottomBGColor();
+        int top[] = new int[]{top_color.getRed(), top_color.getGreen(), top_color.getBlue()},
+                bottom[] = new int[]{bttm_color.getRed(), bttm_color.getGreen(), bttm_color.getBlue()};
         int height = 10;
         int increments = (int)(getHeight()/height);
         double g_add = (top[1]-bottom[1])/increments;
@@ -106,16 +108,17 @@ public class SceneCanvas extends JPanel {
             }
         }
         
-        int[] l_color = current_level.getLightingColor();
-        g.setColor(new Color(l_color[0], l_color[1], l_color[2], current_level.getLightIntensity()));
+        Color light_color = current_level.getLightingColor();
+        int[] light = new int[]{light_color.getRGB(), light_color.getGreen(), light_color.getBlue()};
+        g.setColor(new Color(light[0], light[1], light[2], (float)current_level.getLightIntensity()));
         g.fillRect(0, 0, (int)getWidth(), (int)getHeight());
         
         g.setColor(Color.green);
         g.drawRect(origin_x, origin_y, (int)current_level.dimensions()[0]*zoom, current_level.dimensions()[1]*zoom);
         g.setColor(Color.red);
-        g.drawLine(origin_x, 0, origin_x, 100000);
+        g.drawLine(origin_x, 0, origin_x, Integer.MAX_VALUE);
         g.setColor(Color.yellow);
-        g.drawLine(0, origin_y, 100000, origin_y);
+        g.drawLine(0, origin_y, Integer.MAX_VALUE, origin_y);
         g.setColor(Color.cyan);
         g.drawLine((int)(current_level.playerSpawn()[0]*zoom)+(int)origin_x-3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin_y-3, 
                 (int)(current_level.playerSpawn()[0]*zoom)+(int)origin_x+3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin_y+3);
@@ -217,26 +220,14 @@ public class SceneCanvas extends JPanel {
                 repaint();
                 grabFocus();
             }
-
             @Override
-            public void mousePressed(MouseEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
+            public void mousePressed(MouseEvent e) {}
             @Override
-            public void mouseReleased(MouseEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
+            public void mouseReleased(MouseEvent e) {}
             @Override
-            public void mouseEntered(MouseEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
+            public void mouseEntered(MouseEvent e) {}
             @Override
-            public void mouseExited(MouseEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
+            public void mouseExited(MouseEvent e) {}
             
         });
         

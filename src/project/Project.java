@@ -46,24 +46,19 @@ public class Project {
     
     public static void newProject(String name) { project = new Project(name); }
     
-    public boolean existsOnDisk() {
-        return new File(Assets.USER_HOME+"/level_editor/projects/"+name+"/").exists();
-    }
+    public String getName() { return name; }
+    public String getDirectory() { return Assets.USER_HOME+"/level_editor/projects/"+name+"/"; }
+    public boolean existsOnDisk() { return new File(getDirectory()).exists(); }
     
     public SceneObject getGalleryObject(int i) { return object_gallery.get(i); }
-    public void addGalleryObject(SceneObject o) {
-        if (!object_gallery.contains(o)) object_gallery.add(o);
-    }
-    public void removeGalleryObject(SceneObject o) {
-        if (object_gallery.contains(o)) object_gallery.remove(o);
-    }
+    public void addGalleryObject(SceneObject o) { if (!object_gallery.contains(o)) object_gallery.add(o); }
+    public void removeGalleryObject(SceneObject o) { if (object_gallery.contains(o)) object_gallery.remove(o); }
     public boolean removeGalleryObject(int index) {
         if (index < 0 || index >= object_gallery.size()) return false;
         return object_gallery.remove(index) != null;
     }
-    public boolean containsGalleryObject(SceneObject o) {
-        return object_gallery.contains(o);
-    }
+    public boolean containsGalleryObject(SceneObject o) { return object_gallery.contains(o); }
+    public int gallerySize() { return object_gallery.size(); }
     
     public boolean containsLevel(String level_name) {
         for (Level l: levels) {
@@ -149,6 +144,14 @@ public class Project {
             if (f.isDirectory()) deleteFromDisk(f); else f.delete();
         }
         dir.delete();
+    }
+    
+    public void applyGalleryChanges(SceneObject gallery_object) {
+        for (Level l: levels) {
+            for (SceneObject o: l.getObjects(Level.ALL_OBJECTS)) {
+                if (gallery_object.getType().equals(o.getType())) gallery_object.copyTo(o);
+            }
+        }
     }
     
 }

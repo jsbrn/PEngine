@@ -18,9 +18,9 @@ import project.Project;
 
 public class DownloadThread extends Thread {
     
-    static String source, dest;
-    static boolean downloading = false;
-    static DownloadThread thread;
+    private static String source, dest;
+    private static boolean downloading = false;
+    private static DownloadThread thread;
     
     public static int LEVEL_EDITOR_ID = 10;
     

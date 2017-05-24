@@ -2780,7 +2780,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowGainedFocus
 
     private void spawnGeneralButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_spawnGeneralButtonActionPerformed
-        SceneObject o = new SceneObject();
+        /*SceneObject o = new SceneObject();
         o.setHitbox(true);
         o.setName("object"+Math.abs(new Random().nextInt()));
         o.setWorldX((int)((sceneCanvas.getWidth()/2)-sceneCanvas.getOriginX()/sceneCanvas.getZoom()));
@@ -2790,16 +2790,18 @@ public class GUI extends javax.swing.JFrame {
         Project.getProject().getCurrentLevel().add(o);
         sceneCanvas.setSelectedObject(o);
         sceneCanvas.repaint();
-        System.out.println("Spawning "+o.getType());
+        System.out.println("Spawning "+o.getType());*/
     }//GEN-LAST:event_spawnGeneralButtonActionPerformed
 
     private void objectCloneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectCloneButtonActionPerformed
-        if (sceneCanvas.getSelectedObject() != null) {
-            SceneObject o = sceneCanvas.getSelectedObject().copy();
+        /*if (sceneCanvas.getSelectedObject() != null) {
+            SceneObject o = new SceneObject();
+            o.setName(sceneCanvas.getSelectedObject()+"_clone");
+            sceneCanvas.getSelectedObject().copyTo(o);
             Project.getProject().getCurrentLevel().add(o);
             sceneCanvas.repaint();
-            System.out.println("Spawning "+o.texture);
-        }
+            System.out.println("Added new object: "+o.getName());
+        }*/
     }//GEN-LAST:event_objectCloneButtonActionPerformed
 
     private void camPosFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_camPosFieldFocusLost
@@ -2829,15 +2831,15 @@ public class GUI extends javax.swing.JFrame {
 
     
     private void levelSpawnFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_levelSpawnFieldFocusLost
-        String s = levelSpawnField.getText();
-        ArrayList<Integer> values = Project.parseIntegers(s, true);
-        Project.getProject().getCurrentLevel().setPlayerSpawn(values.get(0), values.get(1));
+        String s[] = levelSpawnField.getText().split("\\s");
+        int[] values = MiscMath.parseIntegers(s);
+        Project.getProject().getCurrentLevel().setPlayerSpawn(values[0], values[1]);
         sceneCanvas.repaint();
     }//GEN-LAST:event_levelSpawnFieldFocusLost
 
     
     private void spawnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_spawnButtonActionPerformed
-        if (galleryListSidebar.getSelectedIndices().length > 0) {
+        /*if (galleryListSidebar.getSelectedIndices().length > 0) {
             SceneObject o;
             int i = galleryListSidebar.getSelectedIndex()+1;
             o = Project.getProject().getGalleryObject(i).copy();
@@ -2857,7 +2859,7 @@ public class GUI extends javax.swing.JFrame {
             System.out.println("Spawning "+o.texture);
         }
         sceneCanvas.repaint();
-        sceneCanvas.grabFocus();
+        sceneCanvas.grabFocus();*/
     }//GEN-LAST:event_spawnButtonActionPerformed
 
     private void galleryListSidebarValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_galleryListSidebarValueChanged
@@ -3065,12 +3067,12 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteGalleryObjectButtonActionPerformed
 
     private void duplicateGalleryObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_duplicateGalleryObjectButtonActionPerformed
-        int index = galleryList.getSelectedIndex();
+        /*int index = galleryList.getSelectedIndex();
         SceneObject o = Project.getProject().getGalleryObject(index);
         SceneObject o2 = o.copy();
         Project.getProject().addGalleryObject(o2);
         o2.setType(o2.getType()+""+Math.abs(new Random().nextInt() / 10000));
-        GUI.refreshGalleryListings();
+        GUI.refreshGalleryListings();*/
     }//GEN-LAST:event_duplicateGalleryObjectButtonActionPerformed
 
     private void objectGalleryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectGalleryButtonActionPerformed
@@ -3196,10 +3198,10 @@ public class GUI extends javax.swing.JFrame {
         }
 
         if (evt.getKeyChar() == '\n') {
-            Project.getProject().getCurrentLevel().setMusic(backgroundMusicField.getText());
+            Project.getProject().getCurrentLevel().setBGMusic(backgroundMusicField.getText());
             backgroundMusicField.setForeground(Color.black);
         }
-        if (Project.getProject().getCurrentLevel().BG_MUSIC.equals(backgroundMusicField.getText()) == false) backgroundMusicField.setForeground(Color.blue);
+        if (Project.getProject().getCurrentLevel().getBGMusic().equals(backgroundMusicField.getText()) == false) backgroundMusicField.setForeground(Color.blue);
     }//GEN-LAST:event_backgroundMusicFieldKeyReleased
 
     private void ambientColorLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ambientColorLabelMouseClicked
@@ -3262,9 +3264,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void levelColorPickerMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_levelColorPickerMouseReleased
         Color c = levelColorPicker.getColor();
-        Project.getProject().getCurrentLevel().R1 = c.getRed();
-        Project.getProject().getCurrentLevel().G1 = c.getGreen();
-        Project.getProject().getCurrentLevel().B1 = c.getBlue();
+        Project.getProject().getCurrentLevel().setTopBGColor(c);
         sceneCanvas.repaint();
 
     }//GEN-LAST:event_levelColorPickerMouseReleased
@@ -3281,7 +3281,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_objectEditorDialogWindowClosing
 
     private void toggleAnimationPreviewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleAnimationPreviewButtonActionPerformed
-        Project.PREVIEW_THREAD.setPaused(!toggleAnimationPreviewButton.isSelected());
+        Assets.PREVIEW_THREAD.setPaused(!toggleAnimationPreviewButton.isSelected());
     }//GEN-LAST:event_toggleAnimationPreviewButtonActionPerformed
 
     private void animationPreviewZoomChooserStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_animationPreviewZoomChooserStateChanged
@@ -3306,9 +3306,9 @@ public class GUI extends javax.swing.JFrame {
                 /*REMOVE THIS ANIMATION FROM ALL INSTANCES OF THE EDITED OBJECT*/
                 if (sceneCanvas.getActiveObject().getType().isEmpty()) return;
                 for (SceneObject o: Project.getProject().getObjectsByType(sceneCanvas.getActiveObject().getType())) {
-                    for (Animation s: o.animations) {
+                    for (Animation s: o.getAnimations()) {
                         if (s.equalTo(anim)) {
-                            o.animations.remove(s);
+                            o.getAnimations().remove(s);
                             break;
                         }
                     }
@@ -3336,14 +3336,14 @@ public class GUI extends javax.swing.JFrame {
             if (sceneCanvas.getActiveObject().getType().isEmpty()) return;
             for (SceneObject o: Project.getProject().getObjectsByType(sceneCanvas.getActiveObject().getType())) {
                 boolean add = true;
-                for (Animation s: o.animations) {
+                for (Animation s: o.getAnimations()) {
                     if (s.getName().equals(anim.getName())) {
                         add = false;
                     }
                 }
                 Animation s = new Animation();
                 anim.copyTo(s);
-                if (add) o.animations.add(s);
+                if (add) o.getAnimations().add(s);
             }
         }
         fillAnimationChooser();
@@ -3360,14 +3360,14 @@ public class GUI extends javax.swing.JFrame {
             if (sceneCanvas.getActiveObject().getType().isEmpty()) return;
             for (SceneObject o: Project.getProject().getObjectsByType(sceneCanvas.getActiveObject().getType())) {
                 boolean add = true;
-                for (Animation s: o.animations) {
+                for (Animation s: o.getAnimations()) {
                     if (s.getName().equals(anim.getName())) {
                         add = false;
                     }
                 }
                 Animation s = new Animation();
                 anim.copyTo(s);
-                if (add) o.animations.add(s);
+                if (add) o.getAnimations().add(s);
             }
         }
         fillAnimationChooser();
@@ -3382,9 +3382,9 @@ public class GUI extends javax.swing.JFrame {
             return;
         }
         if (evt.getKeyChar() == '\n') {
-            Animation compare_to = new Animation(); anim.copyTo(compare_to);
             anim.setName(animationNameField.getText());
-            Animation.refactorAll(anim, compare_to);
+            if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()))
+                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
             fillAnimationChooser();
             animationNameField.grabFocus();
             animationNameField.setForeground(Color.black);
@@ -3401,7 +3401,7 @@ public class GUI extends javax.swing.JFrame {
         animationNameField.setForeground(Color.black);
         if (animationChooser.getSelectedIndex() > -1) {
             GUI.fillAnimationFields();
-            Project.PREVIEW_THREAD.setAnimation(sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex()));
+            Assets.PREVIEW_THREAD.setAnimation(sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex()));
         } else {
             GUI.fillAnimationFields();
             framePreview.setIcon(null);
@@ -3413,12 +3413,12 @@ public class GUI extends javax.swing.JFrame {
     private void animationDeleteFrameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_animationDeleteFrameButtonActionPerformed
         Animation anim = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
         int index = animationFrameChooser.getSelectedIndex();
-        Animation compare_to = new Animation(); anim.copyTo(compare_to);
         anim.removeFrame(index);
-        Animation.refactorAll(anim, compare_to);
+        if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()))
+                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
         fillAnimationFrameChooser();
-        if (index >= anim.widths.size()) {
-            animationFrameChooser.setSelectedIndex(anim.widths.size()-1);
+        if (index >= anim.getWidths().size()) {
+            animationFrameChooser.setSelectedIndex(anim.getWidths().size()-1);
         } else {
             animationFrameChooser.setSelectedIndex(index);
         }
@@ -3426,27 +3426,26 @@ public class GUI extends javax.swing.JFrame {
 
     private void animationAddFrameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_animationAddFrameButtonActionPerformed
         Animation anim = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
-        Animation compare_to = new Animation(); anim.copyTo(compare_to);
         anim.addFrame(16, 16, 100);
-        Animation.refactorAll(anim, compare_to);
+        if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()))
+                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
         fillAnimationFrameChooser();
-        animationFrameChooser.setSelectedIndex(anim.widths.size()-1);
+        animationFrameChooser.setSelectedIndex(anim.getWidths().size()-1);
 
         ArrayList<String> frames = new ArrayList<String>();
-        for (int i = 0; i != anim.widths.size(); i++) {
+        for (int i = 0; i != anim.getWidths().size(); i++) {
             frames.add("Frame #"+(i+1));
         }
         animationFrameChooser.setListData(frames.toArray());
-        animationFrameChooser.setSelectedIndex(anim.widths.size()-1);
-        Project.PREVIEW_THREAD.setAnimation(anim);
+        animationFrameChooser.setSelectedIndex(anim.getWidths().size()-1);
+        Assets.PREVIEW_THREAD.setAnimation(anim);
     }//GEN-LAST:event_animationAddFrameButtonActionPerformed
 
     private void animationLoopCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_animationLoopCheckboxActionPerformed
         Animation anim = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
-
-        Animation compare_to = new Animation(); anim.copyTo(compare_to);
         anim.loop(!anim.loops());
-        Animation.refactorAll(anim, compare_to);
+        if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()))
+                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
     }//GEN-LAST:event_animationLoopCheckboxActionPerformed
 
     private void animationFrameDurationFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_animationFrameDurationFieldKeyReleased
@@ -3455,16 +3454,12 @@ public class GUI extends javax.swing.JFrame {
         if (animationFrameDurationField.getText().length() == 0) return;
         animationFrameDurationField.setForeground(Color.blue);
         if (evt.getKeyChar() == '\n') {
-            ArrayList<Integer> dure = Project.parseIntegers(animationFrameDurationField.getText(), true);
-            if (dure.size() != 420) {
-                Animation compare_to = new Animation(); anim.copyTo(compare_to);
-                anim.FRAME_DURATION = dure.get(0);
-                Animation.refactorAll(anim, compare_to);
-                animationFrameDurationField.setForeground(Color.black);
-                Project.PREVIEW_THREAD.setAnimation(anim);
-            } else {
-                animationFrameDurationField.setForeground(Color.red);
-            }
+            int[] dure = MiscMath.parseIntegers(animationFrameDurationField.getText().split("\\s"));
+            anim.setFrameDuration(dure[0]);
+            if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()))
+                Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
+            animationFrameDurationField.setForeground(Color.black);
+            Assets.PREVIEW_THREAD.setAnimation(anim);
         }
     }//GEN-LAST:event_animationFrameDurationFieldKeyReleased
 
@@ -3478,17 +3473,13 @@ public class GUI extends javax.swing.JFrame {
         if (animationFrameDimensionsField.getText().length() == 0) return;
         animationFrameDimensionsField.setForeground(Color.blue);
         if (evt.getKeyChar() == '\n') {
-            ArrayList<Integer> dims = Project.parseIntegers(animationFrameDimensionsField.getText(), false);
-            if (dims.size() != 420) {
-                Animation compare_to = new Animation(); anim.copyTo(compare_to);
-                anim.widths.set(index, dims.get(0));
-                anim.heights.set(index, dims.get(1));
-                Animation.refactorAll(anim, compare_to);
-                animationFrameDimensionsField.setForeground(Color.black);
-                Project.PREVIEW_THREAD.setAnimation(anim);
-            } else {
-                animationFrameDimensionsField.setForeground(Color.red);
-            }
+            int[] dims = MiscMath.parseIntegers(animationFrameDimensionsField.getText().split("\\s"));
+            anim.getWidths().set(index, dims[0]);
+            anim.getHeights().set(index, dims[1]);
+            if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()))
+                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
+            animationFrameDimensionsField.setForeground(Color.black);
+            Assets.PREVIEW_THREAD.setAnimation(anim);
         }
     }//GEN-LAST:event_animationFrameDimensionsFieldKeyReleased
 
@@ -3502,8 +3493,8 @@ public class GUI extends javax.swing.JFrame {
         if (index > -1) {
             Animation anim = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
             animationDeleteFrameButton.setEnabled(true);
-            animationFrameDurationField.setText(anim.FRAME_DURATION+"");
-            animationFrameDimensionsField.setText(anim.widths.get(index)+" "+anim.heights.get(index));
+            animationFrameDurationField.setText(anim.getFrameDuration()+"");
+            animationFrameDimensionsField.setText(anim.getWidths().get(index)+" "+anim.getHeights().get(index));
         } else {
             animationDeleteFrameButton.setEnabled(false);
             framePreview.setIcon(null);
@@ -3520,11 +3511,11 @@ public class GUI extends javax.swing.JFrame {
         }
 
         if (evt.getKeyChar() == '\n') {
-            Animation compare_to = new Animation(); anim.copyTo(compare_to);
-            anim.setSpritesheet(animationImageField.getText());
-            Animation.refactorAll(anim, compare_to);
+            anim.setSpriteSheet(animationImageField.getText());
+            if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()))
+                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
             animationImageField.setForeground(Color.black);
-            Project.PREVIEW_THREAD.setAnimation(anim);
+            Assets.PREVIEW_THREAD.setAnimation(anim);
         }
         if (anim.getSpriteSheet().equals(animationImageField.getText()) == false) animationImageField.setForeground(Color.blue);
     }//GEN-LAST:event_animationImageFieldKeyReleased
@@ -3545,7 +3536,7 @@ public class GUI extends javax.swing.JFrame {
             if (sceneCanvas.getActiveObject().getType().isEmpty()) return;
             for (SceneObject o: Project.getProject().getObjectsByType(sceneCanvas.getActiveObject().getType())) {
                 boolean add = true;
-                for (Dialogue s: o.dialogues) {
+                for (Dialogue s: o.getDialogues()) {
                     if (s.getName().equals(anim.getName())) {
                         add = false;
                     }
@@ -3553,7 +3544,7 @@ public class GUI extends javax.swing.JFrame {
                 Dialogue s = new Dialogue();
                 anim.copyTo(s);
                 s.setParent(o);
-                if (add) o.dialogues.add(s);
+                if (add) o.getDialogues().add(s);
             }
         }
         dialogueChooser.setListData(anim_names.toArray());
@@ -3573,9 +3564,9 @@ public class GUI extends javax.swing.JFrame {
                 /*REMOVE THIS DIALOGUE FROM ALL INSTANCES OF THE EDITED OBJECT*/
                 if (sceneCanvas.getActiveObject().getType().isEmpty()) return;
                 for (SceneObject o: Project.getProject().getObjectsByType(sceneCanvas.getActiveObject().getType())) {
-                    for (Dialogue s: o.dialogues) {
+                    for (Dialogue s: o.getDialogues()) {
                         if (s.equalTo(dialogue)) {
-                            o.dialogues.remove(s);
+                            o.getDialogues().remove(s);
                             break;
                         }
                     }
@@ -3601,7 +3592,7 @@ public class GUI extends javax.swing.JFrame {
         if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject())) {
             for (SceneObject o: Project.getProject().getObjectsByType(sceneCanvas.getActiveObject().getType())) {
                 boolean add = true;
-                for (Dialogue s: o.dialogues) {
+                for (Dialogue s: o.getDialogues()) {
                     if (s.getName().equals(dialogue.getName())) {
                         add = false;
                     }
@@ -3610,7 +3601,7 @@ public class GUI extends javax.swing.JFrame {
                     Dialogue s = new Dialogue();
                     dialogue.copyTo(s);
                     s.setParent(o);
-                    o.dialogues.add(s);
+                    o.getDialogues().add(s);
                 }
             }
         }
@@ -3629,7 +3620,7 @@ public class GUI extends javax.swing.JFrame {
             deleteDialogueButton.setEnabled(true);
             //update the dialogue options
             Dialogue d = sceneCanvas.getActiveObject().getDialogues().get(dialogueChooser.getSelectedIndex());
-            dialogueEventChooser.setListData(d.QUEUE.toArray());
+            dialogueEventChooser.setListData(d.getQueue().toArray());
             duplicateDialogueButton.setEnabled(true);
             dialogueNameField.setEnabled(true);
             addThisSpeakEventButton.setEnabled(true);
@@ -3658,9 +3649,9 @@ public class GUI extends javax.swing.JFrame {
         if (evt.getKeyChar() == '\n') {
             System.out.println("B index = "+b_index);
             if (b_index > -1) {
-                Flow old_f = new Flow(); flow.copyTo(old_f);
                 flow.getBlock(b_index).setParametre(p_index, 0, blockParamValueField.getText());
-                Flow.refactorAll(flow, old_f);
+                if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()))
+                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
                 GUI.refreshObjectEditor();
                 flowChooser.setSelectedIndex(index);
                 blockParamValueField.grabFocus();
@@ -3706,7 +3697,6 @@ public class GUI extends javax.swing.JFrame {
 
     private void flowCanvasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_flowCanvasMouseClicked
         Flow f = sceneCanvas.getActiveObject().getFlows().get(flowChooser.getSelectedIndex());
-        Flow old_f = new Flow(); f.copyTo(old_f);
         Block b = FlowCanvas.getBlock(evt.getX()-FlowCanvas.ORIGIN_X, evt.getY()-FlowCanvas.ORIGIN_Y);
         if (b != null) {
             int d = b.getDot(evt.getX()-FlowCanvas.ORIGIN_X, evt.getY()-FlowCanvas.ORIGIN_Y);
@@ -3726,11 +3716,9 @@ public class GUI extends javax.swing.JFrame {
                                 //connecting to parametre nodes
                                 if (from == 1 && b.getParametre(d-5, 2).equals(FlowCanvas.SELECTED_BLOCK.getOutputType()) || from > 1) {
                                     b.setParametreConnection(d-5, FlowCanvas.SELECTED_BLOCK.getID());
-                                    Flow.refactorAll(f, old_f);
                                 }
                             } else {
                                 FlowCanvas.SELECTED_BLOCK.setConnection(FlowCanvas.SELECTED_DOT, b.getID());
-                                Flow.refactorAll(f, old_f);
                             }
                             FlowCanvas.SELECTED_BLOCK = null;
                             FlowCanvas.SELECTED_DOT = -1;
@@ -3750,10 +3738,8 @@ public class GUI extends javax.swing.JFrame {
             } else {
                 if (d >= 5) {
                     b.setParametreConnection(d-5, 0);
-                    Flow.refactorAll(f, old_f);
                 } else if (d > 0) {
                     b.setConnection(d, 0);
-                    Flow.refactorAll(f, old_f);
                 }
             }
         } else {
@@ -3761,6 +3747,8 @@ public class GUI extends javax.swing.JFrame {
             FlowCanvas.SELECTED_BLOCK = null;
             FlowCanvas.SELECTED_DOT = -1;
         }
+        if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()))
+                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
         refreshBlockOptions();
         flowCanvas.repaint();
     }//GEN-LAST:event_flowCanvasMouseClicked
@@ -3779,16 +3767,16 @@ public class GUI extends javax.swing.JFrame {
         if (path_str.charAt(path_str.length()-1) == '/') {
             path_str = path_str.substring(0, path_str.length()-1);
         }
-        Block b = BlockList.getBlock(name, path_str);
+        Block b = Assets.getBlock(name, path_str);
         if (b == null) return;
         Block new_b = new Block();
         b.copyTo(new_b);
         b.randomID();
-        Flow old_f = new Flow(); f.copyTo(old_f);
         f.addBlock(new_b);
-        Flow.refactorAll(f, old_f);
         new_b.setX(flowCanvas.getWidth()/2 - FlowCanvas.ORIGIN_X);
         new_b.setY(flowCanvas.getHeight()/2 - FlowCanvas.ORIGIN_Y);
+        if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()))
+                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
         flowCanvas.repaint();
     }//GEN-LAST:event_addBlockButtonActionPerformed
 
@@ -3805,9 +3793,9 @@ public class GUI extends javax.swing.JFrame {
                 /*REMOVE THIS ANIMATION FROM ALL INSTANCES OF THE EDITED OBJECT*/
                 if (sceneCanvas.getActiveObject().getType().isEmpty()) return;
                 for (SceneObject o: Project.getProject().getObjectsByType(sceneCanvas.getActiveObject().getType())) {
-                    for (Flow f: o.flows) {
+                    for (Flow f: o.getFlows()) {
                         if (f.equalTo(flow)) {
-                            o.flows.remove(f);
+                            o.getFlows().remove(f);
                             break;
                         }
                     }
@@ -3877,7 +3865,7 @@ public class GUI extends javax.swing.JFrame {
                 }
                 Flow s = new Flow();
                 flow.copyTo(s);
-                if (add) o.flows.add(s);
+                if (add) o.getFlows().add(s);
             }
         }
         flowChooser.setListData(flow_names.toArray());
@@ -3971,14 +3959,14 @@ public class GUI extends javax.swing.JFrame {
                     o.texture = objectTextureField.getText();
                 }
             }
-            sceneCanvas.getActiveObject().TEXTURE_NAME = objectTextureField.getText();
+            sceneCanvas.getActiveObject().setTexture(objectTextureField.getText());
             GUI.refreshObjectEditor();
             GUI.refreshObjectProperties();
             GUI.refreshGalleryListings();
             objectTextureField.setForeground(Color.black);
             return;
         }
-        if (!objectTextureField.getText().equals(sceneCanvas.getActiveObject().TEXTURE_NAME)) objectTextureField.setForeground(Color.blue);
+        if (!objectTextureField.getText().equals(sceneCanvas.getActiveObject().getTexture())) objectTextureField.setForeground(Color.blue);
     }//GEN-LAST:event_objectTextureFieldKeyReleased
 
     private void objectTypeFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_objectTypeFieldKeyTyped
@@ -3986,8 +3974,8 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_objectTypeFieldKeyTyped
 
     private void objectTypeFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_objectTypeFieldKeyReleased
-        for (SceneObject o: Project.OBJECT_GALLERY) {
-            if (o.CLASS.equals(objectTypeField.getText()) || objectTypeField.getText().length() == 0) {
+        for (SceneObject o: Project.getProject().getCurrentLevel().getObjects(Level.ALL_OBJECTS)) {
+            if (o.getType().equals(objectTypeField.getText()) || objectTypeField.getText().length() == 0) {
                 objectTypeField.setForeground(Color.red);
                 return;
             }
@@ -3995,10 +3983,10 @@ public class GUI extends javax.swing.JFrame {
         if (evt.getKeyChar() == '\n') {
             if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject())) {
                 for (SceneObject o: Project.getProject().getObjectsByType(sceneCanvas.getActiveObject().getType())) {
-                    o.CLASS = objectTypeField.getText();
+                    o.setType(objectTypeField.getText());
                 }
             }
-            sceneCanvas.getActiveObject().getType() = objectTypeField.getText();
+            sceneCanvas.getActiveObject().setType(objectTypeField.getText());
             GUI.refreshObjectEditor();
             GUI.refreshObjectProperties();
             GUI.refreshGalleryListings();
@@ -4009,13 +3997,13 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_objectTypeFieldKeyReleased
 
     private void objectCollidesCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectCollidesCheckboxActionPerformed
-        sceneCanvas.getActiveObject().COLLIDES = !sceneCanvas.getActiveObject().COLLIDES;
+        sceneCanvas.getActiveObject().setCollides(!sceneCanvas.getActiveObject().collides());
         GUI.refreshObjectEditor();
         GUI.refreshObjectProperties();
     }//GEN-LAST:event_objectCollidesCheckboxActionPerformed
 
     private void objectGravityCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectGravityCheckboxActionPerformed
-        sceneCanvas.getActiveObject().GRAVITY = !sceneCanvas.getActiveObject().GRAVITY;
+        sceneCanvas.getActiveObject().setGravity(!sceneCanvas.getActiveObject().gravity());
         GUI.refreshObjectEditor();
         GUI.refreshObjectProperties();
         //TODO: figure out how to apply this to all objects (Collides toggle included)
@@ -4024,9 +4012,8 @@ public class GUI extends javax.swing.JFrame {
     private void runOnSpawnCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runOnSpawnCheckboxActionPerformed
         if (flowChooser.getSelectedIndex() <= -1) return;
         Flow f = sceneCanvas.getActiveObject().getFlows().get(flowChooser.getSelectedIndex());
-        Flow old_f = new Flow(); f.copyTo(old_f);
-        f.RUN_ON_SPAWN = runOnSpawnCheckbox.isSelected();
-        Flow.refactorAll(f, old_f);
+        if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()))
+                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
     }//GEN-LAST:event_runOnSpawnCheckboxActionPerformed
 
     private void deleteBlockButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBlockButtonActionPerformed
@@ -4048,7 +4035,8 @@ public class GUI extends javax.swing.JFrame {
                 }
             }
         }
-        Flow.refactorAll(f, old_f);
+        if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()))
+                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
         flowCanvas.repaint();
     }//GEN-LAST:event_deleteBlockButtonActionPerformed
 
@@ -4057,7 +4045,7 @@ public class GUI extends javax.swing.JFrame {
             deleteDialogueButton.setEnabled(true);
             //update the dialogue options
             Dialogue d = sceneCanvas.getActiveObject().getDialogues().get(dialogueChooser.getSelectedIndex());
-            dialogueEventChooser.setListData(d.QUEUE.toArray());
+            dialogueEventChooser.setListData(d.getQueue().toArray());
             addThisSpeakEventButton.setEnabled(true);
             addOtherSpeakEventButton.setEnabled(true);
             addPlayerChoiceButton.setEnabled(true);
@@ -4076,9 +4064,9 @@ public class GUI extends javax.swing.JFrame {
             return;
         }
         if (evt.getKeyChar() == '\n') {
-            Dialogue compare_to = new Dialogue(); d.copyTo(compare_to);
             d.setName(dialogueNameField.getText());
-            Dialogue.refactorAll(d, compare_to);
+            if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()))
+                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
             GUI.refreshObjectEditor();
             dialogueChooser.setSelectedIndex(index);
             dialogueNameField.grabFocus();
@@ -4116,6 +4104,8 @@ public class GUI extends javax.swing.JFrame {
         }
     }
     
+    public static SceneCanvas getSceneCanvas() { return sceneCanvas; }
+    
     public static void showDialog(JDialog d) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double width = screenSize.getWidth();
@@ -4134,16 +4124,9 @@ public class GUI extends javax.swing.JFrame {
         System.out.println("Hiding "+d.getTitle());
     }
     
-    public static void refreshProjectListings() {
-        File folder = new File(Assets.USER_HOME+"/level_editor/projects/");
-        ArrayList<String> names = new ArrayList<String>();
-        for (File f: folder.listFiles()) { if (f.isDirectory()) names.add(f.getName()); }
-        projectList.setListData(names.toArray());
-    }
-    
     public static void refreshLevelListings() {
         ArrayList<String> names = new ArrayList<String>();
-        for (Level l: Project.LEVELS) { names.add(l.name); }
+        for (Level l: Project.getProject().getLevels()) { names.add(l.getName()); }
         levelList.setListData(names.toArray());
     }
     
@@ -4155,7 +4138,10 @@ public class GUI extends javax.swing.JFrame {
     
     public static void refreshGalleryListings() {
         ArrayList<String> names = new ArrayList<String>();
-        for (SceneObject s: Project.OBJECT_GALLERY) { names.add(s.CLASS); }
+        for (int i = 0; i < Project.getProject().gallerySize(); i++) { 
+            SceneObject s = Project.getProject().getGalleryObject(i);
+            names.add(s.getType()); 
+        }
         galleryList.setListData(names.toArray());
         names.remove(0);
         galleryListSidebar.setListData(names.toArray());
@@ -4164,7 +4150,7 @@ public class GUI extends javax.swing.JFrame {
     public static void updateWindowTitle() {
         String title = "Platformer Creator 1.1 [Beta]";
         title += " / "+Project.getProject().getName();
-        if (!Project.existsOnDisk(Project.getProject().getName())) title += " *";
+        if (!Project.getProject().existsOnDisk()) title += " *";
         if (Project.getProject().getCurrentLevel() != null) title += " / "+Project.getProject().getCurrentLevel().getName();
         window.setTitle(title);
     }
@@ -4180,7 +4166,7 @@ public class GUI extends javax.swing.JFrame {
     public static void fillAnimationFrameChooser() {
         int index = animationChooser.getSelectedIndex();
         ArrayList<String> anim_names = new ArrayList<String>();
-        for (int i = 0; i != sceneCanvas.getActiveObject().getAnimations().get(index).widths.size(); i++) {
+        for (int i = 0; i != sceneCanvas.getActiveObject().getAnimations().get(index).getWidths().size(); i++) {
             anim_names.add("Frame #"+(i+1));
         }
         animationFrameChooser.setListData(anim_names.toArray());
@@ -4189,7 +4175,7 @@ public class GUI extends javax.swing.JFrame {
     public static void fillDialogueProperties() {
         int index = dialogueChooser.getSelectedIndex();
         ArrayList<String> anim_names = new ArrayList<String>();
-        for (int i = 0; i != sceneCanvas.getActiveObject().getAnimations().get(index).widths.size(); i++) {
+        for (int i = 0; i != sceneCanvas.getActiveObject().getAnimations().get(index).getWidths().size(); i++) {
             anim_names.add("Frame #"+(i+1));
         }
         dialogueEventChooser.setListData(anim_names.toArray());
@@ -4217,10 +4203,10 @@ public class GUI extends javax.swing.JFrame {
         int pheight = objectPreviewPane.getHeight();
         int width = 0;
         int height = 0;
-        int index = Project.OBJECT_TEXTURE_NAMES.indexOf(sceneCanvas.getActiveObject().TEXTURE_NAME);
+        int index = Assets.OBJECT_TEXTURE_NAMES.indexOf(sceneCanvas.getActiveObject().getTexture());
         
         if (index > -1) {
-            BufferedImage img = Project.OBJECT_TEXTURES.get(index);
+            BufferedImage img = Assets.OBJECT_TEXTURES.get(index);
             int m = 1;
             if (img.getWidth() < img.getHeight()){
                 m = pheight/img.getHeight()-1;
@@ -4243,10 +4229,10 @@ public class GUI extends javax.swing.JFrame {
         }
         
         objectTypeField.setText(sceneCanvas.getActiveObject().getType());
-        objectTextureField.setText(sceneCanvas.getActiveObject().TEXTURE_NAME);
+        objectTextureField.setText(sceneCanvas.getActiveObject().getTexture());
         objectNameField.setText(sceneCanvas.getActiveObject().getName());
-        objectGravityCheckbox.setSelected(sceneCanvas.getActiveObject().GRAVITY);
-        objectCollidesCheckbox.setSelected(sceneCanvas.getActiveObject().COLLIDES);
+        objectGravityCheckbox.setSelected(sceneCanvas.getActiveObject().gravity());
+        objectCollidesCheckbox.setSelected(sceneCanvas.getActiveObject().gravity());
         
         fillAnimationFields();
         
@@ -4271,7 +4257,7 @@ public class GUI extends javax.swing.JFrame {
         }
         
         objectEditorTabs.setEnabledAt(2, !sceneCanvas.getActiveObject().isHitbox());
-        objectTypeField.setEnabled(Project.OBJECT_GALLERY.indexOf(sceneCanvas.getActiveObject()) > 0);
+        objectTypeField.setEnabled(Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()));
         objectTextureField.setEnabled(Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()));
         objectNameField.setEnabled(!Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()));
     }
@@ -4288,12 +4274,12 @@ public class GUI extends javax.swing.JFrame {
         } else {
             Animation anim = sceneCanvas.getActiveObject().getAnimations().get(index);
             animationNameField.setText(anim.getName());
-            animationImageField.setText(anim.SPRITE_NAME);
+            animationImageField.setText(anim.getSpriteSheet());
             fillAnimationFrameChooser();
-            animationLoopCheckbox.setSelected(anim.loop);
-            if (anim.widths.isEmpty() == false) {
-                animationFrameDurationField.setText(anim.FRAME_DURATION+"");
-                animationFrameDimensionsField.setText(anim.widths.get(0)+" "+anim.heights.get(0));
+            animationLoopCheckbox.setSelected(anim.loops());
+            if (anim.getWidths().isEmpty() == false) {
+                animationFrameDurationField.setText(anim.getFrameDuration()+"");
+                animationFrameDimensionsField.setText(anim.getWidths().get(0)+" "+anim.getHeights().get(0));
             } else {
                 animationFrameDurationField.setText("");
                 animationFrameDimensionsField.setText("");
@@ -4316,15 +4302,15 @@ public class GUI extends javax.swing.JFrame {
     }
     
     public static void refreshAnimationFramePreview(Animation anim, int f_index) {
-        if (f_index == -1 || f_index >= anim.widths.size()) return;
-        int asset_index = Project.ANIMATION_TEXTURE_NAMES.indexOf(anim.SPRITE_NAME);
+        if (f_index == -1 || f_index >= anim.getWidths().size()) return;
+        int asset_index = Assets.ANIMATION_TEXTURE_NAMES.indexOf(anim.getSpriteSheet());
         int x = 0;
-        for (int i = 0; i != f_index; i++) {x+=anim.widths.get(i);}
-        if (asset_index > -1 && asset_index < Project.ANIMATION_TEXTURE_NAMES.size()) {
-            BufferedImage img = Project.ANIMATION_TEXTURES.get(asset_index);
-            if (x+anim.widths.get(f_index) > img.getWidth()) { framePreview.setIcon(null); return; }
+        for (int i = 0; i != f_index; i++) {x+=anim.getWidths().get(i);}
+        if (asset_index > -1 && asset_index < Assets.ANIMATION_TEXTURE_NAMES.size()) {
+            BufferedImage img = Assets.ANIMATION_TEXTURES.get(asset_index);
+            if (x+anim.getWidths().get(f_index) > img.getWidth()) { framePreview.setIcon(null); return; }
             try {
-                img = img.getSubimage(x, 0, anim.widths.get(f_index), anim.heights.get(f_index));
+                img = img.getSubimage(x, 0, anim.getWidths().get(f_index), anim.getHeights().get(f_index));
             } catch (RasterFormatException e) {
                 e.printStackTrace();
                 framePreview.setIcon(null);
@@ -4353,21 +4339,17 @@ public class GUI extends javax.swing.JFrame {
     public static void refreshLevelEditor() {
         
         sceneCanvas.repaint();
-        levelSpawnField.setText(Project.getProject().getCurrentLevel().SPAWN_COORD[0]+" "+Project.getProject().getCurrentLevel().SPAWN_COORD[1]);
-        camPosField.setText(Project.getProject().getCurrentLevel().CAM_COORD[0]+" "+Project.getProject().getCurrentLevel().CAM_COORD[1]);
+        levelSpawnField.setText(Project.getProject().getCurrentLevel().playerSpawn()[0]+" "+Project.getProject().getCurrentLevel().playerSpawn()[1]);
+        camPosField.setText(Project.getProject().getCurrentLevel().cameraSpawn()[0]+" "+Project.getProject().getCurrentLevel().cameraSpawn()[1]);
         
-        levelZoomSlider.setValue(Project.getProject().getCurrentLevel().ZOOM);
-        
-        Color top = new Color(Project.getProject().getCurrentLevel().R1, Project.getProject().getCurrentLevel().G1, Project.getProject().getCurrentLevel().B1);
-        Color bottom = new Color(Project.getProject().getCurrentLevel().R2, Project.getProject().getCurrentLevel().G2, Project.getProject().getCurrentLevel().B2);
-        Color ambient = new Color(Project.getProject().getCurrentLevel().R3, Project.getProject().getCurrentLevel().G3, Project.getProject().getCurrentLevel().B3);
+        levelZoomSlider.setValue(Project.getProject().getCurrentLevel().getZoom());
         
     }
     
     public static void refreshObjectProperties() {
         if (sceneCanvas.getSelectedObject() != null) {
             objectTypeChooser.setEnabled(true);
-            objectTypeChooser.setSelectedIndex(sceneCanvas.getSelectedObject().LAYER);
+            objectTypeChooser.setSelectedIndex(sceneCanvas.getSelectedObject().getLayer());
             bringForwardButton.setEnabled(true);
             sendBackwardsButton.setEnabled(true);
             objectCloneButton.setEnabled(true);
@@ -4430,29 +4412,23 @@ public class GUI extends javax.swing.JFrame {
         catch (Exception ex) {
             ex.printStackTrace();
         }
-        Assets.load();
         
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Assets.USER_HOME = System.getProperty("user.home");
+                
+                Assets.mkdirs();
+                Project.newProject("project"+(new Random().nextInt(100000)));
+                Assets.load();
+                DownloadThread.checkForUpdates();
+                
                 window = new GUI();
                 window.setVisible(true);
-                File home = new File(Assets.USER_HOME+"/level_editor/");
-                home.mkdir();
-                File projects = new File(Assets.USER_HOME+"/level_editor/projects");
-                projects.mkdir();
-                File jars = new File(Assets.USER_HOME+"/level_editor/jars");
-                jars.mkdir();
-                Project.newProject();
                 updateWindowTitle();
-                Project.PREVIEW_THREAD = new PreviewThread();
-                Project.PREVIEW_THREAD.start();
                 JOptionPane.showMessageDialog(null, "Welcome, "+System.getProperty("user.name")+"!\n"
                         + "New? You can start working with the blank project currently open.\n"
-                        + "Returning? You can continue a previously saved project using the menu.\n"
-                        + "Good luck!");
-                DownloadThread.checkForUpdates();
+                        + "Returning? You can continue a previously saved project using the menu.\n");
+                
             }
         });
         

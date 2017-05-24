@@ -29,17 +29,17 @@ public class PreviewThread extends Thread {
     public void setAnimation(Animation a) {
         newest_anim = a;
         anim = new Animation();
-        anim.widths.addAll(newest_anim.widths);
-        anim.heights.addAll(newest_anim.heights);
-        anim.SPRITE_NAME = newest_anim.SPRITE_NAME;
+        anim.getWidths().addAll(newest_anim.getWidths());
+        anim.getHeights().addAll(newest_anim.getHeights());
+        anim.setSpriteSheet(newest_anim.getSpriteSheet());
         reset();
     }
     
     public void reset() {
         index = 0;
         last_time = System.currentTimeMillis();
-        if (anim.widths.isEmpty() == false) {
-            duration = anim.widths.get(index);
+        if (anim.getWidths().isEmpty() == false) {
+            duration = anim.getWidths().get(index);
         } else {
             duration = 0;
         }
@@ -85,13 +85,13 @@ public class PreviewThread extends Thread {
             if (!paused) {
                 System.out.println("Index: "+index+", duration: "+duration);
                 if (System.currentTimeMillis() >= last_time+duration) {
-                    if (index >= anim.widths.size()) {
+                    if (index >= anim.getWidths().size()) {
                         reset();
                     } else { 
-                        duration = anim.FRAME_DURATION;
+                        duration = anim.getFrameDuration();
                         last_time = System.currentTimeMillis();
                         index++;
-                        if (index >= anim.widths.size()) {
+                        if (index >= anim.getWidths().size()) {
                             reset();
                         }
                         GUI.animationFrameChooser.setSelectedIndex(index);

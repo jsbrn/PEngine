@@ -34,6 +34,10 @@ public class Dialogue {
         link_to = "";
         link_to_type = -1;
     }
+
+    public ArrayList<String> getQueue() {
+        return queue;
+    }
     
     public String getName() {
         return name;

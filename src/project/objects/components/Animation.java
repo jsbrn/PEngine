@@ -19,6 +19,14 @@ public class Animation {
     public Animation() {
         
     }
+    
+    public int getFrameDuration() { return frame_dur; }
+
+    public void setFrameDuration(int frame_dur) {
+        this.frame_dur = frame_dur;
+    }
+    
+    
 
     public ArrayList<Integer> getWidths() {
         return widths;
@@ -28,11 +36,11 @@ public class Animation {
         return heights;
     }
 
-    public String getSpritesheet() {
+    public String getSpriteSheet() {
         return spritesheet;
     }
 
-    public void setSpritesheet(String spritesheet) {
+    public void setSpriteSheet(String spritesheet) {
         this.spritesheet = spritesheet;
     }
     
