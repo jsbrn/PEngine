@@ -107,4 +107,9 @@ public class Dialogue {
         }
     }
     
+    @Override
+    public String toString() {
+        return getName();
+    }
+    
 }

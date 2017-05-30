@@ -44,7 +44,12 @@ public class Project {
     
     public static Project getProject() { return project; }
     
-    public static void newProject(String name) { project = new Project(name); }
+    public static void newProject(String name) { 
+        project = new Project(name); 
+        Level l = new Level(); l.setName("home");
+        project.addLevel(l);
+        project.switchToLevel(l.getName());
+    }
     
     public String getName() { return name; }
     public String getDirectory() { return Assets.USER_HOME+"/level_editor/projects/"+name+"/"; }
@@ -98,6 +103,10 @@ public class Project {
         }
     }
     
+    public void save() {
+        System.err.println("Project.save() not implemented.");
+    }
+    
     public void save(BufferedWriter bw, boolean verbose) {
         
     }
@@ -146,12 +155,20 @@ public class Project {
         dir.delete();
     }
     
+    /**
+     * Pass in a gallery object to copy it's contents to all objects in the project
+     * that have a matching type. TODO: FIX WHAT HAPPENS WHEN YOU CHANGE THE TYPE
+     * @param gallery_object 
+     */
     public void applyGalleryChanges(SceneObject gallery_object) {
+        if (!Project.getProject().containsGalleryObject(gallery_object)) return;
         for (Level l: levels) {
             for (SceneObject o: l.getObjects(Level.ALL_OBJECTS)) {
                 if (gallery_object.getType().equals(o.getType())) gallery_object.copyTo(o);
             }
         }
     }
+    
+    public ArrayList<SceneObject> getGalleryObjects() { return object_gallery; }
     
 }

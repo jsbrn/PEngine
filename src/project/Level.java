@@ -26,6 +26,9 @@ public class Level {
         for (int i = 0; i < layers.length; i++) {
             this.layers[i] = new ArrayList<SceneObject>();
         }
+        this.bg_color_top = new Color(0, 0, 0);
+        this.bg_color_bottom = new Color(0, 0, 0);
+        this.lighting_color = new Color(0, 0, 0);
     }
     
     public boolean loopBGMusic() { return loop_bg_music; }
@@ -77,8 +80,8 @@ public class Level {
     
     public void add(SceneObject o) {
         if (getObjects(ALL_OBJECTS).contains(o) == false) {
-            getObjects(ALL_OBJECTS).add(o);
             moveToLayer(o.getLayer(), o);
+            getObjects(ALL_OBJECTS).add(o);
         }
     }
     
@@ -94,8 +97,14 @@ public class Level {
         return null;
     }
     
+    public SceneObject getObject(String name) {
+        if (name == null) return null;
+        for (SceneObject o: layers[ALL_OBJECTS]) if (name.equals(o.getName())) return o;
+        return null;
+    }
+    
     public void moveForward(SceneObject o) {
-        for (int i = 0; i != layers().length; i++) {
+        for (int i = DISTANT_OBJECTS; i != layers().length; i++) {
             if (i == o.getLayer()) {
                 int orig = layers()[i].indexOf(o);
                 if (orig < layers()[i].size()-1) {
@@ -114,7 +123,7 @@ public class Level {
     }
     
     public void moveBackward(SceneObject o) {
-        for (int i = 0; i != layers().length; i++) {
+        for (int i = DISTANT_OBJECTS; i != layers().length; i++) {
             if (i == o.getLayer()) {
                 int orig = layers()[i].indexOf(o);
                 if (orig > 0) {
@@ -127,7 +136,7 @@ public class Level {
     }
     
     public void moveToLayer(int layer, SceneObject o) {
-        for (int i = 0; i != layers().length; i++) {
+        for (int i = DISTANT_OBJECTS; i < layers().length; i++) {
             if (i != o.getLayer()) {
                 layers()[i].remove(o);
             } else {
@@ -155,4 +164,10 @@ public class Level {
     public ArrayList[] layers() {
         return layers;
     }
+    
+    @Override
+    public String toString() {
+        return getName();
+    }
+    
 }

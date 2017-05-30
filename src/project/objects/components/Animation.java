@@ -26,7 +26,10 @@ public class Animation {
         this.frame_dur = frame_dur;
     }
     
-    
+    @Override
+    public String toString() {
+        return getName();
+    }
 
     public ArrayList<Integer> getWidths() {
         return widths;

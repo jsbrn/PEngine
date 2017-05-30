@@ -298,5 +298,9 @@ public class SceneObject {
 
     public ArrayList<Flow> getFlows() { return flows; }
     
+    @Override
+    public String toString() {
+        return getName();
+    }
     
 }

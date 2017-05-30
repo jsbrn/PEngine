@@ -1,25 +1,21 @@
 package threads;
 
 import gui.GUI;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import misc.Assets;
-import project.Project;
 
 public class DownloadThread extends Thread {
     
     private static String source, dest;
-    private static boolean downloading = false;
+    private static boolean downloading = false, editor_update = false, runtime_update = false;
     private static DownloadThread thread;
     
     public static int LEVEL_EDITOR_ID = 10;
@@ -59,10 +55,7 @@ public class DownloadThread extends Thread {
                 fileData[(int) x] = dis.readByte();
                 if (x > 0) {
                     progress = (int) (x / con.getContentLength() * 100);
-                    if (progress > last_progress) {
-                        System.out.println(progress+"%");
-                        if (button) GUI.statusIndicator.setText("Downloading game files: "+progress+"%");
-                    }
+                    if (progress > last_progress) { if (button) GUI.statusIndicator.setText("Downloading game files: "+progress+"%"); }
                     last_progress = progress;
                 }
 
@@ -105,43 +98,31 @@ public class DownloadThread extends Thread {
         thread.start();
     }
     
-    public static boolean[] checkForUpdates() {
-        GUI.downloadUpdateButton.setVisible(false);
-        boolean game = false, editor = false;
-        if (!download("https://computerology.bitbucket.io/tools/editor/info.properties", Assets.USER_HOME+"/level_editor/jars/info.properties")) {
-            JOptionPane.showMessageDialog(null, "Could not connect to the update server!\n"
-                    + "Use this program at your own risk; what you see may\n"
-                    + "not reflect the most recent version.");
-            return new boolean[]{false, false};
-        }
-        Properties prop = new Properties(), prop2 = new Properties();
+    public static boolean editorUpdate() { return editor_update; }
+    public static boolean runtimeUpdate() { return runtime_update; }
+    
+    public static void checkForUpdates() {
         try {
-            FileInputStream f = new FileInputStream(Assets.USER_HOME+"/level_editor/jars/info.properties");
-            prop.load(f);
-            int gid = Integer.parseInt(prop.getProperty("gameID"));
-            int eid = Integer.parseInt(prop.getProperty("editorID"));
-            f.close();
-            new File(Assets.USER_HOME+"/level_editor/jars/info.properties").deleteOnExit();
-            System.out.println("Server level_editor: "+eid+", Local level_editor: "+LEVEL_EDITOR_ID);
-            if (eid > LEVEL_EDITOR_ID) { editor = true; }
-            if (editor) { JOptionPane.showMessageDialog(null, "A new version of the level editor is available!\n"
-                    + "It is strongly recommended that you download it\nbefore continuing.");}
-            //if the local game info DNE then do not show there is an update
-            if (new File(Assets.USER_HOME+"/level_editor/jars/test.properties").exists() == false) {
-                GUI.downloadUpdateButton.setVisible(editor);
-                return new boolean[]{false, editor};
-            }
-            f = new FileInputStream(Assets.USER_HOME+"/level_editor/jars/test.properties");
-            prop2.load(f);
-            int lgid = Integer.parseInt(prop2.getProperty("updateID"));
-            System.out.println("Server game: "+gid+", Local game: "+lgid);
-            if (gid > lgid) { game = true; }
-            f.close();
-        } catch (IOException ex) {
-            Logger.getLogger(DownloadThread.class.getName()).log(Level.SEVERE, null, ex);
+            URL url = new URL("https://computerology.bitbucket.io/tools/editor/version.txt");
+            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+            runtime_update = Integer.parseInt(br.readLine().replace("runtime = ", "")) >= 0;
+            editor_update = Integer.parseInt(br.readLine().replace("editor = ", "")) >= LEVEL_EDITOR_ID;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        GUI.downloadUpdateButton.setVisible(editor);
-        return new boolean[]{game, editor};
+    }
+    
+    public static void handleUpdates() {
+        if (editorUpdate()) JOptionPane.showMessageDialog(null, "A newer version of the level editor has been uploaded!"
+                + "\nGo to http://computerology.bitbucket.io/ to grab it!");
+        if (runtimeUpdate()) {
+            JOptionPane.showMessageDialog(null, "A newer version of the runtime was found."
+                    + "\nThe editor will now download it in the background.");
+            downloadThreaded("https://computerology.bitbucket.io/tools/editor/runtime.jar",
+                Assets.USER_HOME+"/level_editor/jars/runtime.jar");
+        }
     }
     
     public void run() {

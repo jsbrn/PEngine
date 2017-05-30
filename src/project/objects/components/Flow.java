@@ -109,4 +109,9 @@ public class Flow {
         }
     }
     
+    @Override
+    public String toString() {
+        return getName();
+    }
+    
 }

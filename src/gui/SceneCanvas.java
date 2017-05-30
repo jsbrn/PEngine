@@ -4,12 +4,8 @@ import java.awt.Color;
 import project.Project;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import javax.swing.JPanel;
 import misc.MiscMath;
 import project.Level;
@@ -17,7 +13,7 @@ import project.objects.SceneObject;
 
 public class SceneCanvas extends JPanel {
     
-    public static final int SELECT_TOOL = 1, CAMERA_TOOL = 2, MOVE_TOOL = 3, RESIZE_TOOL = 4;
+    public static final int SELECT_TOOL = 0, CAMERA_TOOL = 1, MOVE_TOOL = 2, RESIZE_TOOL = 3;
     
     private int origin_x, origin_y, last_mouse_x, last_mouse_y;
     private SceneObject selected_object, active_object;
@@ -52,7 +48,7 @@ public class SceneCanvas extends JPanel {
     
     public void zoomCamera(int amount) {
         double w_x_before = ((last_mouse_x-origin_x)/zoom)+origin_x;
-        double w_y_before = ((last_mouse_x-origin_y)/zoom)+origin_y;
+        double w_y_before = ((last_mouse_y-origin_y)/zoom)+origin_y;
         zoom+=amount;
         if (zoom < 1) {
             zoom = 1;
@@ -98,7 +94,7 @@ public class SceneCanvas extends JPanel {
         }
         
         //draw all objects
-        for (int layer = 1; layer <= 4; layer++) {
+        for (int layer = 1; layer <= Level.FOREGROUND_OBJECTS; layer++) {
             for (SceneObject o: current_level.getObjects(layer)) {
                 if (MiscMath.rectanglesIntersect(o.getOnscreenCoordinates()[0], o.getOnscreenCoordinates()[1], 
                         o.getOnscreenWidth(), o.getOnscreenHeight(), 
@@ -109,7 +105,7 @@ public class SceneCanvas extends JPanel {
         }
         
         Color light_color = current_level.getLightingColor();
-        int[] light = new int[]{light_color.getRGB(), light_color.getGreen(), light_color.getBlue()};
+        int[] light = new int[]{light_color.getRed(), light_color.getGreen(), light_color.getBlue()};
         g.setColor(new Color(light[0], light[1], light[2], (float)current_level.getLightIntensity()));
         g.fillRect(0, 0, (int)getWidth(), (int)getHeight());
         
@@ -148,170 +144,131 @@ public class SceneCanvas extends JPanel {
         g.setColor(Color.white);
         g.drawString(str, x, y);
     }
-    
     /**
-     * CONSTRUCTOR - Creates the listeners away from the main GUI class, just to clean it up.
+     * Event Handlers
      */
-    public SceneCanvas() {
-        
-        /**
-         * ADD THE MOUSE LISTENERS
-         */
-        this.addMouseMotionListener(new MouseMotionListener() {
-
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                grabFocus();
-                if (selected_tool == CAMERA_TOOL) {
-                    moveCamera(e.getX()-last_mouse_x, e.getY()-last_mouse_y);
-
-                } else if (selected_tool == MOVE_TOOL) {
-                    if (selected_object == null) selected_object = Project.getProject().getCurrentLevel().getObject(e.getX(), e.getY());
-                    GUI.refreshObjectProperties();
-                    if (selected_object != null) {
-                        double move_x = (e.getX()-last_mouse_x)/(double)zoom;
-                        double move_y = (e.getY()-last_mouse_y)/(double)zoom;
-                        selected_object.move(move_x, move_y);
-                    } else {
-                        selected_object = Project.getProject().getCurrentLevel().getObject(e.getX(), e.getY());
-                    }
-                } else if (selected_tool == RESIZE_TOOL) {
-                    if (selected_object != null) {
-                        if (selected_object.isHitbox()) {
-                            double move_x = (e.getX()-last_mouse_x)/(double)zoom;
-                            double move_y = (e.getY()-last_mouse_y)/(double)zoom;
-                            selected_object.resize(move_x, move_y);
-                        }
-                    } else {
-                        double move_x = (e.getX()-last_mouse_x)/(double)zoom;
-                        double move_y = (e.getY()-last_mouse_y)/(double)zoom;
-                        Project.getProject().getCurrentLevel().resize(move_x, move_y);
-                    }
-                }
-                repaint();            
-                setLastMousePosition(e.getX(), e.getY());
-            }
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                setLastMousePosition(e.getX(), e.getY());
-                repaint();
-            }
-            
-        });
-        
-        this.addMouseWheelListener(new MouseWheelListener() {
-
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                zoomCamera(-e.getWheelRotation());
-                repaint();
-                grabFocus();
-            }
-            
-        });
-        
-        this.addMouseListener(new MouseListener() {
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                selected_object = Project.getProject().getCurrentLevel().getObject(e.getX(), e.getY());
+    
+    public void handleMouseMovement(MouseEvent e) {
+        repaint();
+        last_mouse_x = e.getX();
+        last_mouse_y = e.getY();
+    }
+    
+    public void handleMouseDrag(MouseEvent e) {
+        grabFocus();
+        switch (selected_tool) {
+            case CAMERA_TOOL:
+                moveCamera(e.getX()-last_mouse_x, e.getY()-last_mouse_y);
+                break;
+            case MOVE_TOOL:
+                if (selected_object == null) selected_object = Project.getProject().getCurrentLevel().getObject(e.getX(), e.getY());
                 GUI.refreshObjectProperties();
-                repaint();
-                grabFocus();
-            }
-            @Override
-            public void mousePressed(MouseEvent e) {}
-            @Override
-            public void mouseReleased(MouseEvent e) {}
-            @Override
-            public void mouseEntered(MouseEvent e) {}
-            @Override
-            public void mouseExited(MouseEvent e) {}
-            
-        });
+                if (selected_object != null) {
+                    double move_x = (e.getX()-last_mouse_x)/(double)zoom;
+                    double move_y = (e.getY()-last_mouse_y)/(double)zoom;
+                    selected_object.move(move_x, move_y);
+                } else {
+                    selected_object = Project.getProject().getCurrentLevel().getObject(e.getX(), e.getY());
+                }   break;
+            case RESIZE_TOOL:
+                if (selected_object != null) {
+                    if (selected_object.isHitbox()) {
+                        double move_x = (e.getX()-last_mouse_x)/(double)zoom;
+                        double move_y = (e.getY()-last_mouse_y)/(double)zoom;
+                        selected_object.resize(move_x, move_y);
+                    }
+                } else {
+                    double move_x = (e.getX()-last_mouse_x)/(double)zoom;
+                    double move_y = (e.getY()-last_mouse_y)/(double)zoom;
+                    Project.getProject().getCurrentLevel().resize(move_x, move_y);
+                }   break;
+            default:
+                break;
+        }
+        repaint();            
+        setLastMousePosition(e.getX(), e.getY());
+    }
+    
+    public void handleMouseClick(MouseEvent e) {
+        System.out.println("SceneCanvas: Mouse click at "+e.getX()+", "+e.getY());
+        selected_object = Project.getProject().getCurrentLevel().getObject(e.getX(), e.getY());
+        System.out.print(selected_object != null ? "Selected object: "+selected_object.getName()+"\n" : "");
+        GUI.refreshObjectProperties();
+        repaint();
+        grabFocus();
+    }
+    
+    public void handleMouseWheel(MouseWheelEvent e) {
+        zoomCamera(-e.getWheelRotation());
+        repaint();
+        grabFocus();
+    }
+    
+    public void handleKeyPress(KeyEvent e) {
+        SceneObject object = getSelectedObject();
         
-        /**
-         * ADD THE KEY LISTENERS
-         */
-        this.addKeyListener(new KeyListener() {
 
-            @Override
-            public void keyTyped(KeyEvent e) {
-                throw new UnsupportedOperationException("Not supported yet.");
+        if (object != null) {
+            if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                Project.getProject().getCurrentLevel().removeObject(object);
             }
+        }
 
-            @Override
-            public void keyPressed(KeyEvent e) {
-                SceneObject object = getSelectedObject();
-                int tool = getSelectedTool();
+        selected_tool = e.getKeyCode();
+        /*GUI.selectButton.setEnabled(selected_tool == 1);
+        GUI.cameraButton.setEnabled(selected_tool == 2);
+        GUI.moveButton.setEnabled(selected_tool == 3);
+        GUI.resizeButton.setEnabled(selected_tool == 4);*/
 
-                if (object != null) {
-                    if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-                        Project.getProject().getCurrentLevel().removeObject(object);
+        //zoom if zoom key pressed
+        zoomCamera(e.getKeyChar() == '=' ? 1 : (e.getKeyChar() == '-' ? -1 : 0));
+
+        switch (selected_tool) {
+            case CAMERA_TOOL:
+                if (e.getKeyChar() == 'x') {
+                    origin_x = 10;
+                    origin_y = 10;
+                    zoom = 8;
+                } else if (e.getKeyChar() == 'c') {
+                    origin_x = 10;
+                    origin_y = 10;
+                }   break;
+            case MOVE_TOOL:
+                if (selected_object != null) {
+                    if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                        selected_object.move(1, 0);
                     }
-                }
-                
-                selected_tool = e.getKeyCode();
-                /*GUI.selectButton.setEnabled(selected_tool == 1);
-                GUI.cameraButton.setEnabled(selected_tool == 2);
-                GUI.moveButton.setEnabled(selected_tool == 3);
-                GUI.resizeButton.setEnabled(selected_tool == 4);*/
-
-                //zoom if zoom key pressed
-                zoomCamera(e.getKeyChar() == '=' ? 1 : (e.getKeyChar() == '-' ? -1 : 0));
-
-                if (selected_tool == CAMERA_TOOL) {
-                    if (e.getKeyChar() == 'x') {
-                        origin_x = 10;
-                        origin_y = 10;
-                        zoom = 8;
-                    } else if (e.getKeyChar() == 'c') {
-                        origin_x = 10;
-                        origin_y = 10;
+                    if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                        selected_object.move(-1, 0);
                     }
-                } else if (selected_tool == MOVE_TOOL) {
-                    if (selected_object != null) {
+                    if (e.getKeyCode() == KeyEvent.VK_UP) {
+                        selected_object.move(0, -1);
+                    }
+                    if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                        selected_object.move(0, 1);
+                    }
+                }   break;
+            case RESIZE_TOOL:
+                if (selected_object != null) {
+                    if (selected_object.isHitbox()) {
                         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                            selected_object.move(1, 0);
+                            selected_object.resize(1, 0);
                         }
                         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                            selected_object.move(-1, 0);
+                            selected_object.resize(-1, 0);
                         }
                         if (e.getKeyCode() == KeyEvent.VK_UP) {
-                            selected_object.move(0, -1);
+                            selected_object.resize(0, -1);
                         }
                         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                            selected_object.move(0, 1);
+                            selected_object.resize(0, 1);
                         }
                     }
-                } else if (selected_tool == RESIZE_TOOL) {
-                    if (selected_object != null) {
-                        if (selected_object.isHitbox()) {
-                            if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                                selected_object.resize(1, 0);
-                            }
-                            if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                                selected_object.resize(-1, 0);
-                            }
-                            if (e.getKeyCode() == KeyEvent.VK_UP) {
-                                selected_object.resize(0, -1);
-                            }
-                            if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                                selected_object.resize(0, 1);
-                            }
-                        }
-                    }
-                }
-                repaint();
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-            
-        });
+                }   break;
+            default:
+                break;
+        }
+        repaint();
     }
     
 }
