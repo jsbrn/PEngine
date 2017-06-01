@@ -69,7 +69,7 @@ public class SceneCanvas extends JPanel {
      */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.BLACK);
+        g.setColor(Color.green);
         g.fillRect(0, 0, (int)getWidth(), (int)getHeight());
         
         if (Project.getProject() == null) return;

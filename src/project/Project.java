@@ -37,9 +37,6 @@ public class Project {
         player.setGravity(true);
         player.setCollides(true);
         this.object_gallery.add(player);
-        Level home = new Level();
-        home.setName("home");
-        this.addLevel(home);
     }
     
     public static Project getProject() { return project; }
