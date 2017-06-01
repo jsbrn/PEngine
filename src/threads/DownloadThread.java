@@ -29,9 +29,6 @@ public class DownloadThread extends Thread {
      */
     public static boolean download(String source, String dest) {
         System.out.println("Downloading...");
-        boolean button = GUI.runProjectAtLevelButton != null;
-        if (button) GUI.runProjectAtLevelButton.setEnabled(false);
-        if (button) GUI.runProjectButton.setEnabled(false);
         
         URL url; //represents the location of the file we want to dl.
         URLConnection con;  // represents a connection to the url we want to dl.
@@ -55,7 +52,7 @@ public class DownloadThread extends Thread {
                 fileData[(int) x] = dis.readByte();
                 if (x > 0) {
                     progress = (int) (x / con.getContentLength() * 100);
-                    if (progress > last_progress) { if (button) GUI.statusIndicator.setText("Downloading game files: "+progress+"%"); }
+                    if (progress > last_progress) { GUI.statusIndicator.setText("Downloading game files: "+progress+"%"); }
                     last_progress = progress;
                 }
 
@@ -67,8 +64,6 @@ public class DownloadThread extends Thread {
             fos.close();
 
             System.out.println("Download complete!");
-            if (button) GUI.runProjectAtLevelButton.setEnabled(true);
-            if (button) GUI.runProjectButton.setEnabled(true);
             GUI.statusIndicator.setText("");
             return true;
 
@@ -79,8 +74,6 @@ public class DownloadThread extends Thread {
             System.out.println(io);
             io.printStackTrace();
         }
-        if (button) GUI.runProjectAtLevelButton.setEnabled(true);
-        if (button) GUI.runProjectButton.setEnabled(true);
         GUI.statusIndicator.setText("");
         return false;
     }

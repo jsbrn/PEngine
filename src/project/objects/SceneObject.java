@@ -300,7 +300,7 @@ public class SceneObject {
     
     @Override
     public String toString() {
-        return getName();
+        return Project.getProject().containsGalleryObject(this) ? this.getType() : this.getName();
     }
     
 }
