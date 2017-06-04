@@ -95,7 +95,7 @@ public class Project {
                 current_level = l;
                 GUI.updateWindowTitle();
                 GUI.refreshObjectProperties();
-                GUI.refreshLevelEditor();
+                GUI.refreshLevelMenu();
             }
         }
     }

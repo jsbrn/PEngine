@@ -14,6 +14,12 @@ public class MiscMath {
         return distance;
     }
     
+    public static double clamp(double x, double min, double max) {
+        if (x < min) return min;
+        if (x > max) return max;
+        return x;
+    }
+    
     /**
      * Finds the angle between (x, y) and (x2, y2) with 0 degrees being a vertical line.
      * @return A double representing the angle in degrees.

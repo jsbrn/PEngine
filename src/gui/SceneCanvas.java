@@ -1,8 +1,10 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.GradientPaint;
 import project.Project;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -63,13 +65,13 @@ public class SceneCanvas extends JPanel {
     }
     
     public double getZoom() { return zoom; }
-
+    
     /*
      * DRAWING THE COMPONENT
      */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.green);
+        g.setColor(Color.black);
         g.fillRect(0, 0, (int)getWidth(), (int)getHeight());
         
         if (Project.getProject() == null) return;
@@ -77,24 +79,15 @@ public class SceneCanvas extends JPanel {
         Level current_level = Project.getProject().getCurrentLevel();
         
         if (current_level == null) return;
+        
         Color top_color = current_level.getTopBGColor(), bttm_color = current_level.getBottomBGColor();
-        int top[] = new int[]{top_color.getRed(), top_color.getGreen(), top_color.getBlue()},
-                bottom[] = new int[]{bttm_color.getRed(), bttm_color.getGreen(), bttm_color.getBlue()};
-        int height = 10;
-        int increments = (int)(getHeight()/height);
-        double g_add = (top[1]-bottom[1])/increments;
-        double r_add = (top[0]-bottom[0])/increments;
-        double b_add = (top[2]-bottom[2])/increments;
-        for (int y = 0; y < 1+increments; y+=1) {
-            top[0]+=r_add;top[1]+=g_add;top[2]+=b_add;
-            if (top[0] <= 255 && top[1] <= 255 && top[2] <= 255 && top[0] >= 0 && top[1] >= 0 && top[2] >= 0) {
-                g.setColor(new Color((int)top[0], (int)top[1], (int)top[2]));
-            }
-            g.fillRect(0, y*height, getWidth(), getHeight());
-        }
+        Graphics2D g2d = (Graphics2D) g;
+        GradientPaint gp1 = new GradientPaint(0, 0, top_color, 0, getHeight(), bttm_color, true);
+        g2d.setPaint(gp1);
+        g2d.fillRect(0, 0, getWidth(), getHeight());
         
         //draw all objects
-        for (int layer = 1; layer <= Level.FOREGROUND_OBJECTS; layer++) {
+        for (int layer = Level.DISTANT_OBJECTS; layer <= Level.FOREGROUND_OBJECTS; layer++) {
             for (SceneObject o: current_level.getObjects(layer)) {
                 if (MiscMath.rectanglesIntersect(o.getOnscreenCoordinates()[0], o.getOnscreenCoordinates()[1], 
                         o.getOnscreenWidth(), o.getOnscreenHeight(), 
@@ -106,7 +99,9 @@ public class SceneCanvas extends JPanel {
         
         Color light_color = current_level.getLightingColor();
         int[] light = new int[]{light_color.getRed(), light_color.getGreen(), light_color.getBlue()};
-        g.setColor(new Color(light[0], light[1], light[2], (float)current_level.getLightIntensity()));
+        g.setColor(new Color((int)MiscMath.clamp(light[0], 0, 255), 
+                (int)MiscMath.clamp(light[1], 0, 255), (int)MiscMath.clamp(light[2], 0, 255), 
+                (int)MiscMath.clamp(current_level.getLightIntensity()*255, 0, 255)));
         g.fillRect(0, 0, (int)getWidth(), (int)getHeight());
         
         g.setColor(Color.green);

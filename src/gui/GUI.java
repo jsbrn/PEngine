@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -196,35 +197,12 @@ public class GUI extends javax.swing.JFrame {
         choiceEventScriptToggle = new javax.swing.JRadioButton();
         choiceEventDialogueToggle = new javax.swing.JRadioButton();
         jLabel26 = new javax.swing.JLabel();
-        levelEditorDialog = new javax.swing.JDialog();
-        levelEditorTabs = new javax.swing.JTabbedPane();
-        levelBasicsPanel = new javax.swing.JPanel();
-        camPosField = new javax.swing.JTextField();
-        levelSpawnField = new javax.swing.JTextField();
-        levelZoomSlider = new javax.swing.JSlider();
-        levelLightingPanel = new javax.swing.JPanel();
-        ambientIntensitySlider = new javax.swing.JSlider();
-        jLabel14 = new javax.swing.JLabel();
-        levelAudioPanel = new javax.swing.JPanel();
-        jPanel8 = new javax.swing.JPanel();
-        jLabel29 = new javax.swing.JLabel();
-        backgroundMusicField = new javax.swing.JTextField();
-        loopBackgroundMusicCheckbox = new javax.swing.JCheckBox();
-        autoBackgroundMusicCheckbox = new javax.swing.JCheckBox();
-        loopAmbientSoundCheckbox = new javax.swing.JCheckBox();
-        autoAmbientSoundCheckbox = new javax.swing.JCheckBox();
-        ambientSoundField = new javax.swing.JTextField();
-        jLabel36 = new javax.swing.JLabel();
-        jPanel9 = new javax.swing.JPanel();
-        backgroundMusicVolumeSlider = new javax.swing.JSlider();
-        jLabel38 = new javax.swing.JLabel();
-        ambientSoundVolumeSlider = new javax.swing.JSlider();
-        jLabel39 = new javax.swing.JLabel();
         objectSpawnDialog = new javax.swing.JDialog();
         spawnList = new javax.swing.JComboBox<>();
         spawnButton = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         spawnNameField = new javax.swing.JTextField();
+        sceneCanvas = new gui.SceneCanvas();
         jPanel6 = new javax.swing.JPanel();
         cameraButton = new javax.swing.JButton();
         selectButton = new javax.swing.JButton();
@@ -257,7 +235,22 @@ public class GUI extends javax.swing.JFrame {
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
         viewRootButton = new javax.swing.JMenuItem();
         levelMenu = new javax.swing.JMenu();
-        levelPropertiesMenuButton = new javax.swing.JMenuItem();
+        spawnMenuItem = new javax.swing.JMenuItem();
+        cameraLocationMenuItem = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        topColorMenuItem = new javax.swing.JMenuItem();
+        bottomColorMenuItem = new javax.swing.JMenuItem();
+        lightingColorMenuItem = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem8 = new javax.swing.JMenuItem();
+        selectBGMusic = new javax.swing.JMenuItem();
+        loopBGMusicMenuItem = new javax.swing.JCheckBoxMenuItem();
+        autoplayBGMusicMenuItem = new javax.swing.JCheckBoxMenuItem();
+        jMenuItem9 = new javax.swing.JMenuItem();
+        selectAmbienceMenuItem = new javax.swing.JMenuItem();
+        loopAmbientSoundMenuItem = new javax.swing.JCheckBoxMenuItem();
+        autoplayAmbientSoundMenuItem = new javax.swing.JCheckBoxMenuItem();
         statusIndicator = new javax.swing.JMenu();
 
         testOutputDialog.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -1824,325 +1817,6 @@ public class GUI extends javax.swing.JFrame {
             .addComponent(objectEditorTabs, javax.swing.GroupLayout.PREFERRED_SIZE, 715, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
-        levelEditorDialog.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        levelEditorDialog.setTitle("Editing level properties");
-        levelEditorDialog.setBounds(new java.awt.Rectangle(0, 0, 400, 700));
-        levelEditorDialog.setPreferredSize(new java.awt.Dimension(400, 600));
-        levelEditorDialog.setResizable(false);
-
-        levelEditorTabs.setPreferredSize(new java.awt.Dimension(400, 600));
-
-        levelBasicsPanel.setPreferredSize(new java.awt.Dimension(400, 600));
-
-        camPosField.setText("0 0");
-        camPosField.setPreferredSize(new java.awt.Dimension(8, 20));
-        camPosField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                camPosFieldFocusLost(evt);
-            }
-        });
-        camPosField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                camPosFieldActionPerformed(evt);
-            }
-        });
-
-        levelSpawnField.setText("0 0");
-        levelSpawnField.setPreferredSize(new java.awt.Dimension(380, 20));
-        levelSpawnField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                levelSpawnFieldFocusLost(evt);
-            }
-        });
-
-        levelZoomSlider.setMajorTickSpacing(4);
-        levelZoomSlider.setMaximum(8);
-        levelZoomSlider.setMinorTickSpacing(1);
-        levelZoomSlider.setPaintTicks(true);
-        levelZoomSlider.setSnapToTicks(true);
-        levelZoomSlider.setToolTipText("Adjust the game camera's zoom");
-        levelZoomSlider.setValue(4);
-        levelZoomSlider.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                levelZoomSliderMouseReleased(evt);
-            }
-        });
-
-        javax.swing.GroupLayout levelBasicsPanelLayout = new javax.swing.GroupLayout(levelBasicsPanel);
-        levelBasicsPanel.setLayout(levelBasicsPanelLayout);
-        levelBasicsPanelLayout.setHorizontalGroup(
-            levelBasicsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(levelBasicsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(levelBasicsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(camPosField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(levelBasicsPanelLayout.createSequentialGroup()
-                        .addGroup(levelBasicsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(levelZoomSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(levelSpawnField, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 58, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        levelBasicsPanelLayout.setVerticalGroup(
-            levelBasicsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(levelBasicsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(levelSpawnField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(camPosField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5)
-                .addComponent(levelZoomSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(505, 505, 505))
-        );
-
-        levelEditorTabs.addTab("Basics", levelBasicsPanel);
-
-        levelLightingPanel.setPreferredSize(new java.awt.Dimension(400, 600));
-
-        ambientIntensitySlider.setMajorTickSpacing(255);
-        ambientIntensitySlider.setMaximum(200);
-        ambientIntensitySlider.setToolTipText("Adjust the intensity of the ambient lighting");
-        ambientIntensitySlider.setValue(0);
-        ambientIntensitySlider.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                ambientIntensitySliderMouseDragged(evt);
-            }
-        });
-        ambientIntensitySlider.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ambientIntensitySliderMouseClicked(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                ambientIntensitySliderMouseReleased(evt);
-            }
-        });
-
-        jLabel14.setText("Intensity:");
-
-        javax.swing.GroupLayout levelLightingPanelLayout = new javax.swing.GroupLayout(levelLightingPanel);
-        levelLightingPanel.setLayout(levelLightingPanelLayout);
-        levelLightingPanelLayout.setHorizontalGroup(
-            levelLightingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(levelLightingPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel14)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ambientIntensitySlider, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(251, Short.MAX_VALUE))
-        );
-        levelLightingPanelLayout.setVerticalGroup(
-            levelLightingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(levelLightingPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(levelLightingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ambientIntensitySlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(538, Short.MAX_VALUE))
-        );
-
-        levelEditorTabs.addTab("Lighting", levelLightingPanel);
-
-        levelAudioPanel.setPreferredSize(new java.awt.Dimension(400, 600));
-
-        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("Basic"));
-        jPanel8.setPreferredSize(new java.awt.Dimension(400, 104));
-
-        jLabel29.setText("Background music");
-
-        backgroundMusicField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                backgroundMusicFieldKeyReleased(evt);
-            }
-        });
-
-        loopBackgroundMusicCheckbox.setText("Loop");
-        loopBackgroundMusicCheckbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loopBackgroundMusicCheckboxActionPerformed(evt);
-            }
-        });
-
-        autoBackgroundMusicCheckbox.setText("Start immediately");
-        autoBackgroundMusicCheckbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                autoBackgroundMusicCheckboxActionPerformed(evt);
-            }
-        });
-
-        loopAmbientSoundCheckbox.setText("Loop");
-        loopAmbientSoundCheckbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loopAmbientSoundCheckboxActionPerformed(evt);
-            }
-        });
-
-        autoAmbientSoundCheckbox.setText("Start immediately");
-        autoAmbientSoundCheckbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                autoAmbientSoundCheckboxActionPerformed(evt);
-            }
-        });
-
-        ambientSoundField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                ambientSoundFieldKeyReleased(evt);
-            }
-        });
-
-        jLabel36.setText("Ambient sound effects");
-
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(loopBackgroundMusicCheckbox)
-                        .addGap(18, 18, 18)
-                        .addComponent(autoBackgroundMusicCheckbox))
-                    .addComponent(jLabel29)
-                    .addComponent(backgroundMusicField, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(loopAmbientSoundCheckbox)
-                        .addGap(18, 18, 18)
-                        .addComponent(autoAmbientSoundCheckbox))
-                    .addComponent(jLabel36)
-                    .addComponent(ambientSoundField, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jLabel36, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ambientSoundField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(loopAmbientSoundCheckbox)
-                            .addComponent(autoAmbientSoundCheckbox)))
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jLabel29)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(backgroundMusicField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(loopBackgroundMusicCheckbox)
-                            .addComponent(autoBackgroundMusicCheckbox)))))
-        );
-
-        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder("Volume Control"));
-        jPanel9.setPreferredSize(new java.awt.Dimension(400, 164));
-
-        backgroundMusicVolumeSlider.setMajorTickSpacing(1);
-        backgroundMusicVolumeSlider.setMaximum(2);
-        backgroundMusicVolumeSlider.setPaintTicks(true);
-        backgroundMusicVolumeSlider.setValue(1);
-        backgroundMusicVolumeSlider.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                backgroundMusicVolumeSliderMouseClicked(evt);
-            }
-        });
-        backgroundMusicVolumeSlider.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                backgroundMusicVolumeSliderMouseDragged(evt);
-            }
-        });
-
-        jLabel38.setText("Music:");
-
-        ambientSoundVolumeSlider.setMajorTickSpacing(1);
-        ambientSoundVolumeSlider.setMaximum(2);
-        ambientSoundVolumeSlider.setPaintTicks(true);
-        ambientSoundVolumeSlider.setValue(1);
-        ambientSoundVolumeSlider.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ambientSoundVolumeSliderMouseClicked(evt);
-            }
-        });
-        ambientSoundVolumeSlider.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                ambientSoundVolumeSliderMouseDragged(evt);
-            }
-        });
-
-        jLabel39.setText("Ambience:");
-
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel39)
-                    .addComponent(jLabel38))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(backgroundMusicVolumeSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 515, Short.MAX_VALUE)
-                    .addComponent(ambientSoundVolumeSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel38, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(backgroundMusicVolumeSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(ambientSoundVolumeSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel39, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(50, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout levelAudioPanelLayout = new javax.swing.GroupLayout(levelAudioPanel);
-        levelAudioPanel.setLayout(levelAudioPanelLayout);
-        levelAudioPanelLayout.setHorizontalGroup(
-            levelAudioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(levelAudioPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(levelAudioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, 601, Short.MAX_VALUE)
-                    .addGroup(levelAudioPanelLayout.createSequentialGroup()
-                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 231, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        levelAudioPanelLayout.setVerticalGroup(
-            levelAudioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(levelAudioPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10))
-        );
-
-        levelEditorTabs.addTab("Audio", levelAudioPanel);
-
-        javax.swing.GroupLayout levelEditorDialogLayout = new javax.swing.GroupLayout(levelEditorDialog.getContentPane());
-        levelEditorDialog.getContentPane().setLayout(levelEditorDialogLayout);
-        levelEditorDialogLayout.setHorizontalGroup(
-            levelEditorDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(levelEditorDialogLayout.createSequentialGroup()
-                .addComponent(levelEditorTabs, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        levelEditorDialogLayout.setVerticalGroup(
-            levelEditorDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(levelEditorDialogLayout.createSequentialGroup()
-                .addComponent(levelEditorTabs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-
         objectSpawnDialog.setTitle("New object...");
         objectSpawnDialog.setBounds(new java.awt.Rectangle(0, 0, 400, 150));
         objectSpawnDialog.setMinimumSize(new java.awt.Dimension(400, 150));
@@ -2327,6 +2001,8 @@ public class GUI extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        topPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
         bringForwardButton.setText("Forwards");
         bringForwardButton.setToolTipText("Send forward");
         bringForwardButton.setActionCommand("f");
@@ -2380,6 +2056,7 @@ public class GUI extends javax.swing.JFrame {
         });
         objectTypeChooser.setSelectedIndex(-1);
 
+        newObjectButton.setMnemonic('N');
         newObjectButton.setText("New...");
         newObjectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2441,7 +2118,7 @@ public class GUI extends javax.swing.JFrame {
             sceneCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sceneCanvasLayout.createSequentialGroup()
                 .addComponent(topPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 385, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 381, Short.MAX_VALUE)
                 .addGroup(sceneCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -2464,6 +2141,7 @@ public class GUI extends javax.swing.JFrame {
         });
         projectMenu.add(newProjectButton);
 
+        openProjectButton.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         openProjectButton.setText("Open...");
         openProjectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2541,13 +2219,125 @@ public class GUI extends javax.swing.JFrame {
 
         levelMenu.setText("Level");
 
-        levelPropertiesMenuButton.setText("Properties");
-        levelPropertiesMenuButton.addActionListener(new java.awt.event.ActionListener() {
+        spawnMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        spawnMenuItem.setText("Spawn point...");
+        spawnMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                levelPropertiesMenuButtonActionPerformed(evt);
+                spawnMenuItemActionPerformed(evt);
             }
         });
-        levelMenu.add(levelPropertiesMenuButton);
+        levelMenu.add(spawnMenuItem);
+
+        cameraLocationMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        cameraLocationMenuItem.setText("Camera location...");
+        cameraLocationMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cameraLocationMenuItemActionPerformed(evt);
+            }
+        });
+        levelMenu.add(cameraLocationMenuItem);
+
+        jMenu2.setText("Lighting");
+
+        topColorMenuItem.setText("Background color (top)...");
+        topColorMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                topColorMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu2.add(topColorMenuItem);
+
+        bottomColorMenuItem.setText("Background color (bottom)...");
+        bottomColorMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bottomColorMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu2.add(bottomColorMenuItem);
+
+        lightingColorMenuItem.setText("Ambience color...");
+        lightingColorMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lightingColorMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu2.add(lightingColorMenuItem);
+
+        jMenuItem3.setText("Ambience intensity...");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem3);
+
+        levelMenu.add(jMenu2);
+
+        jMenu1.setText("Audio");
+
+        jMenuItem8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jMenuItem8.setText("Music");
+        jMenuItem8.setEnabled(false);
+        jMenu1.add(jMenuItem8);
+
+        selectBGMusic.setText("Select track...");
+        selectBGMusic.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectBGMusicActionPerformed(evt);
+            }
+        });
+        jMenu1.add(selectBGMusic);
+
+        loopBGMusicMenuItem.setSelected(true);
+        loopBGMusicMenuItem.setText("Loop");
+        loopBGMusicMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loopBGMusicMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu1.add(loopBGMusicMenuItem);
+
+        autoplayBGMusicMenuItem.setSelected(true);
+        autoplayBGMusicMenuItem.setText("Autoplay");
+        autoplayBGMusicMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                autoplayBGMusicMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu1.add(autoplayBGMusicMenuItem);
+
+        jMenuItem9.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jMenuItem9.setText("Ambient sounds");
+        jMenuItem9.setEnabled(false);
+        jMenu1.add(jMenuItem9);
+
+        selectAmbienceMenuItem.setText("Select track...");
+        selectAmbienceMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectAmbienceMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu1.add(selectAmbienceMenuItem);
+
+        loopAmbientSoundMenuItem.setSelected(true);
+        loopAmbientSoundMenuItem.setText("Loop");
+        loopAmbientSoundMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loopAmbientSoundMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu1.add(loopAmbientSoundMenuItem);
+
+        autoplayAmbientSoundMenuItem.setSelected(true);
+        autoplayAmbientSoundMenuItem.setText("Autoplay");
+        autoplayAmbientSoundMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                autoplayAmbientSoundMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu1.add(autoplayAmbientSoundMenuItem);
+
+        levelMenu.add(jMenu1);
 
         menuBar.add(levelMenu);
 
@@ -2579,63 +2369,8 @@ public class GUI extends javax.swing.JFrame {
 
     }//GEN-LAST:event_formWindowGainedFocus
 
-    private void spawnObjectAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_spawnObjectAction
-        String cmd = evt.getActionCommand();
-        char c = cmd.charAt(0);
-        SceneObject o = new SceneObject(), src = null;
-        if (c == 'c') src = sceneCanvas.getSelectedObject();
-        if (c == 'h') {
-            o.setHitbox(true);
-            o.setWidth(16);
-            o.setHeight(16);
-            o.setName("object"+Math.abs(new Random().nextInt()));
-            Project.getProject().getCurrentLevel().add(o);
-            return;
-        }
-        
-        if (src == null) return;
-        o.setWorldX((int)((sceneCanvas.getWidth()/2)-sceneCanvas.getOriginX()/sceneCanvas.getZoom()));
-        o.setWorldY((int)((sceneCanvas.getHeight()/2)-sceneCanvas.getOriginY()/sceneCanvas.getZoom()));
-        o.setName(src.getName()+"_copy");
-        Project.getProject().getCurrentLevel().add(o);
-        
-        sceneCanvas.repaint();
-        System.out.println("Added new object: "+o.getName());
-    }//GEN-LAST:event_spawnObjectAction
-
-    private void camPosFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_camPosFieldFocusLost
-        String[] s = camPosField.getText().split("\\s");
-        int[] values = MiscMath.parseIntegers(s);
-        Project.getProject().getCurrentLevel().setCameraSpawn(values[0], values[1]);
-        sceneCanvas.repaint();
-    }//GEN-LAST:event_camPosFieldFocusLost
-
-    private void camPosFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_camPosFieldActionPerformed
-
-    }//GEN-LAST:event_camPosFieldActionPerformed
-
     
-    private void levelSpawnFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_levelSpawnFieldFocusLost
-        String s[] = levelSpawnField.getText().split("\\s");
-        int[] values = MiscMath.parseIntegers(s);
-        Project.getProject().getCurrentLevel().setPlayerSpawn(values[0], values[1]);
-        sceneCanvas.repaint();
-    }//GEN-LAST:event_levelSpawnFieldFocusLost
-
     
-    private void objectTypeChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectTypeChooserActionPerformed
-        if (sceneCanvas.getSelectedObject() == null) return;
-        Project.getProject().getCurrentLevel().moveToLayer(1+objectTypeChooser.getSelectedIndex(), sceneCanvas.getSelectedObject());
-        sceneCanvas.repaint();
-    }//GEN-LAST:event_objectTypeChooserActionPerformed
-
-    private void editObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editObjectButtonActionPerformed
-        sceneCanvas.setActiveObject(sceneCanvas.getSelectedObject());
-        GUI.refreshObjectEditor();
-        objectEditorTabs.setSelectedIndex(0);
-        showDialog(objectEditorDialog);
-    }//GEN-LAST:event_editObjectButtonActionPerformed
-
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         int dialogResult = JOptionPane.showConfirmDialog (this, "Would you like to save your progress?", "Hold on a second...", 
                 JOptionPane.YES_NO_CANCEL_OPTION);
@@ -2853,83 +2588,6 @@ public class GUI extends javax.swing.JFrame {
     private void projectMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_projectMenuActionPerformed
         
     }//GEN-LAST:event_projectMenuActionPerformed
-
-    private void levelZoomSliderMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_levelZoomSliderMouseReleased
-        Project.getProject().getCurrentLevel().setZoom(levelZoomSlider.getValue());
-    }//GEN-LAST:event_levelZoomSliderMouseReleased
-
-    private void ambientSoundVolumeSliderMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ambientSoundVolumeSliderMouseDragged
-        Project.getProject().getCurrentLevel().setBGAmbienceVolume(ambientSoundVolumeSlider.getValue());
-    }//GEN-LAST:event_ambientSoundVolumeSliderMouseDragged
-
-    private void ambientSoundVolumeSliderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ambientSoundVolumeSliderMouseClicked
-        Project.getProject().getCurrentLevel().setBGAmbienceVolume(ambientSoundVolumeSlider.getValue());
-    }//GEN-LAST:event_ambientSoundVolumeSliderMouseClicked
-
-    private void backgroundMusicVolumeSliderMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backgroundMusicVolumeSliderMouseDragged
-        Project.getProject().getCurrentLevel().setBGMusicVolume(backgroundMusicVolumeSlider.getValue());
-    }//GEN-LAST:event_backgroundMusicVolumeSliderMouseDragged
-
-    private void backgroundMusicVolumeSliderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backgroundMusicVolumeSliderMouseClicked
-        Project.getProject().getCurrentLevel().setBGMusicVolume(backgroundMusicVolumeSlider.getValue());
-    }//GEN-LAST:event_backgroundMusicVolumeSliderMouseClicked
-
-    private void ambientSoundFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ambientSoundFieldKeyReleased
-        if (new File(Assets.USER_HOME+"/level_editor/"+Project.getProject().getName()+"/assets/audio/"+ambientSoundField.getText()+".ogg")
-            .exists() == false) {
-            ambientSoundField.setForeground(Color.red);
-            return;
-        }
-        if (evt.getKeyChar() == '\n') {
-            Project.getProject().getCurrentLevel().setAmbientSound(ambientSoundField.getText());
-            ambientSoundField.setForeground(Color.black);
-        }
-        if (Project.getProject().getCurrentLevel().getAmbientSound().equals(ambientSoundField.getText()) == false) ambientSoundField.setForeground(Color.blue);
-    }//GEN-LAST:event_ambientSoundFieldKeyReleased
-
-    private void autoAmbientSoundCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoAmbientSoundCheckboxActionPerformed
-        Project.getProject().getCurrentLevel().autoPlayBGAmbience(autoAmbientSoundCheckbox.isSelected());
-    }//GEN-LAST:event_autoAmbientSoundCheckboxActionPerformed
-
-    private void loopAmbientSoundCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loopAmbientSoundCheckboxActionPerformed
-        Project.getProject().getCurrentLevel().loopBGAmbience(loopAmbientSoundCheckbox.isSelected());
-    }//GEN-LAST:event_loopAmbientSoundCheckboxActionPerformed
-
-    private void autoBackgroundMusicCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoBackgroundMusicCheckboxActionPerformed
-        Project.getProject().getCurrentLevel().autoPlayBGMusic(autoBackgroundMusicCheckbox.isSelected());
-    }//GEN-LAST:event_autoBackgroundMusicCheckboxActionPerformed
-
-    private void loopBackgroundMusicCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loopBackgroundMusicCheckboxActionPerformed
-        Project.getProject().getCurrentLevel().loopBGMusic(loopBackgroundMusicCheckbox.isSelected());
-    }//GEN-LAST:event_loopBackgroundMusicCheckboxActionPerformed
-
-    private void backgroundMusicFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_backgroundMusicFieldKeyReleased
-        if (new File(Assets.USER_HOME+"/level_editor/"+Project.getProject().getName()+"/assets/audio/"+backgroundMusicField.getText()+".ogg")
-            .exists() == false) {
-            backgroundMusicField.setForeground(Color.red);
-            return;
-        }
-
-        if (evt.getKeyChar() == '\n') {
-            Project.getProject().getCurrentLevel().setBGMusic(backgroundMusicField.getText());
-            backgroundMusicField.setForeground(Color.black);
-        }
-        if (Project.getProject().getCurrentLevel().getBGMusic().equals(backgroundMusicField.getText()) == false) backgroundMusicField.setForeground(Color.blue);
-    }//GEN-LAST:event_backgroundMusicFieldKeyReleased
-
-    private void ambientIntensitySliderMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ambientIntensitySliderMouseDragged
-        Project.getProject().getCurrentLevel().setLightingIntensity(ambientIntensitySlider.getValue());
-        sceneCanvas.repaint();
-    }//GEN-LAST:event_ambientIntensitySliderMouseDragged
-
-    private void ambientIntensitySliderMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ambientIntensitySliderMouseReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ambientIntensitySliderMouseReleased
-
-    private void ambientIntensitySliderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ambientIntensitySliderMouseClicked
-        Project.getProject().getCurrentLevel().setLightingIntensity(ambientIntensitySlider.getValue());
-        sceneCanvas.repaint();
-    }//GEN-LAST:event_ambientIntensitySliderMouseClicked
 
     private void objectEditorDialogWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_objectEditorDialogWindowClosing
         hideDialog(objectEditorDialog);
@@ -3566,54 +3224,6 @@ public class GUI extends javax.swing.JFrame {
         if (!dialogueNameField.getText().equals(d.getName())) dialogueNameField.setForeground(Color.blue);
     }//GEN-LAST:event_dialogueNameFieldKeyReleased
 
-    /**
-     * Handles the tool buttons. Action command is the int value of the tool.
-     */
-    private void toolButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolButtonActionPerformed
-        int id = Integer.parseInt(evt.getActionCommand());
-        System.out.println("Selected tool "+id);
-        sceneCanvas.setSelectedTool(id);
-        selectButton.setEnabled(id != SceneCanvas.SELECT_TOOL);
-        moveButton.setEnabled(id != SceneCanvas.MOVE_TOOL);
-        cameraButton.setEnabled(id != SceneCanvas.CAMERA_TOOL);
-        resizeButton.setEnabled(id != SceneCanvas.RESIZE_TOOL);
-        sceneCanvas.repaint();
-        sceneCanvas.grabFocus();
-    }//GEN-LAST:event_toolButtonActionPerformed
-
-    private void moveZAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveZAction
-        char c = evt.getActionCommand().charAt(0);
-        if (sceneCanvas.getSelectedObject() != null) {
-            if (c == 'f') Project.getProject().getCurrentLevel().moveForward(sceneCanvas.getSelectedObject());
-            if (c == 'b') Project.getProject().getCurrentLevel().moveBackward(sceneCanvas.getSelectedObject());
-            sceneCanvas.repaint();
-        }
-    }//GEN-LAST:event_moveZAction
-
-    private void sceneCanvasMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sceneCanvasMouseDragged
-        sceneCanvas.handleMouseDrag(evt);
-    }//GEN-LAST:event_sceneCanvasMouseDragged
-
-    private void sceneCanvasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sceneCanvasKeyPressed
-        sceneCanvas.handleKeyPress(evt);
-    }//GEN-LAST:event_sceneCanvasKeyPressed
-
-    private void sceneCanvasMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_sceneCanvasMouseWheelMoved
-        sceneCanvas.handleMouseWheel(evt);
-    }//GEN-LAST:event_sceneCanvasMouseWheelMoved
-
-    private void sceneCanvasMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sceneCanvasMouseMoved
-        sceneCanvas.handleMouseMovement(evt);
-    }//GEN-LAST:event_sceneCanvasMouseMoved
-
-    private void sceneCanvasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sceneCanvasMouseClicked
-        sceneCanvas.handleMouseClick(evt);
-    }//GEN-LAST:event_sceneCanvasMouseClicked
-
-    private void levelPropertiesMenuButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_levelPropertiesMenuButtonActionPerformed
-        showDialog(levelEditorDialog);
-    }//GEN-LAST:event_levelPropertiesMenuButtonActionPerformed
-
     private void objectGalleryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectGalleryButtonActionPerformed
         refreshGalleryLists();
         showDialog(objectGalleryDialog);
@@ -3623,12 +3233,6 @@ public class GUI extends javax.swing.JFrame {
         String project_name = JOptionPane.showInputDialog(this, "Project name:", "Open project...", JOptionPane.PLAIN_MESSAGE);
         JOptionPane.showMessageDialog(this, "Project saving/loading not implemented.");
     }//GEN-LAST:event_openProjectButtonActionPerformed
-
-    private void newObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newObjectButtonActionPerformed
-        refreshGalleryLists();
-        for (SceneObject o: Project.getProject().getGalleryObjects()) spawnList.addItem(o.toString());
-        showDialog(objectSpawnDialog);
-    }//GEN-LAST:event_newObjectButtonActionPerformed
 
     private void spawnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_spawnButtonActionPerformed
         String chosen_name = spawnNameField.getText().trim();
@@ -3663,6 +3267,170 @@ public class GUI extends javax.swing.JFrame {
         System.out.println("Added new object: "+o.getName());
     }//GEN-LAST:event_spawnButtonActionPerformed
 
+    private void sceneCanvasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sceneCanvasKeyPressed
+        sceneCanvas.handleKeyPress(evt);
+    }//GEN-LAST:event_sceneCanvasKeyPressed
+
+    private void sceneCanvasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sceneCanvasMouseClicked
+        sceneCanvas.handleMouseClick(evt);
+    }//GEN-LAST:event_sceneCanvasMouseClicked
+
+    private void sceneCanvasMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_sceneCanvasMouseWheelMoved
+        sceneCanvas.handleMouseWheel(evt);
+    }//GEN-LAST:event_sceneCanvasMouseWheelMoved
+
+    private void sceneCanvasMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sceneCanvasMouseMoved
+        sceneCanvas.handleMouseMovement(evt);
+    }//GEN-LAST:event_sceneCanvasMouseMoved
+
+    private void sceneCanvasMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sceneCanvasMouseDragged
+        sceneCanvas.handleMouseDrag(evt);
+    }//GEN-LAST:event_sceneCanvasMouseDragged
+
+    private void newObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newObjectButtonActionPerformed
+        refreshGalleryLists();
+        for (SceneObject o: Project.getProject().getGalleryObjects()) spawnList.addItem(o.toString());
+        showDialog(objectSpawnDialog);
+    }//GEN-LAST:event_newObjectButtonActionPerformed
+
+    private void objectTypeChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectTypeChooserActionPerformed
+        if (sceneCanvas.getSelectedObject() == null) return;
+        Project.getProject().getCurrentLevel().moveToLayer(1+objectTypeChooser.getSelectedIndex(), sceneCanvas.getSelectedObject());
+        sceneCanvas.repaint();
+    }//GEN-LAST:event_objectTypeChooserActionPerformed
+
+    private void editObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editObjectButtonActionPerformed
+        sceneCanvas.setActiveObject(sceneCanvas.getSelectedObject());
+        GUI.refreshObjectEditor();
+        objectEditorTabs.setSelectedIndex(0);
+        showDialog(objectEditorDialog);
+    }//GEN-LAST:event_editObjectButtonActionPerformed
+
+    private void spawnObjectAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_spawnObjectAction
+        String cmd = evt.getActionCommand();
+        char c = cmd.charAt(0);
+        SceneObject o = new SceneObject(), src = null;
+        if (c == 'c') src = sceneCanvas.getSelectedObject();
+        if (c == 'h') {
+            o.setHitbox(true);
+            o.setWidth(16);
+            o.setHeight(16);
+            o.setName("object"+Math.abs(new Random().nextInt()));
+            Project.getProject().getCurrentLevel().add(o);
+            return;
+        }
+
+        if (src == null) return;
+        o.setWorldX((int)((sceneCanvas.getWidth()/2)-sceneCanvas.getOriginX()/sceneCanvas.getZoom()));
+        o.setWorldY((int)((sceneCanvas.getHeight()/2)-sceneCanvas.getOriginY()/sceneCanvas.getZoom()));
+        o.setName(src.getName()+"_copy");
+        Project.getProject().getCurrentLevel().add(o);
+
+        sceneCanvas.repaint();
+        System.out.println("Added new object: "+o.getName());
+    }//GEN-LAST:event_spawnObjectAction
+
+    private void moveZAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveZAction
+        char c = evt.getActionCommand().charAt(0);
+        if (sceneCanvas.getSelectedObject() != null) {
+            if (c == 'f') Project.getProject().getCurrentLevel().moveForward(sceneCanvas.getSelectedObject());
+            if (c == 'b') Project.getProject().getCurrentLevel().moveBackward(sceneCanvas.getSelectedObject());
+            sceneCanvas.repaint();
+        }
+    }//GEN-LAST:event_moveZAction
+
+    /**
+     * Handles the tool buttons. Action command is the int value of the tool.
+     */
+    private void toolButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolButtonActionPerformed
+        int id = Integer.parseInt(evt.getActionCommand());
+        System.out.println("Selected tool "+id);
+        sceneCanvas.setSelectedTool(id);
+        selectButton.setEnabled(id != SceneCanvas.SELECT_TOOL);
+        moveButton.setEnabled(id != SceneCanvas.MOVE_TOOL);
+        cameraButton.setEnabled(id != SceneCanvas.CAMERA_TOOL);
+        resizeButton.setEnabled(id != SceneCanvas.RESIZE_TOOL);
+        sceneCanvas.repaint();
+        sceneCanvas.grabFocus();
+    }//GEN-LAST:event_toolButtonActionPerformed
+
+    private void topColorMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_topColorMenuItemActionPerformed
+        Color c = JColorChooser.showDialog(this, "Choose the top background color...", Project.getProject().getCurrentLevel().getTopBGColor());
+        if (c != null) Project.getProject().getCurrentLevel().setTopBGColor(c);
+    }//GEN-LAST:event_topColorMenuItemActionPerformed
+
+    private void bottomColorMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bottomColorMenuItemActionPerformed
+        Color c = JColorChooser.showDialog(this, "Choose the bottom background color...", Project.getProject().getCurrentLevel().getBottomBGColor());
+        if (c != null) Project.getProject().getCurrentLevel().setBottomBGColor(c);
+    }//GEN-LAST:event_bottomColorMenuItemActionPerformed
+
+    private void lightingColorMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lightingColorMenuItemActionPerformed
+        Color c = JColorChooser.showDialog(this, "Choose the lighting color...", Project.getProject().getCurrentLevel().getLightingColor());
+        if (c != null) Project.getProject().getCurrentLevel().setLightingColor(c);
+    }//GEN-LAST:event_lightingColorMenuItemActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        String input = JOptionPane.showInputDialog(this, "Ambient light intensity:", "Set lighting intensity...", JOptionPane.PLAIN_MESSAGE);
+        int[] parsed = parseString(input);
+        if (parsed.length > 0) {
+            double percent = (double)parsed[0]/100d;
+            Project.getProject().getCurrentLevel().setLightingIntensity(percent);
+        }
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void spawnMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_spawnMenuItemActionPerformed
+        String input = JOptionPane.showInputDialog(this, "Coordinates:", "Set player spawn...", JOptionPane.PLAIN_MESSAGE);
+        int[] parsed = parseString(input);
+        if (parsed.length >= 2) Project.getProject().getCurrentLevel().setPlayerSpawn(parsed[0], parsed[1]);
+    }//GEN-LAST:event_spawnMenuItemActionPerformed
+
+    private void cameraLocationMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cameraLocationMenuItemActionPerformed
+        String input = JOptionPane.showInputDialog(this, "Coordinates:", "Set camera location...", JOptionPane.PLAIN_MESSAGE);
+        int[] parsed = parseString(input);
+        if (parsed.length >= 2) Project.getProject().getCurrentLevel().setCameraSpawn(parsed[0], parsed[1]);
+    }//GEN-LAST:event_cameraLocationMenuItemActionPerformed
+
+    private void selectBGMusicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectBGMusicActionPerformed
+        String input = JOptionPane.showInputDialog(this, "Set background music...", 
+                Project.getProject().getCurrentLevel().getBGMusic());
+        if (input != null) Project.getProject().getCurrentLevel().setBGMusic(input);
+    }//GEN-LAST:event_selectBGMusicActionPerformed
+
+    private void selectAmbienceMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectAmbienceMenuItemActionPerformed
+        String input = JOptionPane.showInputDialog(this, "Set ambient sound...", 
+                Project.getProject().getCurrentLevel().getAmbientSound());
+        if (input != null) Project.getProject().getCurrentLevel().setAmbientSound(input);
+    }//GEN-LAST:event_selectAmbienceMenuItemActionPerformed
+
+    private void loopBGMusicMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loopBGMusicMenuItemActionPerformed
+        Project.getProject().getCurrentLevel().loopBGMusic(loopBGMusicMenuItem.isSelected());
+    }//GEN-LAST:event_loopBGMusicMenuItemActionPerformed
+
+    private void autoplayBGMusicMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoplayBGMusicMenuItemActionPerformed
+        Project.getProject().getCurrentLevel().autoPlayBGMusic(autoplayBGMusicMenuItem.isSelected());
+    }//GEN-LAST:event_autoplayBGMusicMenuItemActionPerformed
+
+    private void loopAmbientSoundMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loopAmbientSoundMenuItemActionPerformed
+        Project.getProject().getCurrentLevel().loopBGAmbience(loopAmbientSoundMenuItem.isSelected());
+    }//GEN-LAST:event_loopAmbientSoundMenuItemActionPerformed
+
+    private void autoplayAmbientSoundMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoplayAmbientSoundMenuItemActionPerformed
+        Project.getProject().getCurrentLevel().autoPlayBGAmbience(autoplayAmbientSoundMenuItem.isSelected());
+    }//GEN-LAST:event_autoplayAmbientSoundMenuItemActionPerformed
+
+    /**
+     * Turns a String of numbers into an int array.
+     * @param s The string to parse.
+     * @return An int array.
+     */
+    private static int[] parseString(String s) {
+        if (s == null) return new int[]{};
+        String parsed[] = s.toLowerCase().split("[^0-9]");
+        int[] result = new int[parsed.length];
+        for (int i = 0; i < parsed.length; i++) result[i] = Integer.parseInt(parsed[i]);
+        return result;
+    }
+    
     public static void refreshGalleryLists() { 
         GUI.refreshList(galleryList, Project.getProject().getGalleryObjects());
         spawnList.removeAllItems();
@@ -3891,13 +3659,15 @@ public class GUI extends javax.swing.JFrame {
         }
     }
     
-    public static void refreshLevelEditor() {
+    public static void refreshLevelMenu() {
+        
+        Level current = Project.getProject().getCurrentLevel();
+        loopAmbientSoundMenuItem.setSelected(current.loopBGAmbience());
+        loopBGMusicMenuItem.setSelected(current.loopBGMusic());
+        autoplayAmbientSoundMenuItem.setSelected(current.autoPlayBGAmbience());
+        autoplayBGMusicMenuItem.setSelected(current.autoPlayBGMusic());
         
         sceneCanvas.repaint();
-        levelSpawnField.setText(Project.getProject().getCurrentLevel().playerSpawn()[0]+" "+Project.getProject().getCurrentLevel().playerSpawn()[1]);
-        camPosField.setText(Project.getProject().getCurrentLevel().cameraSpawn()[0]+" "+Project.getProject().getCurrentLevel().cameraSpawn()[1]);
-        
-        levelZoomSlider.setValue(Project.getProject().getCurrentLevel().getZoom());
         
     }
     
@@ -3985,9 +3755,6 @@ public class GUI extends javax.swing.JFrame {
     private static javax.swing.JButton addOtherSpeakEventButton;
     private static javax.swing.JButton addPlayerChoiceButton;
     private static javax.swing.JButton addThisSpeakEventButton;
-    private static javax.swing.JSlider ambientIntensitySlider;
-    private static javax.swing.JTextField ambientSoundField;
-    private static javax.swing.JSlider ambientSoundVolumeSlider;
     private static javax.swing.JButton animationAddFrameButton;
     private static javax.swing.JList animationChooser;
     private static javax.swing.JButton animationDeleteFrameButton;
@@ -3999,16 +3766,15 @@ public class GUI extends javax.swing.JFrame {
     private static javax.swing.JTextField animationNameField;
     private static javax.swing.JSpinner animationPreviewZoomChooser;
     private static javax.swing.JPanel animationPropertiesPanel;
-    private static javax.swing.JCheckBox autoAmbientSoundCheckbox;
-    private static javax.swing.JCheckBox autoBackgroundMusicCheckbox;
-    private static javax.swing.JTextField backgroundMusicField;
-    private static javax.swing.JSlider backgroundMusicVolumeSlider;
+    private static javax.swing.JCheckBoxMenuItem autoplayAmbientSoundMenuItem;
+    private static javax.swing.JCheckBoxMenuItem autoplayBGMusicMenuItem;
     public static javax.swing.JTree blockChooser;
     private static javax.swing.JComboBox blockParamChooser;
     private static javax.swing.JTextField blockParamValueField;
-    static javax.swing.JButton bringForwardButton;
-    private static javax.swing.JTextField camPosField;
-    private javax.swing.JButton cameraButton;
+    private javax.swing.JMenuItem bottomColorMenuItem;
+    public static javax.swing.JButton bringForwardButton;
+    public static javax.swing.JButton cameraButton;
+    private javax.swing.JMenuItem cameraLocationMenuItem;
     private static javax.swing.JRadioButton choiceEventDialogueToggle;
     private static javax.swing.JRadioButton choiceEventResponseToggle;
     private static javax.swing.JRadioButton choiceEventScriptToggle;
@@ -4016,7 +3782,7 @@ public class GUI extends javax.swing.JFrame {
     private static javax.swing.JPanel chooseAnimationPanel;
     private javax.swing.JPanel chooseDialogueEventPanel;
     private static javax.swing.JPanel chooseDialoguePanel;
-    static javax.swing.JButton cloneObjectButton;
+    public static javax.swing.JButton cloneObjectButton;
     private static javax.swing.JButton deleteAnimationButton;
     private static javax.swing.JButton deleteBlockButton;
     private static javax.swing.JButton deleteChoiceButton;
@@ -4041,7 +3807,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton duplicateGalleryObjectButton;
     private javax.swing.JButton editGalleryObjectButton;
     private javax.swing.JButton editLevelButton;
-    static javax.swing.JButton editObjectButton;
+    public static javax.swing.JButton editObjectButton;
     private javax.swing.JButton exportToGalleryButton;
     public static gui.FlowCanvas flowCanvas;
     public static javax.swing.JList flowChooser;
@@ -4050,12 +3816,11 @@ public class GUI extends javax.swing.JFrame {
     static javax.swing.JList galleryList;
     private static javax.swing.JLabel inCurrentLevelLabel;
     private static javax.swing.JLabel inCurrentProjectLabel;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JCheckBox jCheckBox1;
+    public static javax.swing.JButton jButton6;
+    public static javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private static javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
@@ -4068,20 +3833,21 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
-    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
     private static javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
-    private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
-    private javax.swing.JLabel jLabel38;
-    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel49;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -4094,8 +3860,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JScrollPane jScrollPane13;
     private javax.swing.JScrollPane jScrollPane19;
@@ -4116,26 +3880,19 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JToggleButton jToggleButton4;
     private javax.swing.JToggleButton jToggleButton5;
     private javax.swing.JToggleButton jToggleButton6;
-    private javax.swing.JPanel levelAudioPanel;
-    private javax.swing.JPanel levelBasicsPanel;
-    private javax.swing.JDialog levelEditorDialog;
-    private static javax.swing.JTabbedPane levelEditorTabs;
-    private javax.swing.JPanel levelLightingPanel;
     private static javax.swing.JList levelList;
     private javax.swing.JMenuItem levelManagerButton;
     public static javax.swing.JDialog levelManagerDialog;
     private javax.swing.JMenu levelMenu;
     private javax.swing.JTextField levelNameField;
-    private javax.swing.JMenuItem levelPropertiesMenuButton;
-    private static javax.swing.JTextField levelSpawnField;
-    private static javax.swing.JSlider levelZoomSlider;
+    private javax.swing.JMenuItem lightingColorMenuItem;
     private static javax.swing.JRadioButton linkToDialogueRadioButton;
     private static javax.swing.JTextField linkToField;
     private static javax.swing.JRadioButton linkToScriptRadioButton;
-    private static javax.swing.JCheckBox loopAmbientSoundCheckbox;
-    private static javax.swing.JCheckBox loopBackgroundMusicCheckbox;
+    private static javax.swing.JCheckBoxMenuItem loopAmbientSoundMenuItem;
+    private static javax.swing.JCheckBoxMenuItem loopBGMusicMenuItem;
     public static javax.swing.JMenuBar menuBar;
-    private javax.swing.JButton moveButton;
+    public static javax.swing.JButton moveButton;
     private static javax.swing.JButton moveChoiceDownButton;
     private static javax.swing.JButton moveChoiceUpButton;
     private static javax.swing.JButton newAnimationButton;
@@ -4143,7 +3900,7 @@ public class GUI extends javax.swing.JFrame {
     private static javax.swing.JButton newFlowButton;
     private javax.swing.JButton newGalleryObjectButton;
     private javax.swing.JMenuItem newLevelButton;
-    private javax.swing.JButton newObjectButton;
+    public static javax.swing.JButton newObjectButton;
     private javax.swing.JMenuItem newProjectButton;
     private static javax.swing.JPanel objectAnimationPanel;
     private static javax.swing.JPanel objectBasicPanel;
@@ -4159,26 +3916,30 @@ public class GUI extends javax.swing.JFrame {
     private static javax.swing.JLabel objectPreviewPane;
     private javax.swing.JDialog objectSpawnDialog;
     static javax.swing.JTextField objectTextureField;
-    static javax.swing.JComboBox objectTypeChooser;
+    public static javax.swing.JComboBox objectTypeChooser;
     static javax.swing.JTextField objectTypeField;
     private javax.swing.JMenuItem openAssetsFolderButton;
     private javax.swing.JMenuItem openProjectButton;
     private javax.swing.JMenu projectMenu;
     private javax.swing.JMenuItem reloadAssetsButton;
     private javax.swing.JButton renameLevelButton;
-    private javax.swing.JButton resizeButton;
+    public static javax.swing.JButton resizeButton;
     private static javax.swing.JTextArea resultsTextBox;
     private static javax.swing.JCheckBox runOnSpawnCheckbox;
     private javax.swing.JMenuItem saveProjectButton;
-    static final gui.SceneCanvas sceneCanvas = new gui.SceneCanvas();
-    private javax.swing.JButton selectButton;
-    static javax.swing.JButton sendBackwardsButton;
+    public static gui.SceneCanvas sceneCanvas;
+    private javax.swing.JMenuItem selectAmbienceMenuItem;
+    private javax.swing.JMenuItem selectBGMusic;
+    public static javax.swing.JButton selectButton;
+    public static javax.swing.JButton sendBackwardsButton;
     private static javax.swing.JButton spawnButton;
     private static javax.swing.JComboBox<String> spawnList;
+    private javax.swing.JMenuItem spawnMenuItem;
     private static javax.swing.JTextField spawnNameField;
     public static javax.swing.JMenu statusIndicator;
     public static javax.swing.JDialog testOutputDialog;
     private static javax.swing.JToggleButton toggleAnimationPreviewButton;
+    private javax.swing.JMenuItem topColorMenuItem;
     private javax.swing.JPanel topPanel;
     private javax.swing.JMenuItem viewRootButton;
     // End of variables declaration//GEN-END:variables
