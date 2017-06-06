@@ -12,22 +12,20 @@ import java.net.URLConnection;
 import javax.swing.JOptionPane;
 import misc.Assets;
 
-public class DownloadThread extends Thread {
+public class UpdateManager extends Thread {
     
     private static String source, dest;
-    private static boolean downloading = false, editor_update = false, runtime_update = false;
-    private static DownloadThread thread;
+    private static boolean editor_update = false, runtime_update = false, blocked = false;
+    private static Thread thread;
     
-    public static int LEVEL_EDITOR_ID = 10;
-    
-    private DownloadThread(){}
+    public static final int VERSION_ID = 10;
     
     /**
      * Downloads a file in the main thread. Only use this for smaller files.
      * @param source The source URL.
      * @param dest The destination file path.
      */
-    public static boolean download(String source, String dest) {
+    private static boolean download(String source, String dest) {
         System.out.println("Downloading...");
         
         URL url; //represents the location of the file we want to dl.
@@ -52,7 +50,7 @@ public class DownloadThread extends Thread {
                 fileData[(int) x] = dis.readByte();
                 if (x > 0) {
                     progress = (int) (x / con.getContentLength() * 100);
-                    if (progress > last_progress) { GUI.statusIndicator.setText("Downloading game files: "+progress+"%"); }
+                    if (progress > last_progress) { GUI.statusIndicator.setText("Download in progress: "+progress+"%"); }
                     last_progress = progress;
                 }
 
@@ -81,11 +79,18 @@ public class DownloadThread extends Thread {
     /**
      * Downloads a file in a different thread. 
      * Should only use it for the game jar; server meta data will download quick enough without it.
-     * @param source The source URL.
-     * @param dest The file path you wish to save the downloaded file to.
+     * @param src The source URL.
+     * @param dst The file path you wish to save the downloaded file to.
      */
     public static void downloadThreaded(String src, String dst) {
-        thread = new DownloadThread();
+        if (blocked) { System.err.println("Download failed: download already in progress."); }
+        thread = new Thread(new Runnable() {
+            public void run() {
+                blocked = true;
+                download(source, dest);
+                blocked = false;
+            }
+        });
         source = src;
         dest = dst;
         thread.start();
@@ -99,7 +104,7 @@ public class DownloadThread extends Thread {
             URL url = new URL("https://computerology.bitbucket.io/tools/editor/version.txt");
             BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
             runtime_update = Integer.parseInt(br.readLine().replace("runtime = ", "")) >= 0;
-            editor_update = Integer.parseInt(br.readLine().replace("editor = ", "")) >= LEVEL_EDITOR_ID;
+            editor_update = Integer.parseInt(br.readLine().replace("editor = ", "")) >= VERSION_ID;
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -114,12 +119,8 @@ public class DownloadThread extends Thread {
             JOptionPane.showMessageDialog(null, "A newer version of the runtime was found."
                     + "\nThe editor will now download it in the background.");
             downloadThreaded("https://computerology.bitbucket.io/tools/editor/runtime.jar",
-                Assets.USER_HOME+"/level_editor/jars/runtime.jar");
+                Assets.USER_HOME+"/platformr/jars/runtime.jar");
         }
-    }
-    
-    public void run() {
-        download(source, dest);
     }
     
 }

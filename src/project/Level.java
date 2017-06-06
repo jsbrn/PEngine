@@ -13,7 +13,7 @@ public class Level {
     
     private String name = "", ambient_sound = "", bg_music = "";
     private Color bg_color_top, bg_color_bottom, lighting_color;
-    private int width = 128, height = 128, zoom = 4;
+    private int zoom = 4; private int[] bounds;
     private double lighting_intensity = 0;
     private boolean loop_bg_music = true, loop_ambient_sound = true, auto_bg_music = true,
             auto_ambient_sound = true;
@@ -26,6 +26,7 @@ public class Level {
         for (int i = 0; i < layers.length; i++) {
             this.layers[i] = new ArrayList<SceneObject>();
         }
+        this.bounds = new int[]{-128, -64, 256, 128};
         this.bg_color_top = new Color(0, 0, 0);
         this.bg_color_bottom = new Color(0, 0, 0);
         this.lighting_color = new Color(0, 0, 0);
@@ -69,7 +70,7 @@ public class Level {
     public float getBGMusicVolume() { return bg_music_vol; }
     
     
-    public int[] dimensions() { return new int[]{width, height}; }
+    public int[] bounds() { return bounds; }
     public int getZoom() { return zoom; }
     public void setZoom(int z) { zoom = z; }
     
@@ -86,12 +87,14 @@ public class Level {
     }
     
     public SceneObject getObject(int onscreen_x, int onscreen_y) {
-        for (int i = layers[ALL_OBJECTS].size()-1; i != -1; i--) {
-            SceneObject o = layers[ALL_OBJECTS].get(i);
-            int[] on_screen = o.getOnscreenCoordinates();
-            if (MiscMath.pointIntersects(onscreen_x, onscreen_y, 
-                    on_screen[0], on_screen[1], o.getOnscreenWidth(), o.getOnscreenHeight())) {
-                return o;
+        for (int l = FOREGROUND_OBJECTS; l >= DISTANT_OBJECTS; l--) {
+            for (int i = layers[l].size()-1; i != -1; i--) {
+                SceneObject o = layers[l].get(i);
+                int[] on_screen = o.getOnscreenCoords();
+                if (MiscMath.pointIntersects(onscreen_x, onscreen_y, 
+                        on_screen[0], on_screen[1], o.getOnscreenWidth(), o.getOnscreenHeight())) {
+                    return o;
+                }
             }
         }
         return null;
@@ -145,11 +148,11 @@ public class Level {
                 }
             }
         }
+        o.setLayer(layer);
     }
     
-    public void resize(double x, double y) {
-        width = (int)(width + x < 1 ? 1 : width + x);
-        height = (int)(height + y < 1 ? 1 : height + y);
+    public void setBounds(int x, int y, int w, int h) {
+        bounds = new int[]{x, y, w, h};
     }
     
     public boolean containsObject(String name) {

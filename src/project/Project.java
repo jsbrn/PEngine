@@ -49,10 +49,14 @@ public class Project {
     }
     
     public String getName() { return name; }
-    public String getDirectory() { return Assets.USER_HOME+"/level_editor/projects/"+name+"/"; }
+    public String getDirectory() { return Assets.USER_HOME+"/platformr/projects/"+name; }
     public boolean existsOnDisk() { return new File(getDirectory()).exists(); }
     
     public SceneObject getGalleryObject(int i) { return object_gallery.get(i); }
+    public SceneObject getGalleryObject(String type) { 
+        for (SceneObject g: object_gallery) if (g.getType().equals(type)) return g;
+        return null;
+    }
     public void addGalleryObject(SceneObject o) { if (!object_gallery.contains(o)) object_gallery.add(o); }
     public void removeGalleryObject(SceneObject o) { if (object_gallery.contains(o)) object_gallery.remove(o); }
     public boolean removeGalleryObject(int index) {
@@ -60,6 +64,10 @@ public class Project {
         return object_gallery.remove(index) != null;
     }
     public boolean containsGalleryObject(SceneObject o) { return object_gallery.contains(o); }
+    public boolean containsGalleryObject(String type) { 
+        for (SceneObject o: object_gallery) if (o.getType().equals(type)) return true;
+        return false;
+    }
     public int gallerySize() { return object_gallery.size(); }
     
     public boolean containsLevel(String level_name) {
@@ -109,12 +117,12 @@ public class Project {
     }
     
     public void mkdirs() {
-        File project = new File(Assets.USER_HOME+"/level_editor/projects/"+name+"/");
-        File assets = new File(Assets.USER_HOME+"/level_editor/projects/"+name+"/assets/");
-        File textures = new File(Assets.USER_HOME+"/level_editor/projects/"+name+"/assets/textures");
-        File object_textures = new File(Assets.USER_HOME+"/level_editor/projects/"+name+"/assets/textures/objects");
-        File animation_sprites = new File(Assets.USER_HOME+"/level_editor/projects/"+name+"/assets/textures/animations");
-        File audio_files = new File(Assets.USER_HOME+"/level_editor/projects/"+name+"/assets/audio/");
+        File project = new File(getDirectory());
+        File assets = new File(getDirectory()+"/assets/");
+        File textures = new File(getDirectory()+"/assets/textures");
+        File object_textures = new File(getDirectory()+"/assets/textures/objects");
+        File animation_sprites = new File(getDirectory()+"/assets/textures/animations");
+        File audio_files = new File(getDirectory()+"/assets/audio/");
         if (!project.exists()) project.mkdir();
         if (!assets.exists()) assets.mkdir();
         if (!textures.exists()) textures.mkdir();

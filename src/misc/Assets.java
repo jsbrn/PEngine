@@ -6,19 +6,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
+import project.Project;
 import project.objects.components.Block;
-import threads.DownloadThread;
-import threads.PreviewThread;
+import threads.UpdateManager;
+import threads.AnimationPlayer;
 
 public class Assets {
     
-    public static String PROJECT_NAME = "", USER_HOME;
+    public static String USER_HOME;
     public static ArrayList<String> OBJECT_TEXTURE_NAMES = new ArrayList<String>(),
             ANIMATION_TEXTURE_NAMES = new ArrayList<String>();
     public static ArrayList<BufferedImage> OBJECT_TEXTURES = new ArrayList<BufferedImage>(),
             ANIMATION_TEXTURES = new ArrayList<BufferedImage>();
     
-    public static PreviewThread PREVIEW_THREAD;
+    public static AnimationPlayer PREVIEW_THREAD;
     
     private static Block[] blocks;
     
@@ -39,11 +40,9 @@ public class Assets {
      * first. Should be called on every new project load.
      */
     public static void load() {
-        USER_HOME = System.getProperty("user.home");
-        PREVIEW_THREAD = new PreviewThread();
-        PREVIEW_THREAD.start();
-        File object_textures = new File(USER_HOME+"/level_editor/projects/"+PROJECT_NAME+"/assets/textures/objects");
-        File anim_textures = new File(USER_HOME+"/level_editor/projects/"+PROJECT_NAME+"/assets/textures/animations");
+        AnimationPlayer.init(null);
+        File object_textures = new File(Project.getProject().getDirectory()+"/assets/textures/objects");
+        File anim_textures = new File(Project.getProject().getDirectory()+"/assets/textures/animations");
         OBJECT_TEXTURES.clear();
         OBJECT_TEXTURE_NAMES.clear();
         ANIMATION_TEXTURES.clear();
@@ -54,9 +53,10 @@ public class Assets {
     }
     
     public static void mkdirs() {
-        new File(Assets.USER_HOME+"/level_editor").mkdir();
-        new File(Assets.USER_HOME+"/level_editor/jars").mkdir();
-        new File(Assets.USER_HOME+"/level_editor/projects").mkdir();
+        USER_HOME = System.getProperty("user.home");
+        new File(Assets.USER_HOME+"/platformr/").mkdir();
+        new File(Assets.USER_HOME+"/platformr/jars").mkdir();
+        new File(Assets.USER_HOME+"/platformr/projects").mkdir();
     }
     
     private static void initBlockList() {   

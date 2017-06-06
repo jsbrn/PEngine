@@ -1,5 +1,7 @@
 package misc;
 
+import gui.GUI;
+import gui.SceneCanvas;
 import java.util.ArrayList;
 
 public class MiscMath {
@@ -151,6 +153,29 @@ public class MiscMath {
             c+=s+" ";
         }
         return c.trim();
+    }
+    
+    /**
+     * Rounds a to the nearest b.
+     *
+     * @return The value of a after rounding.
+     */
+    public static double round(double a, double b) {
+        return Math.round(a / b) * b;
+    }
+    
+    public static double[] getWorldCoords(int onscreen_x, int onscreen_y) {
+        SceneCanvas canvas = GUI.getSceneCanvas();
+        return new double[]{((onscreen_x - (canvas.getWidth() / 2)) / canvas.getZoom()) + canvas.getCameraX(),
+                ((onscreen_y - (canvas.getHeight() / 2)) / canvas.getZoom()) + canvas.getCameraY()};
+    }
+
+    public static int[] getOnscreenCoords(double world_x, double world_y) {
+        SceneCanvas canvas = GUI.getSceneCanvas();
+        world_x = MiscMath.round(world_x, 1);
+        world_y = MiscMath.round(world_y, 1);
+        return new int[]{(int) round((world_x - canvas.getCameraX()) * canvas.getZoom(), 1) + (canvas.getWidth() / 2),
+                (int) round((world_y - canvas.getCameraY()) * canvas.getZoom(), 1) + (canvas.getHeight() / 2)};
     }
     
     /**

@@ -11,10 +11,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import misc.Assets;
-import project.objects.components.Dialogue;
+import misc.MiscMath;
+import project.Level;
 import project.objects.components.Flow;
 import project.Project;
 
@@ -22,37 +21,25 @@ public class SceneObject {
     
     private double world_x, world_y, world_w, world_h;
     private String name, type;
-    private int layer = 1;
+    private int layer = Level.MIDDLE_OBJECTS;
     private boolean grav, collides, locked;
     
     public ArrayList<Animation> animations = new ArrayList<Animation>();
-    public ArrayList<Dialogue> dialogues = new ArrayList<Dialogue>();
     private ArrayList<Flow> flows = new ArrayList<Flow>();
     
     boolean hitbox = false;
     
     public String texture;
     
-    public SceneObject(int world_x, int world_y, int world_w, int world_h, String name) {
-        this.world_x = world_x;
-        this.world_y = world_y;
-        this.world_w = world_w;
-        this.world_h = world_h;
-        this.name = name;
-        this.type = "";
-        this.layer = 2;
-        this.grav = false;
-        this.collides = true;
-        this.texture = "";
-    }
-    
     public SceneObject() {
-        this.layer = 2;
+        this.layer = Level.MIDDLE_OBJECTS;
         this.grav = false;
         this.type = "";
         this.collides = true;
         this.name = "";
         this.texture = "";
+        this.world_w = 16;
+        this.world_h = 16;
     }
     
     public void setHitbox(boolean b) {
@@ -65,21 +52,6 @@ public class SceneObject {
     
     public void move(double x, double y) {
         world_x += x; world_y += y;
-        if (world_x < 0) {
-            world_x = 0;
-        }
-        if (world_y < 0) {
-            world_y = 0;
-        }
-    }
-    
-    public boolean containsDialogue(String name) {
-        for (Dialogue o: dialogues) {
-            if (o.getName().equals(name)) {
-                return true;
-            }
-        }
-        return false;
     }
     
     public boolean containsAnimation(String name) {
@@ -110,13 +82,11 @@ public class SceneObject {
     
     public void resize(double x, double y) {
         world_w += x; world_h += y;
-        if (world_w < 1) {
-            world_w = 1;
-        }
-        if (world_h < 1) {
-            world_h = 1;
-        }
+        world_w = world_w < 2 ? 2 : world_w;
+        world_h = world_h < 2 ? 2 : world_h;
     }
+    
+    public void setLayer(int l) { layer = l; }
     
     public void setWidth(int w) {
         world_w = w;
@@ -128,12 +98,10 @@ public class SceneObject {
     
     public void setWorldX(int x) {
         world_x = x;
-        if (world_x < 0) { world_x = 0; }
     }
     
     public void setWorldY(int y) {
         world_y = y;
-        if (world_y < 0) { world_y = 0; }
     }
     
     public String getType() { return type; }
@@ -155,24 +123,29 @@ public class SceneObject {
     public void setCollides(boolean c) { this.collides = c; }
     
     public int[] getWorldCoordinates() {
-        return new int[]{(int)world_x, (int)world_y};
+        return new int[]{(int)MiscMath.round(world_x, 1), (int)MiscMath.round(world_y, 1)};
     }
     
-    public int[] getOnscreenCoordinates() {
-        return new int[]{(int)(GUI.getSceneCanvas().getOriginX()+(world_x*GUI.getSceneCanvas().getZoom())), 
-                (int)(GUI.getSceneCanvas().getOriginY()+(world_y*GUI.getSceneCanvas().getZoom()))};
+    public int[] getOnscreenCoords() {
+        int[] wc = getWorldCoordinates();
+        int[] osc = MiscMath.getOnscreenCoords(wc[0], wc[1]);
+        //osc[0] = (int)MiscMath.round(osc[0], GUI.getSceneCanvas().getZoom());
+        //osc[1] = (int)MiscMath.round(osc[1], GUI.getSceneCanvas().getZoom());
+        return osc;
     }
     
     public int getOnscreenWidth() {
-        return (int)(world_w*GUI.getSceneCanvas().getZoom());
+        int[] dims = getDimensions();
+        return (int)(dims[0]*GUI.getSceneCanvas().getZoom());
     }
     
     public int getOnscreenHeight() {
-        return (int)(world_h*GUI.getSceneCanvas().getZoom());
+        int[] dims = getDimensions();
+        return (int)(dims[1]*GUI.getSceneCanvas().getZoom());
     }
     
     public int[] getDimensions() {
-        return new int[]{(int)world_w, (int)world_h};
+        return new int[]{(int)MiscMath.round(world_w, 1), (int)MiscMath.round(world_h, 1)};
     }
     
     public void save(BufferedWriter bw) {
@@ -194,12 +167,11 @@ public class SceneObject {
             
             for (Flow f: flows) f.save(bw);
             for (Animation a: animations) a.save(bw);
-            for (Dialogue d: dialogues) d.save(bw);
             
             bw.write("/so");
             
         } catch (IOException ex) {
-            Logger.getLogger(Animation.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
     
@@ -223,15 +195,6 @@ public class SceneObject {
             o.animations.add(new_a);
         }
         
-        o.dialogues.clear();
-        for (Dialogue d: this.dialogues) {
-            Dialogue new_d = new Dialogue();
-            d.copyTo(new_d);
-            o.dialogues.add(new_d);
-            new_d.setParent(o);
-            System.out.println("Adding "+new_d+" to "+o);
-        }
-        
         o.flows.clear();
         for (Flow f: this.flows) {
             Flow new_f = new Flow();
@@ -244,9 +207,15 @@ public class SceneObject {
         o.setWorldY(this.getWorldCoordinates()[1] + 5);
         o.setWidth(this.getDimensions()[0]);
         o.setHeight(this.getDimensions()[1]);
+        
     }
     
     public void draw(Graphics g) {
+        int[] osc = getOnscreenCoords();
+        draw(osc[0], osc[1], (int)GUI.getSceneCanvas().getZoom(), g);
+    }
+    
+    public void draw(int x, int y, int z, Graphics g) {
         BufferedImage texture = null;
         if (Assets.OBJECT_TEXTURE_NAMES.contains(this.texture)) {
             texture = Assets.OBJECT_TEXTURES.get(Assets.OBJECT_TEXTURE_NAMES.indexOf(this.texture));
@@ -254,48 +223,34 @@ public class SceneObject {
         
         SceneCanvas canvas = GUI.getSceneCanvas();
         
+        int[] osc = new int[]{x, y};
+        int w = getDimensions()[0]*z;
+        int h = getDimensions()[1]*z;
+        
         if (isHitbox()) {
             g.setColor(new Color(50, 50, 100, 100));
-            g.fillRect(
-                    (int)(canvas.getOriginX()+((int)world_x*canvas.getZoom())), 
-                    (int)(canvas.getOriginY()+((int)world_y*canvas.getZoom())), 
-                    (int)((int)world_w*canvas.getZoom()),
-                    (int)((int)world_h*canvas.getZoom()));
+            g.fillRect(osc[0], osc[1], w, h);
         } else {
             if (texture != null && Assets.OBJECT_TEXTURE_NAMES.contains(this.texture)) {
                 g.setColor(Color.white);
-                g.drawImage(texture.getScaledInstance((int)((int)world_w*canvas.getZoom()),
-                        (int)((int)world_h*canvas.getZoom()), Image.SCALE_FAST), (int)(canvas.getOriginX()+((int)world_x*canvas.getZoom())), 
-                        (int)(canvas.getOriginY()+((int)world_y*canvas.getZoom())), null);
+                g.drawImage(texture.getScaledInstance(w, h, Image.SCALE_FAST), osc[0], osc[1], null);
             } else {
                 g.setColor(Color.red);
-                g.drawRect(
-                    (int)(canvas.getOriginX()+((int)world_x*canvas.getZoom())), 
-                    (int)(canvas.getOriginY()+((int)world_y*canvas.getZoom())), 
-                    (int)((int)world_w*canvas.getZoom()),
-                    (int)((int)world_h*canvas.getZoom()));
-                g.drawLine((int)(canvas.getOriginX()+((int)world_x*canvas.getZoom())), 
-                    (int)(canvas.getOriginY()+((int)world_y*canvas.getZoom())),
-                    (int)(canvas.getOriginX()+((int)world_x*canvas.getZoom()))+(int)((int)world_w*canvas.getZoom()), 
-                    (int)(canvas.getOriginY()+((int)world_y*canvas.getZoom()))+(int)((int)world_h*canvas.getZoom()));
+                g.drawRect(osc[0], osc[1], w, h);
+                g.drawLine(osc[0], osc[1], (int)(osc[0])+w, (int)(osc[1])+h);
                 g.setColor(Color.white);
-                canvas.drawString(this.texture+".png", getOnscreenCoordinates()[0], getOnscreenCoordinates()[1], g);
+                canvas.drawString(this.texture+".png", osc[0], osc[1], g);
             }
         }
         if (this.equals(canvas.getSelectedObject())) {
-            g.setColor(Color.cyan.darker());
-            g.drawRect(
-                (int)(canvas.getOriginX()+((int)world_x*canvas.getZoom()))-1, 
-                (int)(canvas.getOriginY()+((int)world_y*canvas.getZoom()))-1, 
-                (int)((int)world_w*canvas.getZoom())+2,
-                (int)((int)world_h*canvas.getZoom())+2);
+            g.setColor(Color.white);
+            g.drawRect(osc[0]-1, osc[1]-1, w+2, h+2);
+            g.setColor(Color.black);
+            g.drawRect(osc[0]-2, osc[1]-2, w+4, h+4);
         }
     }
     
     public ArrayList<Animation> getAnimations() { return animations; }
-
-    public ArrayList<Dialogue> getDialogues() { return dialogues; }
-
     public ArrayList<Flow> getFlows() { return flows; }
     
     @Override

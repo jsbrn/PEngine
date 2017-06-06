@@ -7,6 +7,7 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -24,6 +25,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -32,11 +34,10 @@ import misc.Assets;
 import misc.MiscMath;
 import project.objects.components.Animation;
 import project.objects.components.Block;
-import project.objects.components.Dialogue;
 import project.objects.components.Flow;
-import threads.DownloadThread;
+import threads.UpdateManager;
 import project.Level;
-import threads.PreviewThread;
+import threads.AnimationPlayer;
 import project.Project;
 import project.objects.SceneObject;
 
@@ -81,144 +82,49 @@ public class GUI extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         inCurrentLevelLabel = new javax.swing.JLabel();
         inCurrentProjectLabel = new javax.swing.JLabel();
-        objectEditorDialog = new javax.swing.JDialog();
+        newObjectEditor = new javax.swing.JFrame();
         objectEditorTabs = new javax.swing.JTabbedPane();
-        objectBasicPanel = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
+        sceneObjectCanvas = new gui.SceneObjectCanvas();
+        basicOptionsPanel = new javax.swing.JPanel();
         objectGravityCheckbox = new javax.swing.JCheckBox();
         objectCollidesCheckbox = new javax.swing.JCheckBox();
-        jLabel37 = new javax.swing.JLabel();
-        jToggleButton3 = new javax.swing.JToggleButton();
-        jPanel2 = new javax.swing.JPanel();
+        changeObjectTypeButton = new javax.swing.JButton();
+        changeObjectNameButton = new javax.swing.JButton();
+        changeObjectTextureButton = new javax.swing.JButton();
         objectTypeField = new javax.swing.JTextField();
-        jLabel33 = new javax.swing.JLabel();
-        jLabel31 = new javax.swing.JLabel();
-        objectTextureField = new javax.swing.JTextField();
         objectNameField = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jToggleButton1 = new javax.swing.JToggleButton();
-        jPanel3 = new javax.swing.JPanel();
-        exportToGalleryButton = new javax.swing.JButton();
-        jPanel334 = new javax.swing.JPanel();
-        objectPreviewPane = new javax.swing.JLabel();
-        objectLogicPanel = new javax.swing.JPanel();
-        jPanel10 = new javax.swing.JPanel();
-        jScrollPane19 = new javax.swing.JScrollPane();
-        flowChooser = new javax.swing.JList();
-        jLabel49 = new javax.swing.JLabel();
-        flowNameField = new javax.swing.JTextField();
-        newFlowButton = new javax.swing.JButton();
-        duplicateFlowButton = new javax.swing.JButton();
-        deleteFlowButton = new javax.swing.JButton();
-        runOnSpawnCheckbox = new javax.swing.JCheckBox();
-        jToggleButton4 = new javax.swing.JToggleButton();
-        jPanel11 = new javax.swing.JPanel();
-        jScrollPane26 = new javax.swing.JScrollPane();
-        blockChooser = new javax.swing.JTree();
-        addBlockButton = new javax.swing.JButton();
-        jPanel12 = new javax.swing.JPanel();
-        flowCanvas = new gui.FlowCanvas();
-        jLabel19 = new javax.swing.JLabel();
-        blockParamChooser = new javax.swing.JComboBox();
-        jLabel25 = new javax.swing.JLabel();
-        blockParamValueField = new javax.swing.JTextField();
-        deleteBlockButton = new javax.swing.JButton();
-        objectAnimationPanel = new javax.swing.JPanel();
-        animationPropertiesPanel = new javax.swing.JPanel();
-        animationImageField = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel30 = new javax.swing.JLabel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        animationFrameChooser = new javax.swing.JList();
-        jLabel10 = new javax.swing.JLabel();
-        animationFrameDimensionsField = new javax.swing.JTextField();
-        jLabel18 = new javax.swing.JLabel();
-        animationFrameDurationField = new javax.swing.JTextField();
-        animationLoopCheckbox = new javax.swing.JCheckBox();
-        animationAddFrameButton = new javax.swing.JButton();
-        animationDeleteFrameButton = new javax.swing.JButton();
-        jLabel22 = new javax.swing.JLabel();
-        jLabel24 = new javax.swing.JLabel();
-        chooseAnimationPanel = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        animationChooser = new javax.swing.JList();
-        jLabel17 = new javax.swing.JLabel();
-        animationNameField = new javax.swing.JTextField();
-        newAnimationButton = new javax.swing.JButton();
-        duplicateAnimationButton = new javax.swing.JButton();
-        deleteAnimationButton = new javax.swing.JButton();
-        jToggleButton5 = new javax.swing.JToggleButton();
-        jPanel7 = new javax.swing.JPanel();
-        framePreview = new javax.swing.JLabel();
-        jLabel40 = new javax.swing.JLabel();
-        animationPreviewZoomChooser = new javax.swing.JSpinner();
-        toggleAnimationPreviewButton = new javax.swing.JToggleButton();
-        objectDialoguePanel = new javax.swing.JPanel();
-        chooseDialoguePanel = new javax.swing.JPanel();
-        jScrollPane7 = new javax.swing.JScrollPane();
-        dialogueChooser = new javax.swing.JList();
-        newDialogueButton = new javax.swing.JButton();
-        duplicateDialogueButton = new javax.swing.JButton();
-        deleteDialogueButton = new javax.swing.JButton();
-        dialogueNameField = new javax.swing.JTextField();
-        jLabel23 = new javax.swing.JLabel();
-        jToggleButton6 = new javax.swing.JToggleButton();
-        chooseDialogueEventPanel = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        dialogueEventChooser = new javax.swing.JList();
-        addPlayerChoiceButton = new javax.swing.JButton();
-        addThisSpeakEventButton = new javax.swing.JButton();
-        addOtherSpeakEventButton = new javax.swing.JButton();
-        deleteDialogueEventButton = new javax.swing.JButton();
-        dialogueWaitCheckbox = new javax.swing.JCheckBox();
-        dialogueEventMoveUpButton = new javax.swing.JButton();
-        dialogueEventMoveDownButton = new javax.swing.JButton();
-        jLabel27 = new javax.swing.JLabel();
-        jLabel32 = new javax.swing.JLabel();
-        linkToField = new javax.swing.JTextField();
-        linkToScriptRadioButton = new javax.swing.JRadioButton();
-        linkToDialogueRadioButton = new javax.swing.JRadioButton();
-        jSeparator3 = new javax.swing.JSeparator();
-        jPanel15 = new javax.swing.JPanel();
-        dialogueSayPanel = new javax.swing.JPanel();
-        jLabel13 = new javax.swing.JLabel();
-        dialogueSpeechTextField = new javax.swing.JTextField();
-        dialogueChoicePanel = new javax.swing.JPanel();
-        jLabel15 = new javax.swing.JLabel();
-        choiceEventValueField = new javax.swing.JTextField();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        dialogueChoiceList = new javax.swing.JList();
-        deleteChoiceButton = new javax.swing.JButton();
-        jLabel7 = new javax.swing.JLabel();
-        addNewChoiceField = new javax.swing.JTextField();
-        moveChoiceUpButton = new javax.swing.JButton();
-        moveChoiceDownButton = new javax.swing.JButton();
-        choiceEventResponseToggle = new javax.swing.JRadioButton();
-        choiceEventScriptToggle = new javax.swing.JRadioButton();
-        choiceEventDialogueToggle = new javax.swing.JRadioButton();
-        jLabel26 = new javax.swing.JLabel();
-        objectSpawnDialog = new javax.swing.JDialog();
-        spawnList = new javax.swing.JComboBox<>();
-        spawnButton = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        spawnNameField = new javax.swing.JTextField();
-        sceneCanvas = new gui.SceneCanvas();
+        objectTextureField = new javax.swing.JTextField();
+        flowCanvas1 = new gui.FlowCanvas();
+        animationCanvas = new gui.AnimationCanvas();
+        jPanel8 = new javax.swing.JPanel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
-        cameraButton = new javax.swing.JButton();
-        selectButton = new javax.swing.JButton();
-        resizeButton = new javax.swing.JButton();
-        moveButton = new javax.swing.JButton();
-        jPanel13 = new javax.swing.JPanel();
+        jComboBox2 = new javax.swing.JComboBox<>();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jToggleButton2 = new javax.swing.JToggleButton();
         jButton6 = new javax.swing.JButton();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        sceneCanvas = new gui.SceneCanvas();
+        jPanel13 = new javax.swing.JPanel();
+        playButton = new javax.swing.JButton();
+        startAtCurrentLevelCheckBox = new javax.swing.JCheckBox();
         topPanel = new javax.swing.JPanel();
         bringForwardButton = new javax.swing.JButton();
         sendBackwardsButton = new javax.swing.JButton();
         cloneObjectButton = new javax.swing.JButton();
         editObjectButton = new javax.swing.JButton();
-        objectTypeChooser = new javax.swing.JComboBox();
+        objectLayerChooser = new javax.swing.JComboBox();
         newObjectButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        deleteObjectButton = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jLabel2 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         projectMenu = new javax.swing.JMenu();
         newProjectButton = new javax.swing.JMenuItem();
@@ -237,6 +143,7 @@ public class GUI extends javax.swing.JFrame {
         levelMenu = new javax.swing.JMenu();
         spawnMenuItem = new javax.swing.JMenuItem();
         cameraLocationMenuItem = new javax.swing.JMenuItem();
+        levelBoundsMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         topColorMenuItem = new javax.swing.JMenuItem();
         bottomColorMenuItem = new javax.swing.JMenuItem();
@@ -259,11 +166,6 @@ public class GUI extends javax.swing.JFrame {
         testOutputDialog.setMinimumSize(new java.awt.Dimension(400, 490));
         testOutputDialog.setModalExclusionType(java.awt.Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
         testOutputDialog.setResizable(false);
-        testOutputDialog.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                testOutputDialogFocusLost(evt);
-            }
-        });
         testOutputDialog.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 genericDialogWindowClosing(evt);
@@ -335,14 +237,6 @@ public class GUI extends javax.swing.JFrame {
         });
 
         levelNameField.setEnabled(false);
-        levelNameField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                levelNameFieldKeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                levelNameFieldKeyReleased(evt);
-            }
-        });
 
         jLabel21.setText("Name:");
 
@@ -508,23 +402,11 @@ public class GUI extends javax.swing.JFrame {
                 .addGap(12, 12, 12))
         );
 
-        objectEditorDialog.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        objectEditorDialog.setTitle("Object Editor");
-        objectEditorDialog.setBounds(new java.awt.Rectangle(0, 0, 1000, 750));
-        objectEditorDialog.setModalExclusionType(java.awt.Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
-        objectEditorDialog.addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                objectEditorDialogWindowClosing(evt);
-            }
-        });
+        newObjectEditor.setBounds(new java.awt.Rectangle(0, 0, 700, 500));
+        newObjectEditor.setMinimumSize(new java.awt.Dimension(700, 500));
+        newObjectEditor.setPreferredSize(new java.awt.Dimension(700, 500));
 
-        objectEditorTabs.setDoubleBuffered(true);
-        objectEditorTabs.setOpaque(true);
-        objectEditorTabs.setPreferredSize(new java.awt.Dimension(987, 715));
-
-        objectBasicPanel.setPreferredSize(new java.awt.Dimension(975, 710));
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Physics"));
+        basicOptionsPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         objectGravityCheckbox.setText("Gravity");
         objectGravityCheckbox.addActionListener(new java.awt.event.ActionListener() {
@@ -540,1333 +422,234 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        jLabel37.setText("(only applies to local edits and new instances)");
+        changeObjectTypeButton.setText("Change type...");
+        changeObjectTypeButton.setActionCommand("c");
+        changeObjectTypeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeObjectProperty(evt);
+            }
+        });
 
-        jToggleButton3.setText("Lock");
+        changeObjectNameButton.setText("Change name...");
+        changeObjectNameButton.setActionCommand("n");
+        changeObjectNameButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeObjectProperty(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        changeObjectTextureButton.setText("Change texture...");
+        changeObjectTextureButton.setActionCommand("t");
+        changeObjectTextureButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeObjectProperty(evt);
+            }
+        });
+
+        objectTypeField.setEditable(false);
+
+        objectNameField.setEditable(false);
+
+        objectTextureField.setEditable(false);
+
+        javax.swing.GroupLayout basicOptionsPanelLayout = new javax.swing.GroupLayout(basicOptionsPanel);
+        basicOptionsPanel.setLayout(basicOptionsPanelLayout);
+        basicOptionsPanelLayout.setHorizontalGroup(
+            basicOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(basicOptionsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(basicOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(basicOptionsPanelLayout.createSequentialGroup()
+                        .addGroup(basicOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(changeObjectTypeButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(changeObjectNameButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(changeObjectTextureButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(basicOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(objectTypeField)
+                            .addComponent(objectNameField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                            .addComponent(objectTextureField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)))
+                    .addGroup(basicOptionsPanelLayout.createSequentialGroup()
+                        .addGap(2, 2, 2)
                         .addComponent(objectGravityCheckbox)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(objectCollidesCheckbox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jToggleButton3))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel37)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        basicOptionsPanelLayout.setVerticalGroup(
+            basicOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(basicOptionsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(objectGravityCheckbox)
-                    .addComponent(objectCollidesCheckbox)
-                    .addComponent(jToggleButton3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel37)
-                .addGap(0, 49, Short.MAX_VALUE))
-        );
-
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Basics"));
-
-        objectTypeField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                objectTypeFieldKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                objectTypeFieldKeyTyped(evt);
-            }
-        });
-
-        jLabel33.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel33.setText("Object type:");
-
-        jLabel31.setText("Texture file:");
-
-        objectTextureField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                objectTextureFieldKeyReleased(evt);
-            }
-        });
-
-        objectNameField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                objectNameFieldActionPerformed(evt);
-            }
-        });
-        objectNameField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                objectNameFieldKeyReleased(evt);
-            }
-        });
-
-        jLabel3.setText("Object name:");
-
-        jToggleButton1.setText("Lock");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel31)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel33))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(objectTypeField, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
-                    .addComponent(objectNameField)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(objectTextureField)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jToggleButton1)))
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel33)
+                .addGroup(basicOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(changeObjectTypeButton)
                     .addComponent(objectTypeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel31)
-                    .addComponent(objectTextureField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jToggleButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(basicOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(changeObjectNameButton)
                     .addComponent(objectNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 69, Short.MAX_VALUE))
-        );
-
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Options"));
-
-        exportToGalleryButton.setText("Export to gallery");
-        exportToGalleryButton.setToolTipText("Export this customized object to the Gallery as a new object type");
-        exportToGalleryButton.setEnabled(false);
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(exportToGalleryButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(exportToGalleryButton)
-                .addContainerGap(104, Short.MAX_VALUE))
-        );
-
-        jPanel334.setBorder(javax.swing.BorderFactory.createTitledBorder("Preview"));
-
-        objectPreviewPane.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        objectPreviewPane.setText("Preview unavailable.");
-        objectPreviewPane.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        javax.swing.GroupLayout jPanel334Layout = new javax.swing.GroupLayout(jPanel334);
-        jPanel334.setLayout(jPanel334Layout);
-        jPanel334Layout.setHorizontalGroup(
-            jPanel334Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel334Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(objectPreviewPane, javax.swing.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel334Layout.setVerticalGroup(
-            jPanel334Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel334Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(objectPreviewPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout objectBasicPanelLayout = new javax.swing.GroupLayout(objectBasicPanel);
-        objectBasicPanel.setLayout(objectBasicPanelLayout);
-        objectBasicPanelLayout.setHorizontalGroup(
-            objectBasicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(objectBasicPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(objectBasicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel334, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        objectBasicPanelLayout.setVerticalGroup(
-            objectBasicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(objectBasicPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(objectBasicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel334, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(objectBasicPanelLayout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(155, 155, 155)))
-                .addContainerGap())
-        );
-
-        objectEditorTabs.addTab("Basic", objectBasicPanel);
-
-        objectLogicPanel.setPreferredSize(new java.awt.Dimension(975, 710));
-
-        jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Choose a flowchart:"));
-        jPanel10.setPreferredSize(new java.awt.Dimension(333, 371));
-
-        flowChooser.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        flowChooser.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                flowChooserValueChanged(evt);
-            }
-        });
-        jScrollPane19.setViewportView(flowChooser);
-
-        jLabel49.setText("Name:");
-
-        flowNameField.setEnabled(false);
-        flowNameField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                flowNameFieldActionPerformed(evt);
-            }
-        });
-        flowNameField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                flowNameFieldKeyReleased(evt);
-            }
-        });
-
-        newFlowButton.setText("New");
-        newFlowButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newFlowButtonActionPerformed(evt);
-            }
-        });
-
-        duplicateFlowButton.setText("Duplicate");
-        duplicateFlowButton.setEnabled(false);
-        duplicateFlowButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                duplicateFlowButtonActionPerformed(evt);
-            }
-        });
-
-        deleteFlowButton.setText("Delete");
-        deleteFlowButton.setEnabled(false);
-        deleteFlowButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteFlowButtonActionPerformed(evt);
-            }
-        });
-
-        runOnSpawnCheckbox.setText("Run when object is spawned");
-        runOnSpawnCheckbox.setEnabled(false);
-        runOnSpawnCheckbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                runOnSpawnCheckboxActionPerformed(evt);
-            }
-        });
-
-        jToggleButton4.setText("Lock");
-
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addComponent(newFlowButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(duplicateFlowButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteFlowButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jToggleButton4))
-                    .addComponent(jScrollPane19, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addComponent(jLabel49)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(flowNameField))
-                    .addComponent(runOnSpawnCheckbox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addComponent(jScrollPane19, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(flowNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel49, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(newFlowButton)
-                    .addComponent(duplicateFlowButton)
-                    .addComponent(deleteFlowButton)
-                    .addComponent(jToggleButton4))
+                .addGroup(basicOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(changeObjectTextureButton)
+                    .addComponent(objectTextureField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(runOnSpawnCheckbox)
-                .addContainerGap(11, Short.MAX_VALUE))
-        );
-
-        jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder("Available blocks:"));
-        jPanel11.setPreferredSize(new java.awt.Dimension(333, 274));
-
-        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("All Blocks");
-        javax.swing.tree.DefaultMutableTreeNode treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Actions");
-        javax.swing.tree.DefaultMutableTreeNode treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Set camera position");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Set camera speed");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Set camera target");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Set camera scale");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Set background music");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Set ambient sound");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Set background color");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Enter level");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Execute");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Spawn object");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Remove object");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Wait");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Print (Debugging)");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Jump");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Start dialogue");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Say");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Set animation");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Move");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Move to");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Move to (relative)");
-        treeNode2.add(treeNode3);
-        treeNode1.add(treeNode2);
-        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Conditionals");
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Does x equal y");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Is x greater than y");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Is x less than y");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Is colliding with");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Is animation complete");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Is object removed");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Is script running");
-        treeNode2.add(treeNode3);
-        treeNode1.add(treeNode2);
-        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Variables");
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Memory Blocks");
-        javax.swing.tree.DefaultMutableTreeNode treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("Number");
-        treeNode3.add(treeNode4);
-        treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("Object");
-        treeNode3.add(treeNode4);
-        treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("Logic flowchart");
-        treeNode3.add(treeNode4);
-        treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("Level");
-        treeNode3.add(treeNode4);
-        treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("Animation");
-        treeNode3.add(treeNode4);
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Object Properties");
-        treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("X-coordinate");
-        treeNode3.add(treeNode4);
-        treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("Y-coordinate");
-        treeNode3.add(treeNode4);
-        treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("Current texture");
-        treeNode3.add(treeNode4);
-        treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("Current animation");
-        treeNode3.add(treeNode4);
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Level Properties");
-        treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("Name");
-        treeNode3.add(treeNode4);
-        treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("Background music");
-        treeNode3.add(treeNode4);
-        treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("Background ambience");
-        treeNode3.add(treeNode4);
-        treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("Background color");
-        treeNode3.add(treeNode4);
-        treeNode2.add(treeNode3);
-        treeNode1.add(treeNode2);
-        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Operators");
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Add x+y");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Subtract x-y");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Divide x/y");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Multiply x*y");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Power of x^y");
-        treeNode2.add(treeNode3);
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Root of x (base y)");
-        treeNode2.add(treeNode3);
-        treeNode1.add(treeNode2);
-        blockChooser.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
-        blockChooser.setEnabled(false);
-        blockChooser.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
-            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
-                blockChooserValueChanged(evt);
-            }
-        });
-        jScrollPane26.setViewportView(blockChooser);
-
-        addBlockButton.setText("Add selected block");
-        addBlockButton.setEnabled(false);
-        addBlockButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addBlockButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
-        jPanel11.setLayout(jPanel11Layout);
-        jPanel11Layout.setHorizontalGroup(
-            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel11Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane26, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
-                    .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addComponent(addBlockButton)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel11Layout.setVerticalGroup(
-            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel11Layout.createSequentialGroup()
-                .addComponent(jScrollPane26, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(addBlockButton)
-                .addContainerGap())
-        );
-
-        jPanel12.setBorder(javax.swing.BorderFactory.createTitledBorder("Designer Window"));
-
-        flowCanvas.setBackground(new java.awt.Color(219, 218, 218));
-        flowCanvas.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        flowCanvas.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                flowCanvasMouseClicked(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                flowCanvasMouseReleased(evt);
-            }
-        });
-        flowCanvas.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                flowCanvasMouseDragged(evt);
-            }
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                flowCanvasMouseMoved(evt);
-            }
-        });
-
-        javax.swing.GroupLayout flowCanvasLayout = new javax.swing.GroupLayout(flowCanvas);
-        flowCanvas.setLayout(flowCanvasLayout);
-        flowCanvasLayout.setHorizontalGroup(
-            flowCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        flowCanvasLayout.setVerticalGroup(
-            flowCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        jLabel19.setText("Parametre");
-
-        blockParamChooser.setEnabled(false);
-        blockParamChooser.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                blockParamChooserActionPerformed(evt);
-            }
-        });
-
-        jLabel25.setText("'s default value =");
-
-        blockParamValueField.setEnabled(false);
-        blockParamValueField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                blockParamValueFieldKeyReleased(evt);
-            }
-        });
-
-        deleteBlockButton.setText("Delete block");
-        deleteBlockButton.setEnabled(false);
-        deleteBlockButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteBlockButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
-        jPanel12.setLayout(jPanel12Layout);
-        jPanel12Layout.setHorizontalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(flowCanvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
-                        .addComponent(jLabel19)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(blockParamChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel25)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(blockParamValueField, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
-                        .addComponent(deleteBlockButton)))
-                .addContainerGap())
-        );
-        jPanel12Layout.setVerticalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(flowCanvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel19)
-                        .addComponent(blockParamChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(blockParamValueField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel25))
-                    .addComponent(deleteBlockButton))
-                .addGap(14, 14, 14))
-        );
-
-        javax.swing.GroupLayout objectLogicPanelLayout = new javax.swing.GroupLayout(objectLogicPanel);
-        objectLogicPanel.setLayout(objectLogicPanelLayout);
-        objectLogicPanelLayout.setHorizontalGroup(
-            objectLogicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(objectLogicPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(objectLogicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        objectLogicPanelLayout.setVerticalGroup(
-            objectLogicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(objectLogicPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(objectLogicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(objectLogicPanelLayout.createSequentialGroup()
-                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-
-        objectEditorTabs.addTab("Logic", objectLogicPanel);
-
-        objectAnimationPanel.setPreferredSize(new java.awt.Dimension(975, 650));
-
-        animationPropertiesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Animation Properties"));
-
-        animationImageField.setEnabled(false);
-        animationImageField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                animationImageFieldKeyReleased(evt);
-            }
-        });
-
-        jLabel5.setText("Image file:");
-
-        jLabel30.setText("Frames:");
-
-        animationFrameChooser.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = {};
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        animationFrameChooser.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        animationFrameChooser.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                animationFrameChooserValueChanged(evt);
-            }
-        });
-        jScrollPane4.setViewportView(animationFrameChooser);
-
-        jLabel10.setText("Dimensions:");
-
-        animationFrameDimensionsField.setEnabled(false);
-        animationFrameDimensionsField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                animationFrameDimensionsFieldActionPerformed(evt);
-            }
-        });
-        animationFrameDimensionsField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                animationFrameDimensionsFieldKeyReleased(evt);
-            }
-        });
-
-        jLabel18.setText("Frame duration:");
-
-        animationFrameDurationField.setEnabled(false);
-        animationFrameDurationField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                animationFrameDurationFieldActionPerformed(evt);
-            }
-        });
-        animationFrameDurationField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                animationFrameDurationFieldKeyReleased(evt);
-            }
-        });
-
-        animationLoopCheckbox.setText("Loop");
-        animationLoopCheckbox.setEnabled(false);
-        animationLoopCheckbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                animationLoopCheckboxActionPerformed(evt);
-            }
-        });
-
-        animationAddFrameButton.setText("+");
-        animationAddFrameButton.setEnabled(false);
-        animationAddFrameButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                animationAddFrameButtonActionPerformed(evt);
-            }
-        });
-
-        animationDeleteFrameButton.setText("-");
-        animationDeleteFrameButton.setEnabled(false);
-        animationDeleteFrameButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                animationDeleteFrameButtonActionPerformed(evt);
-            }
-        });
-
-        jLabel22.setText("milliseconds");
-
-        jLabel24.setText("pixels");
-
-        javax.swing.GroupLayout animationPropertiesPanelLayout = new javax.swing.GroupLayout(animationPropertiesPanel);
-        animationPropertiesPanel.setLayout(animationPropertiesPanelLayout);
-        animationPropertiesPanelLayout.setHorizontalGroup(
-            animationPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(animationPropertiesPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(animationPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(animationPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(animationPropertiesPanelLayout.createSequentialGroup()
-                            .addComponent(jLabel5)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(animationImageField))
-                        .addGroup(animationPropertiesPanelLayout.createSequentialGroup()
-                            .addComponent(jLabel30)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(animationLoopCheckbox)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(animationAddFrameButton)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(animationDeleteFrameButton))
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
-                        .addGroup(animationPropertiesPanelLayout.createSequentialGroup()
-                            .addComponent(jLabel10)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(animationFrameDimensionsField, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabel24)))
-                    .addGroup(animationPropertiesPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel18)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(animationFrameDurationField, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel22)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        animationPropertiesPanelLayout.setVerticalGroup(
-            animationPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(animationPropertiesPanelLayout.createSequentialGroup()
-                .addGroup(animationPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(animationImageField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(animationPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel18)
-                    .addComponent(animationFrameDurationField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel22))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(animationPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(animationAddFrameButton)
-                    .addComponent(animationDeleteFrameButton)
-                    .addComponent(animationLoopCheckbox)
-                    .addComponent(jLabel30))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(animationPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(animationFrameDimensionsField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel24))
-                .addContainerGap())
-        );
-
-        chooseAnimationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Choose an animation:"));
-
-        jScrollPane2.setPreferredSize(new java.awt.Dimension(333, 130));
-
-        animationChooser.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = {};
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        animationChooser.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        animationChooser.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                animationChooserValueChanged(evt);
-            }
-        });
-        jScrollPane2.setViewportView(animationChooser);
-
-        jLabel17.setText("Name:");
-
-        animationNameField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                animationNameFieldKeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                animationNameFieldKeyReleased(evt);
-            }
-        });
-
-        newAnimationButton.setText("New");
-        newAnimationButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newAnimationButtonActionPerformed(evt);
-            }
-        });
-
-        duplicateAnimationButton.setText("Duplicate");
-        duplicateAnimationButton.setEnabled(false);
-        duplicateAnimationButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                duplicateAnimationButtonActionPerformed(evt);
-            }
-        });
-
-        deleteAnimationButton.setText("Delete");
-        deleteAnimationButton.setEnabled(false);
-        deleteAnimationButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteAnimationButtonActionPerformed(evt);
-            }
-        });
-
-        jToggleButton5.setText("Lock");
-
-        javax.swing.GroupLayout chooseAnimationPanelLayout = new javax.swing.GroupLayout(chooseAnimationPanel);
-        chooseAnimationPanel.setLayout(chooseAnimationPanelLayout);
-        chooseAnimationPanelLayout.setHorizontalGroup(
-            chooseAnimationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(chooseAnimationPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(chooseAnimationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(chooseAnimationPanelLayout.createSequentialGroup()
-                        .addComponent(newAnimationButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(duplicateAnimationButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteAnimationButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
-                        .addComponent(jToggleButton5))
-                    .addGroup(chooseAnimationPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel17)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(animationNameField)))
-                .addContainerGap())
-        );
-        chooseAnimationPanelLayout.setVerticalGroup(
-            chooseAnimationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(chooseAnimationPanelLayout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(chooseAnimationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel17)
-                    .addComponent(animationNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(chooseAnimationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(duplicateAnimationButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(chooseAnimationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(newAnimationButton)
-                        .addComponent(deleteAnimationButton)
-                        .addComponent(jToggleButton5)))
-                .addContainerGap())
-        );
-
-        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Preview:"));
-
-        framePreview.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        framePreview.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        jLabel40.setText("Zoom:");
-
-        animationPreviewZoomChooser.setValue(1);
-        animationPreviewZoomChooser.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                animationPreviewZoomChooserStateChanged(evt);
-            }
-        });
-
-        toggleAnimationPreviewButton.setText("Play");
-        toggleAnimationPreviewButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                toggleAnimationPreviewButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(framePreview, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(toggleAnimationPreviewButton, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel40)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(animationPreviewZoomChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 325, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(toggleAnimationPreviewButton)
-                    .addComponent(jLabel40)
-                    .addComponent(animationPreviewZoomChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(framePreview, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout objectAnimationPanelLayout = new javax.swing.GroupLayout(objectAnimationPanel);
-        objectAnimationPanel.setLayout(objectAnimationPanelLayout);
-        objectAnimationPanelLayout.setHorizontalGroup(
-            objectAnimationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(objectAnimationPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(objectAnimationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(animationPropertiesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(chooseAnimationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        objectAnimationPanelLayout.setVerticalGroup(
-            objectAnimationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(objectAnimationPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(objectAnimationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(objectAnimationPanelLayout.createSequentialGroup()
-                        .addComponent(chooseAnimationPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(animationPropertiesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(19, Short.MAX_VALUE))
-        );
-
-        objectEditorTabs.addTab("Animations", objectAnimationPanel);
-
-        objectDialoguePanel.setPreferredSize(new java.awt.Dimension(975, 710));
-
-        chooseDialoguePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Choose a dialogue:"));
-        chooseDialoguePanel.setPreferredSize(new java.awt.Dimension(333, 313));
-
-        dialogueChooser.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = {};
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        dialogueChooser.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        dialogueChooser.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                dialogueChooserValueChanged(evt);
-            }
-        });
-        jScrollPane7.setViewportView(dialogueChooser);
-
-        newDialogueButton.setText("New");
-        newDialogueButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newDialogueButtonActionPerformed(evt);
-            }
-        });
-
-        duplicateDialogueButton.setText("Duplicate");
-        duplicateDialogueButton.setEnabled(false);
-        duplicateDialogueButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                duplicateDialogueButtonActionPerformed(evt);
-            }
-        });
-
-        deleteDialogueButton.setText("Delete");
-        deleteDialogueButton.setEnabled(false);
-        deleteDialogueButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteDialogueButtonActionPerformed(evt);
-            }
-        });
-
-        dialogueNameField.setEnabled(false);
-        dialogueNameField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                dialogueNameFieldKeyReleased(evt);
-            }
-        });
-
-        jLabel23.setText("Name:");
-
-        jToggleButton6.setText("Lock");
-
-        javax.swing.GroupLayout chooseDialoguePanelLayout = new javax.swing.GroupLayout(chooseDialoguePanel);
-        chooseDialoguePanel.setLayout(chooseDialoguePanelLayout);
-        chooseDialoguePanelLayout.setHorizontalGroup(
-            chooseDialoguePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(chooseDialoguePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(chooseDialoguePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane7)
-                    .addGroup(chooseDialoguePanelLayout.createSequentialGroup()
-                        .addComponent(newDialogueButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(duplicateDialogueButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteDialogueButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jToggleButton6))
-                    .addGroup(chooseDialoguePanelLayout.createSequentialGroup()
-                        .addComponent(jLabel23)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dialogueNameField)))
-                .addContainerGap())
-        );
-        chooseDialoguePanelLayout.setVerticalGroup(
-            chooseDialoguePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(chooseDialoguePanelLayout.createSequentialGroup()
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(chooseDialoguePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(dialogueNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel23))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(chooseDialoguePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(newDialogueButton)
-                    .addComponent(deleteDialogueButton)
-                    .addComponent(duplicateDialogueButton)
-                    .addComponent(jToggleButton6))
-                .addContainerGap())
-        );
-
-        chooseDialogueEventPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Dialogue Properties"));
-
-        dialogueEventChooser.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        dialogueEventChooser.setEnabled(false);
-        dialogueEventChooser.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                dialogueEventChooserValueChanged(evt);
-            }
-        });
-        jScrollPane3.setViewportView(dialogueEventChooser);
-
-        addPlayerChoiceButton.setText("Add player choice");
-        addPlayerChoiceButton.setEnabled(false);
-
-        addThisSpeakEventButton.setText("Speak (this object)");
-        addThisSpeakEventButton.setEnabled(false);
-
-        addOtherSpeakEventButton.setText("Speak (other object)");
-        addOtherSpeakEventButton.setEnabled(false);
-
-        deleteDialogueEventButton.setText("Delete");
-        deleteDialogueEventButton.setEnabled(false);
-
-        dialogueWaitCheckbox.setText("Wait");
-        dialogueWaitCheckbox.setEnabled(false);
-
-        dialogueEventMoveUpButton.setText("Move up");
-        dialogueEventMoveUpButton.setEnabled(false);
-
-        dialogueEventMoveDownButton.setText("Move down");
-        dialogueEventMoveDownButton.setEnabled(false);
-
-        jLabel27.setText("Events:");
-
-        jLabel32.setText("Links to:");
-        jLabel32.setEnabled(false);
-
-        linkToField.setEnabled(false);
-
-        linkToScriptRadioButton.setText("Script");
-        linkToScriptRadioButton.setEnabled(false);
-
-        linkToDialogueRadioButton.setText("Dialogue");
-        linkToDialogueRadioButton.setEnabled(false);
-
-        jSeparator3.setForeground(new java.awt.Color(204, 204, 204));
-
-        javax.swing.GroupLayout chooseDialogueEventPanelLayout = new javax.swing.GroupLayout(chooseDialogueEventPanel);
-        chooseDialogueEventPanel.setLayout(chooseDialogueEventPanelLayout);
-        chooseDialogueEventPanelLayout.setHorizontalGroup(
-            chooseDialogueEventPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(chooseDialogueEventPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(chooseDialogueEventPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator3)
-                    .addGroup(chooseDialogueEventPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel32)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(chooseDialogueEventPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(chooseDialogueEventPanelLayout.createSequentialGroup()
-                                .addComponent(linkToScriptRadioButton)
-                                .addGap(8, 8, 8)
-                                .addComponent(linkToDialogueRadioButton)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(linkToField)))
-                    .addGroup(chooseDialogueEventPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(chooseDialogueEventPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(dialogueEventMoveDownButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(dialogueEventMoveUpButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(deleteDialogueEventButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(dialogueWaitCheckbox)))
-                    .addGroup(chooseDialogueEventPanelLayout.createSequentialGroup()
-                        .addGroup(chooseDialogueEventPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(addThisSpeakEventButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(addPlayerChoiceButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel27, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addOtherSpeakEventButton)
-                        .addGap(0, 41, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        chooseDialogueEventPanelLayout.setVerticalGroup(
-            chooseDialogueEventPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(chooseDialogueEventPanelLayout.createSequentialGroup()
-                .addComponent(jLabel27)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(chooseDialogueEventPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(chooseDialogueEventPanelLayout.createSequentialGroup()
-                        .addComponent(dialogueEventMoveUpButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dialogueEventMoveDownButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteDialogueEventButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dialogueWaitCheckbox)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(chooseDialogueEventPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addThisSpeakEventButton)
-                    .addComponent(addOtherSpeakEventButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(addPlayerChoiceButton)
-                .addGap(18, 18, 18)
-                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(chooseDialogueEventPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel32)
-                    .addComponent(linkToField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(chooseDialogueEventPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(linkToDialogueRadioButton)
-                    .addComponent(linkToScriptRadioButton))
+                .addGroup(basicOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(objectCollidesCheckbox)
+                    .addComponent(objectGravityCheckbox))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel15.setBorder(javax.swing.BorderFactory.createTitledBorder("Event Editor"));
-
-        dialogueSayPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        jLabel13.setText("Say:");
-
-        dialogueSpeechTextField.setEnabled(false);
-
-        javax.swing.GroupLayout dialogueSayPanelLayout = new javax.swing.GroupLayout(dialogueSayPanel);
-        dialogueSayPanel.setLayout(dialogueSayPanelLayout);
-        dialogueSayPanelLayout.setHorizontalGroup(
-            dialogueSayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(dialogueSayPanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout sceneObjectCanvasLayout = new javax.swing.GroupLayout(sceneObjectCanvas);
+        sceneObjectCanvas.setLayout(sceneObjectCanvasLayout);
+        sceneObjectCanvasLayout.setHorizontalGroup(
+            sceneObjectCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(sceneObjectCanvasLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel13)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(dialogueSpeechTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
+                .addComponent(basicOptionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(444, Short.MAX_VALUE))
+        );
+        sceneObjectCanvasLayout.setVerticalGroup(
+            sceneObjectCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(sceneObjectCanvasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(basicOptionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(356, Short.MAX_VALUE))
+        );
+
+        objectEditorTabs.addTab("Basics", sceneObjectCanvas);
+
+        javax.swing.GroupLayout flowCanvas1Layout = new javax.swing.GroupLayout(flowCanvas1);
+        flowCanvas1.setLayout(flowCanvas1Layout);
+        flowCanvas1Layout.setHorizontalGroup(
+            flowCanvas1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 745, Short.MAX_VALUE)
+        );
+        flowCanvas1Layout.setVerticalGroup(
+            flowCanvas1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 500, Short.MAX_VALUE)
+        );
+
+        objectEditorTabs.addTab("Logic", flowCanvas1);
+
+        jButton1.setText("New");
+
+        jButton2.setText("Delete");
+
+        jButton3.setText("Rename...");
+
+        jButton7.setText("Speed...");
+
+        jButton8.setText("Spritesheet...");
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton7)
                 .addContainerGap())
         );
-        dialogueSayPanelLayout.setVerticalGroup(
-            dialogueSayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(dialogueSayPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(dialogueSayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel13)
-                    .addComponent(dialogueSpeechTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2)
+                    .addComponent(jButton3)
+                    .addComponent(jButton7)
+                    .addComponent(jButton8))
+                .addGap(5, 5, 5))
         );
 
-        dialogueChoicePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jButton4.setText("+");
 
-        jLabel15.setText("Which triggers:");
+        jButton5.setText("-");
 
-        choiceEventValueField.setEnabled(false);
-        choiceEventValueField.setMaximumSize(new java.awt.Dimension(258, 45345345));
-        choiceEventValueField.setMinimumSize(new java.awt.Dimension(258, 0));
-        choiceEventValueField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                choiceEventValueFieldKeyReleased(evt);
-            }
-        });
+        jToggleButton2.setText("►");
 
-        dialogueChoiceList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        dialogueChoiceList.setEnabled(false);
-        jScrollPane5.setViewportView(dialogueChoiceList);
-
-        deleteChoiceButton.setText("Delete");
-        deleteChoiceButton.setEnabled(false);
-
-        jLabel7.setText("Add new:");
-
-        addNewChoiceField.setEnabled(false);
-
-        moveChoiceUpButton.setText("Move up");
-        moveChoiceUpButton.setEnabled(false);
-
-        moveChoiceDownButton.setText("Move down");
-        moveChoiceDownButton.setEnabled(false);
-
-        choiceEventResponseToggle.setText("Response");
-        choiceEventResponseToggle.setEnabled(false);
-
-        choiceEventScriptToggle.setText("Script");
-        choiceEventScriptToggle.setEnabled(false);
-
-        choiceEventDialogueToggle.setText("Dialogue");
-        choiceEventDialogueToggle.setEnabled(false);
-
-        jLabel26.setText("Choices:");
-
-        javax.swing.GroupLayout dialogueChoicePanelLayout = new javax.swing.GroupLayout(dialogueChoicePanel);
-        dialogueChoicePanel.setLayout(dialogueChoicePanelLayout);
-        dialogueChoicePanelLayout.setHorizontalGroup(
-            dialogueChoicePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dialogueChoicePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(dialogueChoicePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dialogueChoicePanelLayout.createSequentialGroup()
-                        .addComponent(moveChoiceUpButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(moveChoiceDownButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(deleteChoiceButton))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dialogueChoicePanelLayout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addNewChoiceField))
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(dialogueChoicePanelLayout.createSequentialGroup()
-                        .addComponent(jLabel26)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(18, 18, 18)
-                .addGroup(dialogueChoicePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel15)
-                    .addComponent(choiceEventValueField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(choiceEventResponseToggle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
-                    .addComponent(choiceEventDialogueToggle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(choiceEventScriptToggle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        dialogueChoicePanelLayout.setVerticalGroup(
-            dialogueChoicePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(dialogueChoicePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(dialogueChoicePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel15)
-                    .addComponent(jLabel26))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(dialogueChoicePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(dialogueChoicePanelLayout.createSequentialGroup()
-                        .addComponent(choiceEventValueField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(choiceEventResponseToggle)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(choiceEventScriptToggle)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(choiceEventDialogueToggle)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(dialogueChoicePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(addNewChoiceField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(dialogueChoicePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(deleteChoiceButton)
-                    .addComponent(moveChoiceUpButton)
-                    .addComponent(moveChoiceDownButton))
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
-        jPanel15.setLayout(jPanel15Layout);
-        jPanel15Layout.setHorizontalGroup(
-            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel15Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(dialogueSayPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(dialogueChoicePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel15Layout.setVerticalGroup(
-            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel15Layout.createSequentialGroup()
-                .addComponent(dialogueSayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(dialogueChoicePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(289, 289, 289))
-        );
-
-        javax.swing.GroupLayout objectDialoguePanelLayout = new javax.swing.GroupLayout(objectDialoguePanel);
-        objectDialoguePanel.setLayout(objectDialoguePanelLayout);
-        objectDialoguePanelLayout.setHorizontalGroup(
-            objectDialoguePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(objectDialoguePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(objectDialoguePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(chooseDialoguePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(chooseDialogueEventPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        objectDialoguePanelLayout.setVerticalGroup(
-            objectDialoguePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, objectDialoguePanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(objectDialoguePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(objectDialoguePanelLayout.createSequentialGroup()
-                        .addComponent(chooseDialoguePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(chooseDialogueEventPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(25, 25, 25))
-        );
-
-        objectEditorTabs.addTab("Dialogue", objectDialoguePanel);
-
-        javax.swing.GroupLayout objectEditorDialogLayout = new javax.swing.GroupLayout(objectEditorDialog.getContentPane());
-        objectEditorDialog.getContentPane().setLayout(objectEditorDialogLayout);
-        objectEditorDialogLayout.setHorizontalGroup(
-            objectEditorDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(objectEditorTabs, javax.swing.GroupLayout.PREFERRED_SIZE, 987, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        objectEditorDialogLayout.setVerticalGroup(
-            objectEditorDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(objectEditorTabs, javax.swing.GroupLayout.PREFERRED_SIZE, 715, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-
-        objectSpawnDialog.setTitle("New object...");
-        objectSpawnDialog.setBounds(new java.awt.Rectangle(0, 0, 400, 150));
-        objectSpawnDialog.setMinimumSize(new java.awt.Dimension(400, 150));
-        objectSpawnDialog.setResizable(false);
-
-        spawnList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        spawnButton.setText("Spawn");
-        spawnButton.addActionListener(new java.awt.event.ActionListener() {
+        jButton6.setText("Reset");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                spawnButtonActionPerformed(evt);
+                jButton6ActionPerformed(evt);
             }
         });
 
-        jLabel2.setText("Name:");
-
-        javax.swing.GroupLayout objectSpawnDialogLayout = new javax.swing.GroupLayout(objectSpawnDialog.getContentPane());
-        objectSpawnDialog.getContentPane().setLayout(objectSpawnDialogLayout);
-        objectSpawnDialogLayout.setHorizontalGroup(
-            objectSpawnDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(objectSpawnDialogLayout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(objectSpawnDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(spawnList, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(spawnButton, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-                    .addGroup(objectSpawnDialogLayout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spawnNameField)))
+                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jToggleButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-        objectSpawnDialogLayout.setVerticalGroup(
-            objectSpawnDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(objectSpawnDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(spawnList, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(objectSpawnDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(spawnNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(spawnButton)
-                .addContainerGap(46, Short.MAX_VALUE))
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4)
+                    .addComponent(jButton5)
+                    .addComponent(jToggleButton2)
+                    .addComponent(jButton6))
+                .addGap(5, 5, 5))
+        );
+
+        javax.swing.GroupLayout animationCanvasLayout = new javax.swing.GroupLayout(animationCanvas);
+        animationCanvas.setLayout(animationCanvasLayout);
+        animationCanvasLayout.setHorizontalGroup(
+            animationCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        animationCanvasLayout.setVerticalGroup(
+            animationCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(animationCanvasLayout.createSequentialGroup()
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 434, Short.MAX_VALUE)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        objectEditorTabs.addTab("Animations", animationCanvas);
+
+        javax.swing.GroupLayout newObjectEditorLayout = new javax.swing.GroupLayout(newObjectEditor.getContentPane());
+        newObjectEditor.getContentPane().setLayout(newObjectEditorLayout);
+        newObjectEditorLayout.setHorizontalGroup(
+            newObjectEditorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(objectEditorTabs)
+        );
+        newObjectEditorLayout.setVerticalGroup(
+            newObjectEditorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(objectEditorTabs)
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setBackground(new java.awt.Color(1, 1, 1));
         setBounds(new java.awt.Rectangle(150, 150, 1000, 600));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setMinimumSize(new java.awt.Dimension(800, 300));
+        setMinimumSize(new java.awt.Dimension(700, 300));
         setModalExclusionType(null);
         setName("windowFrame"); // NOI18N
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
@@ -1906,104 +689,39 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        cameraButton.setText("Camera");
-        cameraButton.setToolTipText("Press 1-4 to switch between tools");
-        cameraButton.setActionCommand("1");
-        cameraButton.setDoubleBuffered(true);
-        cameraButton.setEnabled(false);
-        cameraButton.addActionListener(new java.awt.event.ActionListener() {
+        jPanel13.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        playButton.setText("►");
+        playButton.setDoubleBuffered(true);
+        playButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                toolButtonActionPerformed(evt);
+                playButtonActionPerformed(evt);
             }
         });
 
-        selectButton.setText("Select");
-        selectButton.setToolTipText("Press 1-4 to switch between tools");
-        selectButton.setActionCommand("0");
-        selectButton.setDoubleBuffered(true);
-        selectButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                toolButtonActionPerformed(evt);
-            }
-        });
-
-        resizeButton.setText("Resize");
-        resizeButton.setToolTipText("Press 1-4 to switch between tools");
-        resizeButton.setActionCommand("3");
-        resizeButton.setDoubleBuffered(true);
-        resizeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                toolButtonActionPerformed(evt);
-            }
-        });
-
-        moveButton.setText("Move");
-        moveButton.setToolTipText("Press 1-4 to switch between tools");
-        moveButton.setActionCommand("2");
-        moveButton.setDoubleBuffered(true);
-        moveButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                toolButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(selectButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cameraButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(moveButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(resizeButton)
-                .addContainerGap())
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(0, 11, Short.MAX_VALUE)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(resizeButton)
-                    .addComponent(moveButton)
-                    .addComponent(cameraButton)
-                    .addComponent(selectButton))
-                .addContainerGap())
-        );
-
-        jButton6.setText("Play!");
-        jButton6.setDoubleBuffered(true);
-
-        jCheckBox1.setText("Start at current level");
-        jCheckBox1.setDoubleBuffered(true);
+        startAtCurrentLevelCheckBox.setText("Start at current level");
+        startAtCurrentLevelCheckBox.setDoubleBuffered(true);
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
         jPanel13.setLayout(jPanel13Layout);
         jPanel13Layout.setHorizontalGroup(
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jCheckBox1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton6)
-                .addContainerGap())
+                .addContainerGap()
+                .addComponent(startAtCurrentLevelCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE)
+                .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel13Layout.setVerticalGroup(
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel13Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox1)
-                    .addComponent(jButton6))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(startAtCurrentLevelCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         topPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        bringForwardButton.setText("Forwards");
+        bringForwardButton.setText("↑");
         bringForwardButton.setToolTipText("Send forward");
         bringForwardButton.setActionCommand("f");
         bringForwardButton.setEnabled(false);
@@ -2016,7 +734,7 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        sendBackwardsButton.setText("Backwards");
+        sendBackwardsButton.setText("↓");
         sendBackwardsButton.setToolTipText("Send backwards");
         sendBackwardsButton.setActionCommand("b");
         sendBackwardsButton.setEnabled(false);
@@ -2046,25 +764,34 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        objectTypeChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] {"Distance", "Background", "Normal", "Foreground"}));
-        objectTypeChooser.setToolTipText("Choose the layer the object lies in");
-        objectTypeChooser.setEnabled(false);
-        objectTypeChooser.addActionListener(new java.awt.event.ActionListener() {
+        objectLayerChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] {"Distance", "Background", "Normal", "Foreground"}));
+        objectLayerChooser.setToolTipText("Choose the layer the object lies in");
+        objectLayerChooser.setEnabled(false);
+        objectLayerChooser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                objectTypeChooserActionPerformed(evt);
+                objectLayerChooserActionPerformed(evt);
             }
         });
-        objectTypeChooser.setSelectedIndex(-1);
+        objectLayerChooser.setSelectedIndex(-1);
 
         newObjectButton.setMnemonic('N');
         newObjectButton.setText("New...");
+        newObjectButton.setActionCommand("n");
         newObjectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newObjectButtonActionPerformed(evt);
+                spawnObjectAction(evt);
             }
         });
 
         jLabel1.setText("Layer:");
+
+        deleteObjectButton.setText("Delete");
+        deleteObjectButton.setEnabled(false);
+        deleteObjectButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteObjectButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout topPanelLayout = new javax.swing.GroupLayout(topPanel);
         topPanel.setLayout(topPanelLayout);
@@ -2074,18 +801,20 @@ public class GUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(newObjectButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(editObjectButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cloneObjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(editObjectButton)
+                .addComponent(deleteObjectButton)
                 .addGap(18, 18, 18)
-                .addComponent(bringForwardButton, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sendBackwardsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(objectTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(objectLayerChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bringForwardButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(sendBackwardsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(133, Short.MAX_VALUE))
         );
         topPanelLayout.setVerticalGroup(
             topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2097,9 +826,45 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(editObjectButton)
                     .addComponent(bringForwardButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(sendBackwardsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(objectTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(objectLayerChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(deleteObjectButton))
                 .addGap(3, 3, 3))
+        );
+
+        jPanel5.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jCheckBox1.setText("Show grid");
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel2.setText("Canvas settings");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(0, 22, Short.MAX_VALUE))
+                    .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBox1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout sceneCanvasLayout = new javax.swing.GroupLayout(sceneCanvas);
@@ -2109,19 +874,19 @@ public class GUI extends javax.swing.JFrame {
             .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sceneCanvasLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(sceneCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         sceneCanvasLayout.setVerticalGroup(
             sceneCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sceneCanvasLayout.createSequentialGroup()
                 .addComponent(topPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 381, Short.MAX_VALUE)
-                .addGroup(sceneCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 284, Short.MAX_VALUE)
+                .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -2236,6 +1001,15 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         levelMenu.add(cameraLocationMenuItem);
+
+        levelBoundsMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        levelBoundsMenuItem.setText("Bounds...");
+        levelBoundsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                levelBoundsMenuItemActionPerformed(evt);
+            }
+        });
+        levelMenu.add(levelBoundsMenuItem);
 
         jMenu2.setText("Lighting");
 
@@ -2381,10 +1155,6 @@ public class GUI extends javax.swing.JFrame {
         if (dialogResult != JOptionPane.CANCEL_OPTION) System.exit(0);
     }//GEN-LAST:event_formWindowClosing
 
-    private void testOutputDialogFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_testOutputDialogFocusLost
-
-    }//GEN-LAST:event_testOutputDialogFocusLost
-
     private void saveProjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveProjectButtonActionPerformed
         /*if (!Project.getProject().existsOnDisk()) Project.getProject().mkdirs();
         Project.getProject().save(null, true);
@@ -2421,7 +1191,7 @@ public class GUI extends javax.swing.JFrame {
         int index = levelList.getSelectedIndex();
         if (selected.equals(Project.getProject().getCurrentLevel().getName())) {
             //JOptionPane.showMessageDialog(levelManagerDialog, "This level is being edited and cannot be deleted.");
-            GUI.showMessage("This level is being edited and cannot be deleted.", levelManagerDialog);
+            JOptionPane.showMessageDialog(levelManagerDialog, "This level is being edited and cannot be deleted.");
             return;
         }
         Project.getProject().deleteLevel(selected);
@@ -2437,7 +1207,8 @@ public class GUI extends javax.swing.JFrame {
     private void editLevelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editLevelButtonActionPerformed
         String selected = ((String)levelList.getSelectedValue());
         if (selected.equals(Project.getProject().getCurrentLevel().getName())) {
-            GUI.showMessage("You are already editing this level!", levelManagerDialog);
+            //GUI.showMessage("You are already editing this level!", levelManagerDialog);
+            JOptionPane.showMessageDialog(levelManagerDialog, "You are already editing this level!");
             return;
         }
         Project.getProject().switchToLevel(selected);
@@ -2451,22 +1222,15 @@ public class GUI extends javax.swing.JFrame {
         GUI.refreshList(levelList, Project.getProject().getLevels());
     }//GEN-LAST:event_levelManagerButtonActionPerformed
 
-    private void levelNameFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_levelNameFieldKeyReleased
-        
-    }//GEN-LAST:event_levelNameFieldKeyReleased
-
-    private void levelNameFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_levelNameFieldKeyPressed
-        
-    }//GEN-LAST:event_levelNameFieldKeyPressed
-
     private void renameLevelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_renameLevelButtonActionPerformed
         int index = levelList.getSelectedIndex();
         ArrayList<Level> list = Project.getProject().getLevels();
         Level l = list.get(index);
 
         if (l.getName().equals(levelNameField.getText()) == false) {
-            for (Level l2: Project.getProject().getLevels()) { if (l2.getName().equals(levelNameField.getText())) { 
-                GUI.showMessage("A level already exists by that name!", levelManagerDialog); return; } }
+            if (Project.getProject().containsLevel(levelNameField.getText())) {
+                JOptionPane.showMessageDialog(levelManagerDialog, "A level already exists by that name!"); return;
+            }
             l.setName(levelNameField.getText());
             GUI.refreshList(levelList, Project.getProject().getLevels());
             levelList.setSelectedIndex(index);
@@ -2512,7 +1276,7 @@ public class GUI extends javax.swing.JFrame {
         GUI.refreshObjectEditor();
         GUI.refreshGalleryLists();
         hideDialog(objectGalleryDialog);
-        showDialog(objectEditorDialog);
+        showFrame(newObjectEditor);
     }//GEN-LAST:event_editGalleryObjectButtonActionPerformed
 
     private void newGalleryObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGalleryObjectButtonActionPerformed
@@ -2523,7 +1287,7 @@ public class GUI extends javax.swing.JFrame {
         GUI.refreshObjectEditor();
         GUI.refreshGalleryLists();
         hideDialog(objectGalleryDialog);
-        showDialog(objectEditorDialog);
+        showFrame(newObjectEditor);
     }//GEN-LAST:event_newGalleryObjectButtonActionPerformed
 
     private void deleteGalleryObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteGalleryObjectButtonActionPerformed
@@ -2547,7 +1311,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_duplicateGalleryObjectButtonActionPerformed
 
     private void viewRootButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewRootButtonActionPerformed
-        File folder = new File(System.clearProperty("user.home")+"/level_editor/");
+        File folder = new File(Project.getProject().getDirectory());
         try {
             if (folder.exists()) Desktop.getDesktop().open(folder);
         } catch (IOException ex) {
@@ -2568,7 +1332,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_reloadAssetsButtonActionPerformed
 
     private void openAssetsFolderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openAssetsFolderButtonActionPerformed
-        File folder = new File(System.clearProperty("user.home")+"/level_editor/projects/"+Project.getProject().getName()+"/assets/");
+        File folder = new File(System.getProperty("user.home")+"/platformr/projects/"+Project.getProject().getName()+"/assets/");
         try {
             if (folder.exists()) Desktop.getDesktop().open(folder); else JOptionPane.showMessageDialog(null, "You must save your project first!");
         } catch (IOException ex) {
@@ -2589,561 +1353,6 @@ public class GUI extends javax.swing.JFrame {
         
     }//GEN-LAST:event_projectMenuActionPerformed
 
-    private void objectEditorDialogWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_objectEditorDialogWindowClosing
-        hideDialog(objectEditorDialog);
-         {
-            showDialog(objectGalleryDialog);
-        }
-    }//GEN-LAST:event_objectEditorDialogWindowClosing
-
-    private void toggleAnimationPreviewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleAnimationPreviewButtonActionPerformed
-        Assets.PREVIEW_THREAD.setPaused(!toggleAnimationPreviewButton.isSelected());
-    }//GEN-LAST:event_toggleAnimationPreviewButtonActionPerformed
-
-    private void animationPreviewZoomChooserStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_animationPreviewZoomChooserStateChanged
-        int zoom = ((Integer)animationPreviewZoomChooser.getValue());
-        if (zoom < 1) {
-            zoom = 1;
-            animationPreviewZoomChooser.setValue(zoom);
-        }
-        if (zoom > 10) {
-            zoom = 10;
-            animationPreviewZoomChooser.setValue(zoom);
-        }
-        Animation anim = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
-        GUI.refreshAnimationFramePreview(anim, animationFrameChooser.getSelectedIndex());
-    }//GEN-LAST:event_animationPreviewZoomChooserStateChanged
-
-    private void deleteAnimationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteAnimationButtonActionPerformed
-        int index = animationChooser.getSelectedIndex();
-        if (index == -1) return;
-        Animation anim = sceneCanvas.getActiveObject().getAnimations().get(index);
-        sceneCanvas.getActiveObject().getAnimations().remove(anim);
-        GUI.refreshList(animationChooser, getSceneCanvas().getSelectedObject().getAnimations());
-        Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-        animationChooser.setSelectedIndex(index < sceneCanvas.getActiveObject().getAnimations().size() ? index
-                : sceneCanvas.getActiveObject().getAnimations().size()-1);
-    }//GEN-LAST:event_deleteAnimationButtonActionPerformed
-
-    private void duplicateAnimationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_duplicateAnimationButtonActionPerformed
-        int index = animationChooser.getSelectedIndex();
-        Animation anim = new Animation();
-        Animation existing = sceneCanvas.getActiveObject().getAnimations().get(index);
-        existing.copyTo(anim);
-        anim.setName(anim.getName()+Math.abs(new Random().nextInt() % 1000));
-        sceneCanvas.getActiveObject().getAnimations().add(anim);
-        Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-        GUI.refreshList(animationChooser, getSceneCanvas().getSelectedObject().getAnimations());
-        animationChooser.setSelectedIndex(sceneCanvas.getActiveObject().getAnimations().size()-1);
-    }//GEN-LAST:event_duplicateAnimationButtonActionPerformed
-
-    private void newAnimationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAnimationButtonActionPerformed
-        Animation anim = new Animation();
-        anim.setName("animation"+Math.abs(new Random().nextInt()));
-        sceneCanvas.getActiveObject().getAnimations().add(anim);
-        Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-        GUI.refreshList(animationChooser, getSceneCanvas().getSelectedObject().getAnimations());
-        animationChooser.setSelectedIndex(sceneCanvas.getActiveObject().getAnimations().size()-1);
-    }//GEN-LAST:event_newAnimationButtonActionPerformed
-
-    private void animationNameFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_animationNameFieldKeyReleased
-        int index = animationChooser.getSelectedIndex();
-        Animation anim = sceneCanvas.getActiveObject().getAnimations().get(index);
-        if (sceneCanvas.getActiveObject().containsAnimation(animationNameField.getText()) || animationNameField.getText().length() == 0) {
-            animationNameField.setForeground(Color.red);
-            return;
-        }
-        if (evt.getKeyChar() == '\n') {
-            anim.setName(animationNameField.getText());
-            Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-            GUI.refreshList(animationChooser, getSceneCanvas().getSelectedObject().getAnimations());
-            animationNameField.grabFocus();
-            animationNameField.setForeground(Color.black);
-            animationChooser.setSelectedIndex(index);
-        }
-        if (!animationNameField.getText().equals(anim.getName())) animationNameField.setForeground(Color.blue);
-    }//GEN-LAST:event_animationNameFieldKeyReleased
-
-    private void animationNameFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_animationNameFieldKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_animationNameFieldKeyPressed
-
-    private void animationChooserValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_animationChooserValueChanged
-        animationNameField.setForeground(Color.black);
-        if (animationChooser.getSelectedIndex() > -1) {
-            GUI.fillAnimationFields();
-            Assets.PREVIEW_THREAD.setAnimation(sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex()));
-        } else {
-            GUI.fillAnimationFields();
-            framePreview.setIcon(null);
-            deleteAnimationButton.setEnabled(false);
-        }
-        
-    }//GEN-LAST:event_animationChooserValueChanged
-
-    private void animationDeleteFrameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_animationDeleteFrameButtonActionPerformed
-        Animation anim = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
-        int index = animationFrameChooser.getSelectedIndex();
-        anim.removeFrame(index);
-        
-                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-        fillAnimationFrameChooser();
-        if (index >= anim.getWidths().size()) {
-            animationFrameChooser.setSelectedIndex(anim.getWidths().size()-1);
-        } else {
-            animationFrameChooser.setSelectedIndex(index);
-        }
-    }//GEN-LAST:event_animationDeleteFrameButtonActionPerformed
-
-    private void animationAddFrameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_animationAddFrameButtonActionPerformed
-        Animation anim = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
-        anim.addFrame(16, 16, 100);
-        
-                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-        fillAnimationFrameChooser();
-        animationFrameChooser.setSelectedIndex(anim.getWidths().size()-1);
-
-        ArrayList<String> frames = new ArrayList<String>();
-        for (int i = 0; i != anim.getWidths().size(); i++) {
-            frames.add("Frame #"+(i+1));
-        }
-        animationFrameChooser.setListData(frames.toArray());
-        animationFrameChooser.setSelectedIndex(anim.getWidths().size()-1);
-        Assets.PREVIEW_THREAD.setAnimation(anim);
-    }//GEN-LAST:event_animationAddFrameButtonActionPerformed
-
-    private void animationLoopCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_animationLoopCheckboxActionPerformed
-        Animation anim = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
-        anim.loop(!anim.loops());
-        Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-    }//GEN-LAST:event_animationLoopCheckboxActionPerformed
-
-    private void animationFrameDurationFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_animationFrameDurationFieldKeyReleased
-        Animation anim = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
-        int index = animationFrameChooser.getSelectedIndex();
-        if (animationFrameDurationField.getText().length() == 0) return;
-        animationFrameDurationField.setForeground(Color.blue);
-        if (evt.getKeyChar() == '\n') {
-            int[] dure = MiscMath.parseIntegers(animationFrameDurationField.getText().split("\\s"));
-            anim.setFrameDuration(dure[0]);
-            Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-            animationFrameDurationField.setForeground(Color.black);
-            Assets.PREVIEW_THREAD.setAnimation(anim);
-        }
-    }//GEN-LAST:event_animationFrameDurationFieldKeyReleased
-
-    private void animationFrameDurationFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_animationFrameDurationFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_animationFrameDurationFieldActionPerformed
-
-    private void animationFrameDimensionsFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_animationFrameDimensionsFieldKeyReleased
-        Animation anim = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
-        int index = animationFrameChooser.getSelectedIndex();
-        if (animationFrameDimensionsField.getText().length() == 0) return;
-        animationFrameDimensionsField.setForeground(Color.blue);
-        if (evt.getKeyChar() == '\n') {
-            int[] dims = MiscMath.parseIntegers(animationFrameDimensionsField.getText().split("\\s"));
-            anim.getWidths().set(index, dims[0]);
-            anim.getHeights().set(index, dims[1]);
-            Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-            animationFrameDimensionsField.setForeground(Color.black);
-            Assets.PREVIEW_THREAD.setAnimation(anim);
-        }
-    }//GEN-LAST:event_animationFrameDimensionsFieldKeyReleased
-
-    private void animationFrameDimensionsFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_animationFrameDimensionsFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_animationFrameDimensionsFieldActionPerformed
-
-    private void animationFrameChooserValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_animationFrameChooserValueChanged
-
-        int index = animationFrameChooser.getSelectedIndex();
-        if (index > -1) {
-            Animation anim = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
-            animationDeleteFrameButton.setEnabled(true);
-            animationFrameDurationField.setText(anim.getFrameDuration()+"");
-            animationFrameDimensionsField.setText(anim.getWidths().get(index)+" "+anim.getHeights().get(index));
-        } else {
-            animationDeleteFrameButton.setEnabled(false);
-            framePreview.setIcon(null);
-        }
-    }//GEN-LAST:event_animationFrameChooserValueChanged
-
-    private void animationImageFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_animationImageFieldKeyReleased
-        Animation anim = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
-
-        if (new File(Assets.USER_HOME+"/level_editor/projects/"+Project.getProject().getName()+"/assets/textures/animations/"+animationImageField.getText()+".png")
-            .exists() == false) {
-            animationImageField.setForeground(Color.red);
-            return;
-        }
-
-        if (evt.getKeyChar() == '\n') {
-            anim.setSpriteSheet(animationImageField.getText());
-            Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-            animationImageField.setForeground(Color.black);
-            Assets.PREVIEW_THREAD.setAnimation(anim);
-        }
-        if (anim.getSpriteSheet().equals(animationImageField.getText()) == false) animationImageField.setForeground(Color.blue);
-    }//GEN-LAST:event_animationImageFieldKeyReleased
-
-    private void duplicateDialogueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_duplicateDialogueButtonActionPerformed
-        int index = dialogueChooser.getSelectedIndex();
-        Dialogue anim = new Dialogue();
-        Dialogue existing = sceneCanvas.getActiveObject().getDialogues().get(index);
-        existing.copyTo(anim);
-        anim.setName(anim.getName()+Math.abs(new Random().nextInt() % 10000));
-        sceneCanvas.getActiveObject().getDialogues().add(anim);
-        Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-        GUI.refreshList(dialogueChooser, sceneCanvas.getActiveObject().getDialogues());
-        dialogueChooser.setSelectedIndex(sceneCanvas.getActiveObject().getDialogues().size()-1);
-    }//GEN-LAST:event_duplicateDialogueButtonActionPerformed
-
-    private void choiceEventValueFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_choiceEventValueFieldKeyReleased
-
-    }//GEN-LAST:event_choiceEventValueFieldKeyReleased
-
-    private void deleteDialogueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteDialogueButtonActionPerformed
-        int index = dialogueChooser.getSelectedIndex(); if (index < 0) return;
-        Dialogue dialogue = sceneCanvas.getActiveObject().getDialogues().get(index);
-        sceneCanvas.getActiveObject().getDialogues().remove(dialogue);
-        Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-        GUI.refreshList(dialogueChooser, sceneCanvas.getActiveObject().getDialogues());
-        dialogueChooser.setSelectedIndex(index < sceneCanvas.getActiveObject().getDialogues().size() ? index
-                    : sceneCanvas.getActiveObject().getDialogues().size()-1);
-    }//GEN-LAST:event_deleteDialogueButtonActionPerformed
-
-    private void newDialogueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newDialogueButtonActionPerformed
-        Dialogue dialogue = new Dialogue();
-        dialogue.setName("dialogue"+Math.abs(new Random().nextInt()));
-        dialogue.setParent(sceneCanvas.getActiveObject());
-         {
-            for (SceneObject o: Project.getProject().getObjectsByType(sceneCanvas.getActiveObject().getType())) {
-                boolean add = true;
-                for (Dialogue s: o.getDialogues()) {
-                    if (s.getName().equals(dialogue.getName())) {
-                        add = false;
-                    }
-                }
-                if (add) {
-                    Dialogue s = new Dialogue();
-                    dialogue.copyTo(s);
-                    s.setParent(o);
-                    o.getDialogues().add(s);
-                }
-            }
-        }
-
-        sceneCanvas.getActiveObject().getDialogues().add(dialogue);
-        ArrayList<String> anim_names = new ArrayList<String>();
-        for (Dialogue s: sceneCanvas.getActiveObject().getDialogues()) {
-            anim_names.add(s.getName());
-        }
-        dialogueChooser.setListData(anim_names.toArray());
-        dialogueChooser.setSelectedIndex(anim_names.size()-1);
-    }//GEN-LAST:event_newDialogueButtonActionPerformed
-
-    private void dialogueChooserValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_dialogueChooserValueChanged
-        deleteDialogueButton.setEnabled(dialogueChooser.getSelectedIndex() > -1);
-        duplicateDialogueButton.setEnabled(dialogueChooser.getSelectedIndex() > -1);
-        dialogueNameField.setEnabled(dialogueChooser.getSelectedIndex() > -1);
-        addThisSpeakEventButton.setEnabled(dialogueChooser.getSelectedIndex() > -1);
-        addOtherSpeakEventButton.setEnabled(dialogueChooser.getSelectedIndex() > -1);
-        addPlayerChoiceButton.setEnabled(dialogueChooser.getSelectedIndex() > -1);
-    }//GEN-LAST:event_dialogueChooserValueChanged
-
-    private void blockParamValueFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_blockParamValueFieldKeyReleased
-        int index = flowChooser.getSelectedIndex();
-        ArrayList<Flow> list = sceneCanvas.getActiveObject().getFlows();
-        Flow flow = list.get(index);
-        if (blockParamValueField.getText().length() == 0) {
-            blockParamValueField.setForeground(Color.red);
-            return;
-        }
-        int p_index = blockParamChooser.getSelectedIndex();
-        int b_index = flow.indexOf(FlowCanvas.SELECTED_BLOCK);
-        if (evt.getKeyChar() == '\n') {
-            System.out.println("B index = "+b_index);
-            if (b_index > -1) {
-                flow.getBlock(b_index).setParametre(p_index, 0, blockParamValueField.getText());
-                Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-                GUI.refreshObjectEditor();
-                flowChooser.setSelectedIndex(index);
-                blockParamValueField.grabFocus();
-                blockParamValueField.setForeground(Color.black);
-            }
-
-        }
-        if (!blockParamValueField.getText().equals(FlowCanvas.SELECTED_BLOCK.getParametre(p_index, 0)))
-        blockParamValueField.setForeground(Color.blue);
-    }//GEN-LAST:event_blockParamValueFieldKeyReleased
-
-    private void blockParamChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blockParamChooserActionPerformed
-        if (FlowCanvas.SELECTED_BLOCK != null)
-        blockParamValueField.setText(FlowCanvas.SELECTED_BLOCK.getParametre(blockParamChooser.getSelectedIndex(), 0));
-    }//GEN-LAST:event_blockParamChooserActionPerformed
-
-    private void flowCanvasMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_flowCanvasMouseMoved
-        FlowCanvas.LAST_MOUSE_X = evt.getX();
-        FlowCanvas.LAST_MOUSE_Y = evt.getY();
-        flowCanvas.repaint();
-    }//GEN-LAST:event_flowCanvasMouseMoved
-
-    private void flowCanvasMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_flowCanvasMouseDragged
-        flowCanvas.grabFocus();
-        Block b = FlowCanvas.getBlock(evt.getX()-FlowCanvas.ORIGIN_X, evt.getY()-FlowCanvas.ORIGIN_Y);
-        int diff_x = evt.getX() - FlowCanvas.LAST_MOUSE_X, diff_y = evt.getY() - FlowCanvas.LAST_MOUSE_Y;
-        if (b == null) {
-            FlowCanvas.ORIGIN_X += diff_x;
-            FlowCanvas.ORIGIN_Y += diff_y;
-
-        } else {
-            b.setX(b.getCoords()[0] + diff_x);
-            b.setY(b.getCoords()[1] + diff_y);
-        }
-        FlowCanvas.LAST_MOUSE_X = evt.getX();
-        FlowCanvas.LAST_MOUSE_Y = evt.getY();
-        flowCanvas.repaint();
-    }//GEN-LAST:event_flowCanvasMouseDragged
-
-    private void flowCanvasMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_flowCanvasMouseReleased
-
-    }//GEN-LAST:event_flowCanvasMouseReleased
-
-    private void flowCanvasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_flowCanvasMouseClicked
-        Flow f = sceneCanvas.getActiveObject().getFlows().get(flowChooser.getSelectedIndex());
-        Block b = FlowCanvas.getBlock(evt.getX()-FlowCanvas.ORIGIN_X, evt.getY()-FlowCanvas.ORIGIN_Y);
-        if (b != null) {
-            int d = b.getDot(evt.getX()-FlowCanvas.ORIGIN_X, evt.getY()-FlowCanvas.ORIGIN_Y);
-            System.out.println("You clicked on: "+b.title()+" (dot "+d+")");
-            if (evt.getButton() == MouseEvent.BUTTON1) {
-                if (d > -1) {
-                    FlowCanvas.LAST_MOUSE_CLICK_X = evt.getX()-FlowCanvas.ORIGIN_X;
-                    FlowCanvas.LAST_MOUSE_CLICK_Y = evt.getY()-FlowCanvas.ORIGIN_Y;
-                    if (FlowCanvas.SELECTED_BLOCK != null && FlowCanvas.SELECTED_DOT > -1) {
-
-                        int from = FlowCanvas.SELECTED_DOT, to = d; boolean accept_connection = false;
-                        if (from == 1) accept_connection = to >= 5 || to == 0; else accept_connection = to == 0;
-                        System.out.println("From: "+from+", To: "+to);
-
-                        if (accept_connection) {
-                            if (to >= 5) {
-                                //connecting to parametre nodes
-                                if (from == 1 && b.getParametre(d-5, 2).equals(FlowCanvas.SELECTED_BLOCK.getOutputType()) || from > 1) {
-                                    b.setParametreConnection(d-5, FlowCanvas.SELECTED_BLOCK.getID());
-                                }
-                            } else {
-                                FlowCanvas.SELECTED_BLOCK.setConnection(FlowCanvas.SELECTED_DOT, b.getID());
-                            }
-                            FlowCanvas.SELECTED_BLOCK = null;
-                            FlowCanvas.SELECTED_DOT = -1;
-                        }
-                    } else {
-                        if (d > 0) {
-                            FlowCanvas.SELECTED_BLOCK = b;
-                            FlowCanvas.SELECTED_DOT = d;
-                        }
-                    }
-                } else { //if no dot was clicked, then just select the block and refresh
-                    if (FlowCanvas.SELECTED_DOT < 0) {
-                        FlowCanvas.SELECTED_BLOCK = b;
-                        refreshBlockOptions();
-                    }
-                }
-            } else {
-                if (d >= 5) {
-                    b.setParametreConnection(d-5, 0);
-                } else if (d > 0) {
-                    b.setConnection(d, 0);
-                }
-            }
-        } else {
-            refreshBlockOptions();
-            FlowCanvas.SELECTED_BLOCK = null;
-            FlowCanvas.SELECTED_DOT = -1;
-        }
-        Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-        refreshBlockOptions();
-        flowCanvas.repaint();
-    }//GEN-LAST:event_flowCanvasMouseClicked
-
-    private void addBlockButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBlockButtonActionPerformed
-        Flow f = sceneCanvas.getActiveObject().getFlows().get(flowChooser.getSelectedIndex());
-        String path_str = "", name = "";
-        Object[] path = blockChooser.getSelectionPath().getPath();
-        name = path[path.length-1].toString();
-        for (int i = 0; i != path.length; i++) {
-            if (i == 0) continue;
-            if (path[i].toString().equals(name) == false) {
-                path_str+= path[i].toString()+"/";
-            }
-        }
-        if (path_str.charAt(path_str.length()-1) == '/') {
-            path_str = path_str.substring(0, path_str.length()-1);
-        }
-        Block b = Assets.getBlock(name, path_str);
-        if (b == null) return;
-        Block new_b = new Block();
-        b.copyTo(new_b);
-        b.randomID();
-        f.addBlock(new_b);
-        new_b.setX(flowCanvas.getWidth()/2 - FlowCanvas.ORIGIN_X);
-        new_b.setY(flowCanvas.getHeight()/2 - FlowCanvas.ORIGIN_Y);
-        Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-        flowCanvas.repaint();
-    }//GEN-LAST:event_addBlockButtonActionPerformed
-
-    private void blockChooserValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_blockChooserValueChanged
-        addBlockButton.setEnabled(blockChooser.getSelectionPath() != null);
-    }//GEN-LAST:event_blockChooserValueChanged
-
-    private void deleteFlowButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteFlowButtonActionPerformed
-        int index = flowChooser.getSelectedIndex(); if (index < 0) return;
-        Flow flow = sceneCanvas.getActiveObject().getFlows().get(index);
-            sceneCanvas.getActiveObject().getFlows().remove(flow);
-            GUI.refreshList(flowChooser, sceneCanvas.getActiveObject().getFlows());
-            Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-            flowChooser.setSelectedIndex(index < sceneCanvas.getActiveObject().getFlows().size() ? index 
-                        : sceneCanvas.getActiveObject().getFlows().size()-1);
-    }//GEN-LAST:event_deleteFlowButtonActionPerformed
-
-    private void duplicateFlowButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_duplicateFlowButtonActionPerformed
-        int index = flowChooser.getSelectedIndex();
-        Flow flow = new Flow();
-        Flow existing = sceneCanvas.getActiveObject().getFlows().get(index);
-        existing.copyTo(flow);
-        flow.setName(flow.getName()+Math.abs(new Random().nextInt() % 10000));
-        sceneCanvas.getActiveObject().getFlows().add(flow);
-        GUI.refreshList(flowChooser, sceneCanvas.getActiveObject().getFlows());
-        Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-        flowChooser.setSelectedIndex(sceneCanvas.getActiveObject().getFlows().size()-1);
-    }//GEN-LAST:event_duplicateFlowButtonActionPerformed
-
-    private void newFlowButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newFlowButtonActionPerformed
-        Flow flow = new Flow();
-        flow.setName("flowchart"+Math.abs(new Random().nextInt()));
-        sceneCanvas.getActiveObject().getFlows().add(flow);
-        GUI.refreshList(flowChooser, sceneCanvas.getActiveObject().getFlows());
-        Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-        flowChooser.setListData(sceneCanvas.getActiveObject().getFlows().toArray());
-        flowChooser.setSelectedIndex(sceneCanvas.getActiveObject().getFlows().size()-1);
-    }//GEN-LAST:event_newFlowButtonActionPerformed
-
-    private void flowNameFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_flowNameFieldKeyReleased
-        int index = flowChooser.getSelectedIndex();
-        ArrayList<Flow> list = sceneCanvas.getActiveObject().getFlows();
-        Flow flow = list.get(index);
-        if (sceneCanvas.getActiveObject().containsFlow(flowNameField.getText()) || flowNameField.getText().length() == 0) {
-            flowNameField.setForeground(Color.red);
-            return;
-        }
-        if (evt.getKeyChar() == '\n') {
-            flow.setName(flowNameField.getText());
-            Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-            GUI.refreshObjectEditor();
-            flowChooser.setSelectedIndex(index);
-            flowNameField.grabFocus();
-            flowNameField.setForeground(Color.black);
-        }
-        if (!flowNameField.getText().equals(flow.getName())) flowNameField.setForeground(Color.blue);
-    }//GEN-LAST:event_flowNameFieldKeyReleased
-
-    private void flowNameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flowNameFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_flowNameFieldActionPerformed
-
-    private void flowChooserValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_flowChooserValueChanged
-        if (flowChooser.getSelectedIndex() > -1) {
-            int index = flowChooser.getSelectedIndex();
-            flowNameField.setText(sceneCanvas.getActiveObject().getFlows().get(index).getName());
-            flowNameField.setEnabled(true);
-            deleteFlowButton.setEnabled(true);
-            duplicateFlowButton.setEnabled(true);
-            addBlockButton.setEnabled(true);
-            blockChooser.setEnabled(true);
-            flowCanvas.repaint();
-        } else {
-            blockChooser.setEnabled(false);
-            flowNameField.setEnabled(false);
-            flowNameField.setText("");
-            deleteFlowButton.setEnabled(false);
-            duplicateFlowButton.setEnabled(false);
-            addBlockButton.setEnabled(false);
-        }
-        flowCanvas.repaint();
-    }//GEN-LAST:event_flowChooserValueChanged
-
-    private void objectNameFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_objectNameFieldKeyReleased
-        if (Project.getProject().getCurrentLevel().containsObject(objectNameField.getText()) || objectNameField.getText().length() == 0) {
-            objectNameField.setForeground(Color.red);
-            return;
-        }
-        if (evt.getKeyChar() == '\n') {
-            sceneCanvas.getActiveObject().setName(objectNameField.getText());
-            GUI.refreshObjectEditor();
-            GUI.refreshObjectProperties();
-            GUI.refreshGalleryLists();
-            objectNameField.setForeground(Color.black);
-            return;
-        }
-        if (!objectNameField.getText().equals(sceneCanvas.getActiveObject().getName())) objectNameField.setForeground(Color.blue);
-    }//GEN-LAST:event_objectNameFieldKeyReleased
-
-    private void objectNameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectNameFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_objectNameFieldActionPerformed
-
-    private void objectTextureFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_objectTextureFieldKeyReleased
-
-        if (new File(Assets.USER_HOME+"/level_editor/projects/"+Project.getProject().getName()+"/assets/textures/objects/"+objectTextureField.getText()+".png")
-            .exists() == false) {
-            objectTextureField.setForeground(Color.red);
-            return;
-        }
-
-        if (evt.getKeyChar() == '\n') {
-             {
-                for (SceneObject o: Project.getProject().getObjectsByType(sceneCanvas.getActiveObject().getType())) {
-                    o.texture = objectTextureField.getText();
-                }
-            }
-            sceneCanvas.getActiveObject().setTexture(objectTextureField.getText());
-            GUI.refreshObjectEditor();
-            GUI.refreshObjectProperties();
-            GUI.refreshGalleryLists();
-            objectTextureField.setForeground(Color.black);
-            return;
-        }
-        if (!objectTextureField.getText().equals(sceneCanvas.getActiveObject().getTexture())) objectTextureField.setForeground(Color.blue);
-    }//GEN-LAST:event_objectTextureFieldKeyReleased
-
-    private void objectTypeFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_objectTypeFieldKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_objectTypeFieldKeyTyped
-
-    private void objectTypeFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_objectTypeFieldKeyReleased
-        for (SceneObject o: Project.getProject().getCurrentLevel().getObjects(Level.ALL_OBJECTS)) {
-            if (o.getType().equals(objectTypeField.getText()) || objectTypeField.getText().length() == 0) {
-                objectTypeField.setForeground(Color.red);
-                return;
-            }
-        }
-        if (evt.getKeyChar() == '\n') {
-             {
-                for (SceneObject o: Project.getProject().getObjectsByType(sceneCanvas.getActiveObject().getType())) {
-                    o.setType(objectTypeField.getText());
-                }
-            }
-            sceneCanvas.getActiveObject().setType(objectTypeField.getText());
-            GUI.refreshObjectEditor();
-            GUI.refreshObjectProperties();
-            GUI.refreshGalleryLists();
-            objectTypeField.setForeground(Color.black);
-            return;
-        }
-        if (!sceneCanvas.getActiveObject().getType().equals(objectTypeField.getText())) objectTypeField.setForeground(Color.blue);
-    }//GEN-LAST:event_objectTypeFieldKeyReleased
-
     private void objectCollidesCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectCollidesCheckboxActionPerformed
         sceneCanvas.getActiveObject().setCollides(!sceneCanvas.getActiveObject().collides());
         GUI.refreshObjectEditor();
@@ -3157,73 +1366,6 @@ public class GUI extends javax.swing.JFrame {
         //TODO: figure out how to apply this to all objects (Collides toggle included)
     }//GEN-LAST:event_objectGravityCheckboxActionPerformed
 
-    private void runOnSpawnCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runOnSpawnCheckboxActionPerformed
-        if (flowChooser.getSelectedIndex() <= -1) return;
-        Flow f = sceneCanvas.getActiveObject().getFlows().get(flowChooser.getSelectedIndex());
-        
-                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-    }//GEN-LAST:event_runOnSpawnCheckboxActionPerformed
-
-    private void deleteBlockButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBlockButtonActionPerformed
-        if (flowChooser.getSelectedIndex() <= -1) return;
-        Flow f = sceneCanvas.getActiveObject().getFlows().get(flowChooser.getSelectedIndex());
-        Flow old_f = new Flow(); f.copyTo(old_f);
-        f.removeBlock(f.indexOf(FlowCanvas.SELECTED_BLOCK));
-        //break all connections to this block from other blocks
-        for (int i = 0; i != f.blockCount(); i++) {
-            Block b = f.getBlock(i);
-            for (int j = 0; j != b.paramCount(); j++) {
-                if (b.getParametreConnection(j) == b.getID()) {
-                    b.setParametreConnection(j, 0);
-                }
-            }
-            for (int j = 0; j != b.dotConns().length; j++) {
-                if (b.getConnection(j) == b.getID()) {
-                    b.setConnection(j, 0);
-                }
-            }
-        }
-        
-                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-        flowCanvas.repaint();
-    }//GEN-LAST:event_deleteBlockButtonActionPerformed
-
-    private void dialogueEventChooserValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_dialogueEventChooserValueChanged
-        if (dialogueChooser.getSelectedIndex() > -1) {
-            deleteDialogueButton.setEnabled(true);
-            //update the dialogue options
-            Dialogue d = sceneCanvas.getActiveObject().getDialogues().get(dialogueChooser.getSelectedIndex());
-            dialogueEventChooser.setListData(d.getQueue().toArray());
-            addThisSpeakEventButton.setEnabled(true);
-            addOtherSpeakEventButton.setEnabled(true);
-            addPlayerChoiceButton.setEnabled(true);
-        } else {
-            addThisSpeakEventButton.setEnabled(false);
-            addOtherSpeakEventButton.setEnabled(false);
-            addPlayerChoiceButton.setEnabled(false);
-        }
-    }//GEN-LAST:event_dialogueEventChooserValueChanged
-
-    private void dialogueNameFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_dialogueNameFieldKeyReleased
-        int index = dialogueChooser.getSelectedIndex();
-        Dialogue d = sceneCanvas.getActiveObject().getDialogues().get(index);
-        if (sceneCanvas.getActiveObject().containsDialogue(dialogueNameField.getText()) || dialogueNameField.getText().length() == 0) {
-            dialogueNameField.setForeground(Color.red);
-            return;
-        }
-        if (evt.getKeyChar() == '\n') {
-            d.setName(dialogueNameField.getText());
-            
-                    Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
-            GUI.refreshObjectEditor();
-            dialogueChooser.setSelectedIndex(index);
-            dialogueNameField.grabFocus();
-            dialogueNameField.setForeground(Color.black);
-
-        }
-        if (!dialogueNameField.getText().equals(d.getName())) dialogueNameField.setForeground(Color.blue);
-    }//GEN-LAST:event_dialogueNameFieldKeyReleased
-
     private void objectGalleryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectGalleryButtonActionPerformed
         refreshGalleryLists();
         showDialog(objectGalleryDialog);
@@ -3233,39 +1375,6 @@ public class GUI extends javax.swing.JFrame {
         String project_name = JOptionPane.showInputDialog(this, "Project name:", "Open project...", JOptionPane.PLAIN_MESSAGE);
         JOptionPane.showMessageDialog(this, "Project saving/loading not implemented.");
     }//GEN-LAST:event_openProjectButtonActionPerformed
-
-    private void spawnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_spawnButtonActionPerformed
-        String chosen_name = spawnNameField.getText().trim();
-        if (chosen_name.length() == 0) { 
-            JOptionPane.showMessageDialog(spawnButton, "You need to enter a name for this object!", "Whoops!", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        if (Project.getProject().getCurrentLevel().containsObject(chosen_name)) {
-            JOptionPane.showMessageDialog(spawnButton, "An object of this name already exists in this level!", "Whoops!", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        String cmd = evt.getActionCommand();
-        char c = cmd.charAt(0);
-        SceneObject o = new SceneObject(), src = null;
-        if (c == 'c') src = sceneCanvas.getSelectedObject();
-        if (c == 'g') src = Project.getProject().getGalleryObject(spawnList.getSelectedIndex());
-        if (c == 'h') {
-            o.setHitbox(true);
-            o.setWidth(16);
-            o.setHeight(16);
-            Project.getProject().getCurrentLevel().add(o);
-            return;
-        }
-        
-        if (src == null) return;
-        o.setWorldX((int)((sceneCanvas.getWidth()/2)-sceneCanvas.getOriginX()/sceneCanvas.getZoom()));
-        o.setWorldY((int)((sceneCanvas.getHeight()/2)-sceneCanvas.getOriginY()/sceneCanvas.getZoom()));
-        o.setName(chosen_name);
-        Project.getProject().getCurrentLevel().add(o);
-        
-        sceneCanvas.repaint();
-        System.out.println("Added new object: "+o.getName());
-    }//GEN-LAST:event_spawnButtonActionPerformed
 
     private void sceneCanvasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sceneCanvasKeyPressed
         sceneCanvas.handleKeyPress(evt);
@@ -3287,43 +1396,49 @@ public class GUI extends javax.swing.JFrame {
         sceneCanvas.handleMouseDrag(evt);
     }//GEN-LAST:event_sceneCanvasMouseDragged
 
-    private void newObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newObjectButtonActionPerformed
-        refreshGalleryLists();
-        for (SceneObject o: Project.getProject().getGalleryObjects()) spawnList.addItem(o.toString());
-        showDialog(objectSpawnDialog);
-    }//GEN-LAST:event_newObjectButtonActionPerformed
-
-    private void objectTypeChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectTypeChooserActionPerformed
+    private void objectLayerChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectLayerChooserActionPerformed
         if (sceneCanvas.getSelectedObject() == null) return;
-        Project.getProject().getCurrentLevel().moveToLayer(1+objectTypeChooser.getSelectedIndex(), sceneCanvas.getSelectedObject());
+        Project.getProject().getCurrentLevel().moveToLayer(1+objectLayerChooser.getSelectedIndex(), sceneCanvas.getSelectedObject());
         sceneCanvas.repaint();
-    }//GEN-LAST:event_objectTypeChooserActionPerformed
+    }//GEN-LAST:event_objectLayerChooserActionPerformed
 
     private void editObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editObjectButtonActionPerformed
         sceneCanvas.setActiveObject(sceneCanvas.getSelectedObject());
         GUI.refreshObjectEditor();
         objectEditorTabs.setSelectedIndex(0);
-        showDialog(objectEditorDialog);
+        sceneObjectCanvas.setObject(sceneCanvas.getSelectedObject());
+        showFrame(newObjectEditor);
     }//GEN-LAST:event_editObjectButtonActionPerformed
 
     private void spawnObjectAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_spawnObjectAction
         String cmd = evt.getActionCommand();
         char c = cmd.charAt(0);
         SceneObject o = new SceneObject(), src = null;
-        if (c == 'c') src = sceneCanvas.getSelectedObject();
-        if (c == 'h') {
-            o.setHitbox(true);
-            o.setWidth(16);
-            o.setHeight(16);
-            o.setName("object"+Math.abs(new Random().nextInt()));
-            Project.getProject().getCurrentLevel().add(o);
-            return;
+        if (c == 'c')  {
+            src = sceneCanvas.getSelectedObject();
+        } else if (c == 'n') {
+            ArrayList<String> spawnList = new ArrayList<String>();
+            spawnList.add("Empty hitbox");
+            for (SceneObject s: Project.getProject().getGalleryObjects()) spawnList.add(s.toString());
+            spawnList.remove(1); //remove PLAYER gallery object
+            Object selection = JOptionPane.showInputDialog(this, "Choose a gallery object to spawn:", "Spawn new object...", 
+                   JOptionPane.PLAIN_MESSAGE, null, spawnList.toArray(), null);
+            if (selection == null) return;
+            if ("Empty hitbox".equals(selection)) {
+                o.setHitbox(true);
+                o.setName("object"+Math.abs(new Random().nextInt()));
+            } else {
+                src = Project.getProject().getGalleryObject((String)selection);
+            }
         }
-
-        if (src == null) return;
-        o.setWorldX((int)((sceneCanvas.getWidth()/2)-sceneCanvas.getOriginX()/sceneCanvas.getZoom()));
-        o.setWorldY((int)((sceneCanvas.getHeight()/2)-sceneCanvas.getOriginY()/sceneCanvas.getZoom()));
-        o.setName(src.getName()+"_copy");
+        
+        if (src != null) {
+            src.copyTo(o);
+            o.setName(src+"_copy");
+        }
+        
+        o.setWorldX((int)sceneCanvas.getCameraX());
+        o.setWorldY((int)sceneCanvas.getCameraY());
         Project.getProject().getCurrentLevel().add(o);
 
         sceneCanvas.repaint();
@@ -3338,21 +1453,6 @@ public class GUI extends javax.swing.JFrame {
             sceneCanvas.repaint();
         }
     }//GEN-LAST:event_moveZAction
-
-    /**
-     * Handles the tool buttons. Action command is the int value of the tool.
-     */
-    private void toolButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolButtonActionPerformed
-        int id = Integer.parseInt(evt.getActionCommand());
-        System.out.println("Selected tool "+id);
-        sceneCanvas.setSelectedTool(id);
-        selectButton.setEnabled(id != SceneCanvas.SELECT_TOOL);
-        moveButton.setEnabled(id != SceneCanvas.MOVE_TOOL);
-        cameraButton.setEnabled(id != SceneCanvas.CAMERA_TOOL);
-        resizeButton.setEnabled(id != SceneCanvas.RESIZE_TOOL);
-        sceneCanvas.repaint();
-        sceneCanvas.grabFocus();
-    }//GEN-LAST:event_toolButtonActionPerformed
 
     private void topColorMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_topColorMenuItemActionPerformed
         Color c = JColorChooser.showDialog(this, "Choose the top background color...", Project.getProject().getCurrentLevel().getTopBGColor());
@@ -3418,6 +1518,52 @@ public class GUI extends javax.swing.JFrame {
         Project.getProject().getCurrentLevel().autoPlayBGAmbience(autoplayAmbientSoundMenuItem.isSelected());
     }//GEN-LAST:event_autoplayAmbientSoundMenuItemActionPerformed
 
+    private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playButtonActionPerformed
+        runProject(startAtCurrentLevelCheckBox.isSelected() 
+                ? Project.getProject().getCurrentLevel().getName() : null);
+    }//GEN-LAST:event_playButtonActionPerformed
+
+    private void levelBoundsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_levelBoundsMenuItemActionPerformed
+        String input = JOptionPane.showInputDialog(this, "Bounds:", "Set level bounds...", JOptionPane.PLAIN_MESSAGE);
+        int[] parsed = parseString(input);
+        if (parsed.length >= 4) Project.getProject().getCurrentLevel()
+                .setBounds(parsed[0], parsed[1], parsed[2], parsed[3]);
+    }//GEN-LAST:event_levelBoundsMenuItemActionPerformed
+
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        sceneCanvas.setShowGrid(jCheckBox1.isSelected());
+        sceneCanvas.repaint();
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void deleteObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteObjectButtonActionPerformed
+        Project.getProject().getCurrentLevel().removeObject(sceneCanvas.getSelectedObject());
+        sceneCanvas.repaint();
+    }//GEN-LAST:event_deleteObjectButtonActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void changeObjectProperty(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeObjectProperty
+        char cmd = evt.getActionCommand().charAt(0);
+        String input = JOptionPane.showInputDialog(newObjectEditor, 
+                cmd == 'c' ? "Type: " : (cmd == 'n' ? "Name:" : "Texture:"), 
+                sceneCanvas.getActiveObject().getType());
+        if (input == null) return;
+        boolean gallery = Project.getProject().containsGalleryObject(input);
+        boolean level = Project.getProject().getCurrentLevel().containsObject(input);
+        if ((cmd == 'c' && gallery) || (cmd == 'n' && level)) {
+            JOptionPane.showMessageDialog(newObjectEditor, "This name is already taken!", 
+                    "Whoops!", JOptionPane.PLAIN_MESSAGE, null);
+            return;
+        }
+        if (cmd == 'c') sceneCanvas.getActiveObject().setType(input);
+        if (cmd == 'n') sceneCanvas.getActiveObject().setName(input);
+        if (cmd == 't') sceneCanvas.getActiveObject().setTexture(input);
+        GUI.refreshObjectEditor();
+    }//GEN-LAST:event_changeObjectProperty
+
+    
     /**
      * Turns a String of numbers into an int array.
      * @param s The string to parse.
@@ -3425,7 +1571,7 @@ public class GUI extends javax.swing.JFrame {
      */
     private static int[] parseString(String s) {
         if (s == null) return new int[]{};
-        String parsed[] = s.toLowerCase().split("[^0-9]");
+        String parsed[] = s.toLowerCase().split("[^0-9-]"); //split at anything not 0-9 or '-'
         int[] result = new int[parsed.length];
         for (int i = 0; i < parsed.length; i++) result[i] = Integer.parseInt(parsed[i]);
         return result;
@@ -3433,24 +1579,10 @@ public class GUI extends javax.swing.JFrame {
     
     public static void refreshGalleryLists() { 
         GUI.refreshList(galleryList, Project.getProject().getGalleryObjects());
-        spawnList.removeAllItems();
-        spawnList.addItem("Empty hitbox");
-        for (SceneObject o: Project.getProject().getGalleryObjects()) spawnList.addItem(o.toString());
-        spawnList.removeItemAt(1); //remove Player from spawn list
     }
     
     public static void refreshBlockOptions() {
-        System.out.println("Selected block "+FlowCanvas.SELECTED_BLOCK);
-        blockParamChooser.setEnabled(FlowCanvas.SELECTED_BLOCK != null);
-        deleteBlockButton.setEnabled(FlowCanvas.SELECTED_BLOCK != null);
-        blockParamValueField.setEnabled(FlowCanvas.SELECTED_BLOCK != null);
-        blockParamChooser.removeAllItems();
-        if (FlowCanvas.SELECTED_BLOCK != null) {
-            for (int i = 0; i != FlowCanvas.SELECTED_BLOCK.paramCount(); i++) {
-                Object o = FlowCanvas.SELECTED_BLOCK.getParametre(i, 1)+" ("+FlowCanvas.SELECTED_BLOCK.getParametre(i, 2)+")";
-                blockParamChooser.addItem(o);
-            }
-        }
+
     }
     
     public static SceneCanvas getSceneCanvas() { return sceneCanvas; }
@@ -3463,6 +1595,17 @@ public class GUI extends javax.swing.JFrame {
             (int)(height/2)-((d.getHeight()/2)));
         d.setModal(true);
         d.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        d.setVisible(true);
+        System.out.println("Showing "+d.getTitle());
+    }
+    
+    public static void showFrame(JFrame d) {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = screenSize.getWidth();
+        double height = screenSize.getHeight();
+        d.setSize(d.getPreferredSize());
+        d.setLocation((int)(width/2)-(d.getWidth()/2),
+            (int)(height/2)-((d.getHeight()/2)));
         d.setVisible(true);
         System.out.println("Showing "+d.getTitle());
     }
@@ -3486,212 +1629,82 @@ public class GUI extends javax.swing.JFrame {
         }
         l.setListData(list);
     }
-    
-    public static void showMessage(String message, JDialog parent) {
-        if (parent != null) hideDialog(parent);
-        JOptionPane.showMessageDialog(parent, message);
-        if (parent != null) showDialog(parent);
-    }
-    
+
     public static void updateWindowTitle() {
         if (window == null) return;
-        String title = "Platformer Creator 1.1 [Beta]";
-        title += " / "+Project.getProject().getName();
-        if (!Project.getProject().existsOnDisk()) title += " *";
-        if (Project.getProject().getCurrentLevel() != null) title += " / "+Project.getProject().getCurrentLevel().getName();
+        String title = "PlatformR Engine 1.3 - ";
+        title += "/"+Project.getProject().getName();
+        if (Project.getProject().getCurrentLevel() != null) title += "/"+Project.getProject().getCurrentLevel().getName();
         window.setTitle(title);
-    }
-    
-    public static void fillAnimationFrameChooser() {
-        int index = animationChooser.getSelectedIndex();
-        ArrayList<String> anim_names = new ArrayList<String>();
-        for (int i = 0; i != sceneCanvas.getActiveObject().getAnimations().get(index).getWidths().size(); i++) {
-            anim_names.add("Frame #"+(i+1));
-        }
-        animationFrameChooser.setListData(anim_names.toArray());
     }
     
     public static void refreshObjectEditor() {
         if (sceneCanvas.getActiveObject() == null) return;
         
-        ArrayList<String> flow_names = new ArrayList<String>();
-        for (Flow s: sceneCanvas.getActiveObject().getFlows()) {
-            flow_names.add(s.getName());
-        }
-        flowChooser.setListData(flow_names.toArray());
-        flowChooser.setSelectedIndex(-1);
-        
-        int pwidth = objectPreviewPane.getWidth();
-        int pheight = objectPreviewPane.getHeight();
-        int width = 0;
-        int height = 0;
-        int index = Assets.OBJECT_TEXTURE_NAMES.indexOf(sceneCanvas.getActiveObject().getTexture());
-        
-        if (index > -1) {
-            BufferedImage img = Assets.OBJECT_TEXTURES.get(index);
-            int m = 1;
-            if (img.getWidth() < img.getHeight()){
-                m = pheight/img.getHeight()-1;
-            } else {
-                m = pwidth/img.getWidth()-1; 
-            }
-            width = img.getWidth()*m;
-            height = img.getHeight()*m;
-            objectPreviewPane.setIcon(new ImageIcon(img.getScaledInstance(width, height, Image.SCALE_FAST)));
-            objectPreviewPane.setText("");
-        } else {
-            objectPreviewPane.setIcon(null);
-            objectPreviewPane.setText("Preview unavailable.");
-        }
-        
         if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject())) {
-            objectEditorDialog.setTitle("Editing '"+sceneCanvas.getActiveObject().getType()+"' in Object Gallery");
+            newObjectEditor.setTitle("Editing '"+sceneCanvas.getActiveObject().getType()+"' in Object Gallery");
         } else {
-            objectEditorDialog.setTitle("Editing '"+sceneCanvas.getActiveObject().getName()+"' in '"+Project.getProject().getCurrentLevel().getName()+"'");
+            newObjectEditor.setTitle("Editing '"+sceneCanvas.getActiveObject().getName()+"' in '"+Project.getProject().getCurrentLevel().getName()+"'");
         }
         
         objectTypeField.setText(sceneCanvas.getActiveObject().getType());
         objectTextureField.setText(sceneCanvas.getActiveObject().getTexture());
         objectNameField.setText(sceneCanvas.getActiveObject().getName());
         objectGravityCheckbox.setSelected(sceneCanvas.getActiveObject().gravity());
-        objectCollidesCheckbox.setSelected(sceneCanvas.getActiveObject().gravity());
-        
-        fillAnimationFields();
-        
-        ArrayList<String> dialogue_names = new ArrayList<String>();
-        for (Dialogue s: sceneCanvas.getActiveObject().getDialogues()) {
-            dialogue_names.add(s.getName());
-        }
-        dialogueChooser.setListData(dialogue_names.toArray());
-        dialogueChooser.setSelectedIndex(-1);
-        
-        for (int i = 0; i != objectDialoguePanel.getComponents().length; i++) {
-            Component c = objectDialoguePanel.getComponents()[i];
-            if (!(c.equals(dialogueChooser) || c.equals(newDialogueButton) || c instanceof JLabel)) {
-                c.setEnabled(false);
-            }
-        }
-        for (int i = 0; i != objectAnimationPanel.getComponents().length; i++) {
-            Component c = objectAnimationPanel.getComponents()[i];
-            if (!(c.equals(animationChooser) || c.equals(newAnimationButton) || c instanceof JLabel)) {
-                c.setEnabled(false);
-            }
-        }
-        
-        objectEditorTabs.setEnabledAt(2, !sceneCanvas.getActiveObject().isHitbox());
-        objectTypeField.setEnabled(Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject())
+        objectCollidesCheckbox.setSelected(sceneCanvas.getActiveObject().collides());
+        changeObjectTypeButton.setEnabled(Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject())
             && !"Player".equals(sceneCanvas.getActiveObject().getType()));
-        objectTextureField.setEnabled(Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()));
-        objectNameField.setEnabled(!Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()));
-    }
-    
-    public static void fillAnimationFields() {
-        int index = animationChooser.getSelectedIndex();
-        if (index == -1) {
-            animationNameField.setText("");
-            animationImageField.setText("");
-            animationFrameChooser.setListData(new Object[]{});
-            animationLoopCheckbox.setSelected(false);
-            animationFrameDimensionsField.setText("");
-            animationFrameDurationField.setText("");
-        } else {
-            Animation anim = sceneCanvas.getActiveObject().getAnimations().get(index);
-            animationNameField.setText(anim.getName());
-            animationImageField.setText(anim.getSpriteSheet());
-            fillAnimationFrameChooser();
-            animationLoopCheckbox.setSelected(anim.loops());
-            if (anim.getWidths().isEmpty() == false) {
-                animationFrameDurationField.setText(anim.getFrameDuration()+"");
-                animationFrameDimensionsField.setText(anim.getWidths().get(0)+" "+anim.getHeights().get(0));
-            } else {
-                animationFrameDurationField.setText("");
-                animationFrameDimensionsField.setText("");
-            }
-        }
+        changeObjectNameButton.setEnabled(!Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()));
+        changeObjectTextureButton.setEnabled(!sceneCanvas.getActiveObject().isHitbox());
         
-        for (int i = 0; i != chooseAnimationPanel.getComponents().length; i++) {
-            Component c = chooseAnimationPanel.getComponents()[i];
-            if (c.equals(newAnimationButton) == false) {
-                c.setEnabled(index > -1);
-            }
-        }
-        for (int i = 0; i != animationPropertiesPanel.getComponents().length; i++) {
-            Component c = animationPropertiesPanel.getComponents()[i];
-            if (!c.equals(animationFrameChooser)) c.setEnabled(animationChooser.getSelectedValue() != null); else c.setEnabled(true);
-            if (c.equals(animationFrameDimensionsField)
-                    || c.equals(animationDeleteFrameButton)) c.setEnabled(animationChooser.getSelectedIndex() > -1 
-                    && animationFrameChooser.getSelectedIndex() > -1);
-        }
-    }
-    
-    public static void refreshAnimationFramePreview(Animation anim, int f_index) {
-        if (f_index == -1 || f_index >= anim.getWidths().size()) return;
-        int asset_index = Assets.ANIMATION_TEXTURE_NAMES.indexOf(anim.getSpriteSheet());
-        int x = 0;
-        for (int i = 0; i != f_index; i++) {x+=anim.getWidths().get(i);}
-        if (asset_index > -1 && asset_index < Assets.ANIMATION_TEXTURE_NAMES.size()) {
-            BufferedImage img = Assets.ANIMATION_TEXTURES.get(asset_index);
-            if (x+anim.getWidths().get(f_index) > img.getWidth()) { framePreview.setIcon(null); return; }
-            try {
-                img = img.getSubimage(x, 0, anim.getWidths().get(f_index), anim.getHeights().get(f_index));
-            } catch (RasterFormatException e) {
-                e.printStackTrace();
-                framePreview.setIcon(null);
-            }
-            int zoom = ((Integer)(animationPreviewZoomChooser.getValue()));
-            ImageIcon icon = new ImageIcon(
-                    img.getScaledInstance(img.getWidth()*zoom, img.getHeight()*zoom, Image.SCALE_FAST));
-            framePreview.setIcon(icon);
-        }
+        //objectEditorTabs.setEnabledAt(2, !sceneCanvas.getActiveObject().isHitbox()); //animation tab
+        
     }
     
     public static void refreshFlowOptions() {
-        flowNameField.setEnabled(flowChooser.getSelectedValue() != null);
-        addBlockButton.setEnabled(flowChooser.getSelectedValue() != null);
+        
     }
     
     public static void refreshDialogueOptions() {
-        for (int i = 0; i != chooseDialoguePanel.getComponents().length; i++) {
-            Component c = chooseDialoguePanel.getComponents()[i];
-            if (!c.equals(newDialogueButton)) {
-                c.setEnabled(dialogueChooser.getSelectedValue() != null);
-            }
-        }
+        
     }
     
     public static void refreshLevelMenu() {
-        
         Level current = Project.getProject().getCurrentLevel();
         loopAmbientSoundMenuItem.setSelected(current.loopBGAmbience());
         loopBGMusicMenuItem.setSelected(current.loopBGMusic());
         autoplayAmbientSoundMenuItem.setSelected(current.autoPlayBGAmbience());
         autoplayBGMusicMenuItem.setSelected(current.autoPlayBGMusic());
-        
-        sceneCanvas.repaint();
-        
+        sceneCanvas.repaint();        
     }
     
     public static void refreshObjectProperties() {
-        objectTypeChooser.setEnabled(sceneCanvas.getSelectedObject() != null);
-        objectTypeChooser.setSelectedIndex(sceneCanvas.getSelectedObject() != null
-            ? sceneCanvas.getSelectedObject().getLayer() : -1);
+        objectLayerChooser.setEnabled(sceneCanvas.getSelectedObject() != null);
+        objectLayerChooser.setSelectedIndex(sceneCanvas.getSelectedObject() != null
+            ? sceneCanvas.getSelectedObject().getLayer() - 1 : -1);
         bringForwardButton.setEnabled(sceneCanvas.getSelectedObject() != null);
         sendBackwardsButton.setEnabled(sceneCanvas.getSelectedObject() != null);
         cloneObjectButton.setEnabled(sceneCanvas.getSelectedObject() != null);
         editObjectButton.setEnabled(sceneCanvas.getSelectedObject() != null);
+        deleteObjectButton.setEnabled(sceneCanvas.getSelectedObject() != null);
     }
     
     public static void runProject(String level_name) {
-        DownloadThread.checkForUpdates();
-        DownloadThread.handleUpdates();
+        UpdateManager.checkForUpdates();
+        UpdateManager.handleUpdates();
 
         try {
             //Scene.DOWNLOAD_THREAD.download("https://computerology.bitbucket.io/index.html", "C:/Users/Jeremy/Desktop/index.html");
             GUI.statusIndicator.setText("Starting game...");
             //start the runtime jar and pass in the project directory and the name of the level to start in
             //you will need to update this in the runtime jar when you reach that point
+            
+            String cmd = "java -jar \""+Assets.USER_HOME+"/platformr/jars/runtime.jar\" \""+Project.getProject().getDirectory()+"\""
+                    +(level_name != null ?  " \""+level_name+"\"" : "");
+            System.out.println(cmd);
+            
             Process p = Runtime.getRuntime()
-            .exec("java -jar \""+Assets.USER_HOME+"/level_editor/jars/runtime.jar\" \""+Project.getProject().getDirectory()+"\" \""+level_name+"\"");
+            .exec(cmd);
             BufferedReader reader =
                 new BufferedReader(new InputStreamReader(p.getInputStream()));
             window.setVisible(false);
@@ -3735,8 +1748,8 @@ public class GUI extends javax.swing.JFrame {
                 Assets.mkdirs();
                 Project.newProject("project"+(new Random().nextInt(100000)));
                 Assets.load();
-                DownloadThread.checkForUpdates();
-                DownloadThread.handleUpdates();
+                UpdateManager.checkForUpdates();
+                UpdateManager.handleUpdates();
                 
                 updateWindowTitle();
                 
@@ -3750,195 +1763,101 @@ public class GUI extends javax.swing.JFrame {
         
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private static javax.swing.JButton addBlockButton;
-    private static javax.swing.JTextField addNewChoiceField;
-    private static javax.swing.JButton addOtherSpeakEventButton;
-    private static javax.swing.JButton addPlayerChoiceButton;
-    private static javax.swing.JButton addThisSpeakEventButton;
-    private static javax.swing.JButton animationAddFrameButton;
-    private static javax.swing.JList animationChooser;
-    private static javax.swing.JButton animationDeleteFrameButton;
-    public static javax.swing.JList animationFrameChooser;
-    private static javax.swing.JTextField animationFrameDimensionsField;
-    private static javax.swing.JTextField animationFrameDurationField;
-    private static javax.swing.JTextField animationImageField;
-    private static javax.swing.JCheckBox animationLoopCheckbox;
-    private static javax.swing.JTextField animationNameField;
-    private static javax.swing.JSpinner animationPreviewZoomChooser;
-    private static javax.swing.JPanel animationPropertiesPanel;
+    private gui.AnimationCanvas animationCanvas;
     private static javax.swing.JCheckBoxMenuItem autoplayAmbientSoundMenuItem;
     private static javax.swing.JCheckBoxMenuItem autoplayBGMusicMenuItem;
-    public static javax.swing.JTree blockChooser;
-    private static javax.swing.JComboBox blockParamChooser;
-    private static javax.swing.JTextField blockParamValueField;
+    private javax.swing.JPanel basicOptionsPanel;
     private javax.swing.JMenuItem bottomColorMenuItem;
     public static javax.swing.JButton bringForwardButton;
-    public static javax.swing.JButton cameraButton;
     private javax.swing.JMenuItem cameraLocationMenuItem;
-    private static javax.swing.JRadioButton choiceEventDialogueToggle;
-    private static javax.swing.JRadioButton choiceEventResponseToggle;
-    private static javax.swing.JRadioButton choiceEventScriptToggle;
-    private static javax.swing.JTextField choiceEventValueField;
-    private static javax.swing.JPanel chooseAnimationPanel;
-    private javax.swing.JPanel chooseDialogueEventPanel;
-    private static javax.swing.JPanel chooseDialoguePanel;
+    private static javax.swing.JButton changeObjectNameButton;
+    private static javax.swing.JButton changeObjectTextureButton;
+    private static javax.swing.JButton changeObjectTypeButton;
     public static javax.swing.JButton cloneObjectButton;
-    private static javax.swing.JButton deleteAnimationButton;
-    private static javax.swing.JButton deleteBlockButton;
-    private static javax.swing.JButton deleteChoiceButton;
-    private javax.swing.JButton deleteDialogueButton;
-    private static javax.swing.JButton deleteDialogueEventButton;
-    private static javax.swing.JButton deleteFlowButton;
     private javax.swing.JButton deleteGalleryObjectButton;
     private javax.swing.JButton deleteLevelButton;
-    private static javax.swing.JList dialogueChoiceList;
-    private static javax.swing.JPanel dialogueChoicePanel;
-    private static javax.swing.JList dialogueChooser;
-    private static javax.swing.JList dialogueEventChooser;
-    private static javax.swing.JButton dialogueEventMoveDownButton;
-    private static javax.swing.JButton dialogueEventMoveUpButton;
-    private static javax.swing.JTextField dialogueNameField;
-    private static javax.swing.JPanel dialogueSayPanel;
-    private static javax.swing.JTextField dialogueSpeechTextField;
-    private static javax.swing.JCheckBox dialogueWaitCheckbox;
-    private static javax.swing.JButton duplicateAnimationButton;
-    private javax.swing.JButton duplicateDialogueButton;
-    private static javax.swing.JButton duplicateFlowButton;
+    private static javax.swing.JButton deleteObjectButton;
     private javax.swing.JButton duplicateGalleryObjectButton;
     private javax.swing.JButton editGalleryObjectButton;
     private javax.swing.JButton editLevelButton;
     public static javax.swing.JButton editObjectButton;
-    private javax.swing.JButton exportToGalleryButton;
-    public static gui.FlowCanvas flowCanvas;
-    public static javax.swing.JList flowChooser;
-    private static javax.swing.JTextField flowNameField;
-    private static javax.swing.JLabel framePreview;
+    private gui.FlowCanvas flowCanvas1;
     static javax.swing.JList galleryList;
     private static javax.swing.JLabel inCurrentLevelLabel;
     private static javax.swing.JLabel inCurrentProjectLabel;
-    public static javax.swing.JButton jButton6;
-    public static javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel13;
-    private static javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
-    private javax.swing.JLabel jLabel24;
-    private javax.swing.JLabel jLabel25;
-    private javax.swing.JLabel jLabel26;
-    private javax.swing.JLabel jLabel27;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel30;
-    private javax.swing.JLabel jLabel31;
-    private static javax.swing.JLabel jLabel32;
-    private javax.swing.JLabel jLabel33;
-    private javax.swing.JLabel jLabel37;
-    private javax.swing.JLabel jLabel40;
-    private javax.swing.JLabel jLabel49;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel11;
-    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
-    private javax.swing.JPanel jPanel15;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private static javax.swing.JPanel jPanel334;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JScrollPane jScrollPane13;
-    private javax.swing.JScrollPane jScrollPane19;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane26;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JPopupMenu.Separator jSeparator1;
-    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparator6;
-    private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JToggleButton jToggleButton3;
-    private javax.swing.JToggleButton jToggleButton4;
-    private javax.swing.JToggleButton jToggleButton5;
-    private javax.swing.JToggleButton jToggleButton6;
+    private javax.swing.JToggleButton jToggleButton2;
+    private javax.swing.JMenuItem levelBoundsMenuItem;
     private static javax.swing.JList levelList;
     private javax.swing.JMenuItem levelManagerButton;
     public static javax.swing.JDialog levelManagerDialog;
     private javax.swing.JMenu levelMenu;
     private javax.swing.JTextField levelNameField;
     private javax.swing.JMenuItem lightingColorMenuItem;
-    private static javax.swing.JRadioButton linkToDialogueRadioButton;
-    private static javax.swing.JTextField linkToField;
-    private static javax.swing.JRadioButton linkToScriptRadioButton;
     private static javax.swing.JCheckBoxMenuItem loopAmbientSoundMenuItem;
     private static javax.swing.JCheckBoxMenuItem loopBGMusicMenuItem;
     public static javax.swing.JMenuBar menuBar;
-    public static javax.swing.JButton moveButton;
-    private static javax.swing.JButton moveChoiceDownButton;
-    private static javax.swing.JButton moveChoiceUpButton;
-    private static javax.swing.JButton newAnimationButton;
-    private static javax.swing.JButton newDialogueButton;
-    private static javax.swing.JButton newFlowButton;
     private javax.swing.JButton newGalleryObjectButton;
     private javax.swing.JMenuItem newLevelButton;
     public static javax.swing.JButton newObjectButton;
+    private static javax.swing.JFrame newObjectEditor;
     private javax.swing.JMenuItem newProjectButton;
-    private static javax.swing.JPanel objectAnimationPanel;
-    private static javax.swing.JPanel objectBasicPanel;
-    static javax.swing.JCheckBox objectCollidesCheckbox;
-    public static javax.swing.JPanel objectDialoguePanel;
-    private static javax.swing.JDialog objectEditorDialog;
+    private static javax.swing.JCheckBox objectCollidesCheckbox;
     private static javax.swing.JTabbedPane objectEditorTabs;
     private javax.swing.JMenuItem objectGalleryButton;
     public static javax.swing.JDialog objectGalleryDialog;
-    static javax.swing.JCheckBox objectGravityCheckbox;
-    private javax.swing.JPanel objectLogicPanel;
-    static javax.swing.JTextField objectNameField;
-    private static javax.swing.JLabel objectPreviewPane;
-    private javax.swing.JDialog objectSpawnDialog;
-    static javax.swing.JTextField objectTextureField;
-    public static javax.swing.JComboBox objectTypeChooser;
-    static javax.swing.JTextField objectTypeField;
+    private static javax.swing.JCheckBox objectGravityCheckbox;
+    public static javax.swing.JComboBox objectLayerChooser;
+    private static javax.swing.JTextField objectNameField;
+    private static javax.swing.JTextField objectTextureField;
+    private static javax.swing.JTextField objectTypeField;
     private javax.swing.JMenuItem openAssetsFolderButton;
     private javax.swing.JMenuItem openProjectButton;
+    public static javax.swing.JButton playButton;
     private javax.swing.JMenu projectMenu;
     private javax.swing.JMenuItem reloadAssetsButton;
     private javax.swing.JButton renameLevelButton;
-    public static javax.swing.JButton resizeButton;
     private static javax.swing.JTextArea resultsTextBox;
-    private static javax.swing.JCheckBox runOnSpawnCheckbox;
     private javax.swing.JMenuItem saveProjectButton;
     public static gui.SceneCanvas sceneCanvas;
+    private gui.SceneObjectCanvas sceneObjectCanvas;
     private javax.swing.JMenuItem selectAmbienceMenuItem;
     private javax.swing.JMenuItem selectBGMusic;
-    public static javax.swing.JButton selectButton;
     public static javax.swing.JButton sendBackwardsButton;
-    private static javax.swing.JButton spawnButton;
-    private static javax.swing.JComboBox<String> spawnList;
     private javax.swing.JMenuItem spawnMenuItem;
-    private static javax.swing.JTextField spawnNameField;
+    public static javax.swing.JCheckBox startAtCurrentLevelCheckBox;
     public static javax.swing.JMenu statusIndicator;
     public static javax.swing.JDialog testOutputDialog;
-    private static javax.swing.JToggleButton toggleAnimationPreviewButton;
     private javax.swing.JMenuItem topColorMenuItem;
     private javax.swing.JPanel topPanel;
     private javax.swing.JMenuItem viewRootButton;

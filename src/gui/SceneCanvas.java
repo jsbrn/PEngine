@@ -8,26 +8,27 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.ArrayList;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import misc.MiscMath;
 import project.Level;
 import project.objects.SceneObject;
 
 public class SceneCanvas extends JPanel {
+
     
-    public static final int SELECT_TOOL = 0, CAMERA_TOOL = 1, MOVE_TOOL = 2, RESIZE_TOOL = 3;
-    
-    private int origin_x, origin_y, last_mouse_x, last_mouse_y;
+    private double camera_x, camera_y, last_mouse_x, last_mouse_y;
     private SceneObject selected_object, active_object;
-    private int selected_tool = 1, zoom = 8;
+    private int zoom = 4;
+    
+    private boolean show_grid = false;
     
     public void setLastMousePosition(int x, int y) { last_mouse_x = x; last_mouse_y = y; }
     
-    public int getSelectedTool() {
-        return selected_tool;
+    public void setShowGrid(boolean b) {
+        show_grid = b;
     }
-    
-    public void setSelectedTool(int tool) { this.selected_tool = tool; }
     
     public void setSelectedObject(SceneObject o) {
         selected_object = o;
@@ -41,27 +42,22 @@ public class SceneCanvas extends JPanel {
     
     public SceneObject getActiveObject() { return active_object; }
     
-    public int getOriginX() { return origin_x; }
-    public int getOriginY() { return origin_y; }
+    public double getCameraX() { return camera_x; }
+    public double getCameraY() { return camera_y; }
     
     public void moveCamera(double x, double y) {
-        origin_x += x; origin_y += y;
+        camera_x += x; camera_y += y;
+        //camera_x = camera_x < 0 ? 0 : camera_x; camera_y = camera_y < 0 ? 0 : camera_y;
     }
     
+    private void addZoom(int amount) { zoom += amount; zoom = zoom > 8 ? 8 : (zoom < 1 ? 1 : zoom); }
+    
     public void zoomCamera(int amount) {
-        double w_x_before = ((last_mouse_x-origin_x)/zoom)+origin_x;
-        double w_y_before = ((last_mouse_y-origin_y)/zoom)+origin_y;
-        zoom+=amount;
-        if (zoom < 1) {
-            zoom = 1;
-        }
-        if (zoom > 12) {
-            zoom = 12;
-        }
-        double w_x_after = ((last_mouse_x-origin_x)/zoom)+origin_x;
-        double w_y_after = ((last_mouse_y-origin_y)/zoom)+origin_y;
-        origin_x += (w_x_after-w_x_before)*zoom;
-        origin_y += (w_y_after-w_y_before)*zoom;
+        double[] wc_old = MiscMath.getWorldCoords((int)last_mouse_x, (int)last_mouse_y);
+        addZoom(amount);
+        double[] wc_new = MiscMath.getWorldCoords((int)last_mouse_x, (int)last_mouse_y);
+        camera_x += wc_old[0] - wc_new[0];
+        camera_y += wc_old[1] - wc_new[1];
     }
     
     public double getZoom() { return zoom; }
@@ -80,16 +76,26 @@ public class SceneCanvas extends JPanel {
         
         if (current_level == null) return;
         
+        //draw gradient background
         Color top_color = current_level.getTopBGColor(), bttm_color = current_level.getBottomBGColor();
         Graphics2D g2d = (Graphics2D) g;
         GradientPaint gp1 = new GradientPaint(0, 0, top_color, 0, getHeight(), bttm_color, true);
         g2d.setPaint(gp1);
         g2d.fillRect(0, 0, getWidth(), getHeight());
         
+        g.setColor(Color.DARK_GRAY);
+        //draw grid
+        int w = (int)(getWidth() / getZoom());
+        for (int i = -w; i < getWidth() && show_grid && getZoom() >= 3; i++) {
+            int[] osc = MiscMath.getOnscreenCoords(i+camera_x, i+camera_y);            
+            if (!(osc[0] < 0 || osc[0] > getWidth())) g.drawLine(osc[0], 0, osc[0], Integer.MAX_VALUE);
+            if (!(osc[1] < 0 || osc[1] > getHeight())) g.drawLine(0, osc[1], Integer.MAX_VALUE, osc[1]);
+        }
+        
         //draw all objects
         for (int layer = Level.DISTANT_OBJECTS; layer <= Level.FOREGROUND_OBJECTS; layer++) {
             for (SceneObject o: current_level.getObjects(layer)) {
-                if (MiscMath.rectanglesIntersect(o.getOnscreenCoordinates()[0], o.getOnscreenCoordinates()[1], 
+                if (MiscMath.rectanglesIntersect(o.getOnscreenCoords()[0], o.getOnscreenCoords()[1], 
                         o.getOnscreenWidth(), o.getOnscreenHeight(), 
                         0, 0, (int)getWidth(), (int)getHeight()) || o.getOnscreenHeight() > getHeight() || o.getOnscreenWidth() > getWidth()) {
                     o.draw(g);
@@ -97,6 +103,7 @@ public class SceneCanvas extends JPanel {
             }
         }
         
+        //draw ambient light (gotta be a better way to do this)
         Color light_color = current_level.getLightingColor();
         int[] light = new int[]{light_color.getRed(), light_color.getGreen(), light_color.getBlue()};
         g.setColor(new Color((int)MiscMath.clamp(light[0], 0, 255), 
@@ -104,33 +111,32 @@ public class SceneCanvas extends JPanel {
                 (int)MiscMath.clamp(current_level.getLightIntensity()*255, 0, 255)));
         g.fillRect(0, 0, (int)getWidth(), (int)getHeight());
         
+        int[] origin = MiscMath.getOnscreenCoords(0, 0);
         g.setColor(Color.green);
-        g.drawRect(origin_x, origin_y, (int)current_level.dimensions()[0]*zoom, current_level.dimensions()[1]*zoom);
+        int[] bounds = current_level.bounds();
+        int[] osbc = MiscMath.getOnscreenCoords(bounds[0], bounds[1]);
+        g.drawRect(osbc[0], osbc[1], bounds[2]*zoom, bounds[3]*zoom);
         g.setColor(Color.red);
-        g.drawLine(origin_x, 0, origin_x, Integer.MAX_VALUE);
+        g.drawLine(origin[0], 0, origin[0], Integer.MAX_VALUE);
         g.setColor(Color.yellow);
-        g.drawLine(0, origin_y, Integer.MAX_VALUE, origin_y);
+        g.drawLine(0, origin[1], Integer.MAX_VALUE, origin[1]);
         g.setColor(Color.cyan);
-        g.drawLine((int)(current_level.playerSpawn()[0]*zoom)+(int)origin_x-3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin_y-3, 
-                (int)(current_level.playerSpawn()[0]*zoom)+(int)origin_x+3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin_y+3);
-        g.drawLine((int)(current_level.playerSpawn()[0]*zoom)+(int)origin_x+3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin_y-3, 
-                (int)(current_level.playerSpawn()[0]*zoom)+(int)origin_x-3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin_y+3);
+        g.drawLine((int)(current_level.playerSpawn()[0]*zoom)+(int)origin[0]-3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin[1]-3, 
+                (int)(current_level.playerSpawn()[0]*zoom)+(int)origin[0]+3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin[1]+3);
+        g.drawLine((int)(current_level.playerSpawn()[0]*zoom)+(int)origin[0]+3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin[1]-3, 
+                (int)(current_level.playerSpawn()[0]*zoom)+(int)origin[0]-3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin[1]+3);
         //cam coords
-        g.fillRect((int)(current_level.cameraSpawn()[0]*zoom)+(int)origin_x-3, (int)(current_level.cameraSpawn()[1]*zoom)+(int)origin_y-3, 
+        g.fillRect((int)(current_level.cameraSpawn()[0]*zoom)+(int)origin[0]-3, (int)(current_level.cameraSpawn()[1]*zoom)+(int)origin[1]-3, 
                 6, 6);
+
+        //draw the info text in the corner
+        ArrayList<String> information = new ArrayList<String>();
+        information.add("Mouse: "+(int)((last_mouse_x-origin[0])/zoom)+", "+(int)((last_mouse_y-origin[1])/zoom));
+        information.add("Zoom: "+getZoom());
+        for (int i = 0; i < information.size(); i++) {
+            drawString(information.get(i), 10, (int)getHeight() + 5 - ((information.size() - i) * 16), g);
+        }
         
-        g.setColor(Color.white);
-        drawString("Mouse: "+(int)((last_mouse_x-origin_x)/zoom)+", "+(int)((last_mouse_y-origin_y)/zoom), 8, (int)getHeight()-10, g);
-        if (selected_tool == MOVE_TOOL) {
-            drawString("Arrow keys: precision movement", 8, (int)getHeight()-30, g);
-        }
-        if (selected_tool == RESIZE_TOOL) {
-            drawString("Arrow keys: precision resizing", 8, (int)getHeight()-30, g);
-        }
-        if (selected_tool == CAMERA_TOOL) {
-            drawString("Press C to move camera to origin", 8, (int)getHeight()-30, g);
-            drawString("Press X to reset camera", 8, (int)getHeight()-50, g);
-        }
     }
     
     public static void drawString(String str, int x, int y, Graphics g) {
@@ -139,6 +145,7 @@ public class SceneCanvas extends JPanel {
         g.setColor(Color.white);
         g.drawString(str, x, y);
     }
+    
     /**
      * Event Handlers
      */
@@ -151,34 +158,23 @@ public class SceneCanvas extends JPanel {
     
     public void handleMouseDrag(MouseEvent e) {
         grabFocus();
-        switch (selected_tool) {
-            case CAMERA_TOOL:
-                moveCamera(e.getX()-last_mouse_x, e.getY()-last_mouse_y);
-                break;
-            case MOVE_TOOL:
-                if (selected_object == null) selected_object = Project.getProject().getCurrentLevel().getObject(e.getX(), e.getY());
-                GUI.refreshObjectProperties();
-                if (selected_object != null) {
-                    double move_x = (e.getX()-last_mouse_x)/(double)zoom;
-                    double move_y = (e.getY()-last_mouse_y)/(double)zoom;
+        if (SwingUtilities.isLeftMouseButton(e)) {
+            GUI.refreshObjectProperties();
+            if (selected_object != null) {
+                int[] osc = selected_object.getOnscreenCoords();
+                int[] osd = new int[]{osc[0], osc[1], selected_object.getOnscreenWidth(), selected_object.getOnscreenHeight()};
+                int resize = (int)(osd[2] <= getZoom() * 2 ? getZoom() : getZoom()*2);
+                double move_x = (e.getX()-last_mouse_x) / getZoom();
+                double move_y = (e.getY()-last_mouse_y) / getZoom();
+                if (MiscMath.pointIntersects(last_mouse_x, last_mouse_y, osd[0]+osd[2]-resize, 
+                        osd[1]+osd[3]-resize, resize, resize)) {
+                    selected_object.resize(move_x, move_y);
+                } else if (MiscMath.pointIntersects(last_mouse_x, last_mouse_y, osd[0], osd[1], osd[2], osd[3])) {
                     selected_object.move(move_x, move_y);
-                } else {
-                    selected_object = Project.getProject().getCurrentLevel().getObject(e.getX(), e.getY());
-                }   break;
-            case RESIZE_TOOL:
-                if (selected_object != null) {
-                    if (selected_object.isHitbox()) {
-                        double move_x = (e.getX()-last_mouse_x)/(double)zoom;
-                        double move_y = (e.getY()-last_mouse_y)/(double)zoom;
-                        selected_object.resize(move_x, move_y);
-                    }
-                } else {
-                    double move_x = (e.getX()-last_mouse_x)/(double)zoom;
-                    double move_y = (e.getY()-last_mouse_y)/(double)zoom;
-                    Project.getProject().getCurrentLevel().resize(move_x, move_y);
-                }   break;
-            default:
-                break;
+                }
+            }
+        } else if (SwingUtilities.isRightMouseButton(e)) {
+            moveCamera((last_mouse_x-e.getX()) / getZoom(), (last_mouse_y-e.getY()) / getZoom());
         }
         repaint();            
         setLastMousePosition(e.getX(), e.getY());
@@ -200,70 +196,7 @@ public class SceneCanvas extends JPanel {
     }
     
     public void handleKeyPress(KeyEvent e) {
-        SceneObject object = getSelectedObject();
         
-
-        if (object != null) {
-            if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-                Project.getProject().getCurrentLevel().removeObject(object);
-            }
-        }
-
-        selected_tool = e.getKeyCode();
-        /*GUI.selectButton.setEnabled(selected_tool == 1);
-        GUI.cameraButton.setEnabled(selected_tool == 2);
-        GUI.moveButton.setEnabled(selected_tool == 3);
-        GUI.resizeButton.setEnabled(selected_tool == 4);*/
-
-        //zoom if zoom key pressed
-        zoomCamera(e.getKeyChar() == '=' ? 1 : (e.getKeyChar() == '-' ? -1 : 0));
-
-        switch (selected_tool) {
-            case CAMERA_TOOL:
-                if (e.getKeyChar() == 'x') {
-                    origin_x = 10;
-                    origin_y = 10;
-                    zoom = 8;
-                } else if (e.getKeyChar() == 'c') {
-                    origin_x = 10;
-                    origin_y = 10;
-                }   break;
-            case MOVE_TOOL:
-                if (selected_object != null) {
-                    if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                        selected_object.move(1, 0);
-                    }
-                    if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                        selected_object.move(-1, 0);
-                    }
-                    if (e.getKeyCode() == KeyEvent.VK_UP) {
-                        selected_object.move(0, -1);
-                    }
-                    if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                        selected_object.move(0, 1);
-                    }
-                }   break;
-            case RESIZE_TOOL:
-                if (selected_object != null) {
-                    if (selected_object.isHitbox()) {
-                        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                            selected_object.resize(1, 0);
-                        }
-                        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                            selected_object.resize(-1, 0);
-                        }
-                        if (e.getKeyCode() == KeyEvent.VK_UP) {
-                            selected_object.resize(0, -1);
-                        }
-                        if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                            selected_object.resize(0, 1);
-                        }
-                    }
-                }   break;
-            default:
-                break;
-        }
-        repaint();
     }
     
 }
