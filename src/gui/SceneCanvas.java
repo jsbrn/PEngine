@@ -45,9 +45,23 @@ public class SceneCanvas extends JPanel {
     public double getCameraX() { return camera_x; }
     public double getCameraY() { return camera_y; }
     
+    public void resetCamera() {
+        camera_x = 0;
+        camera_y = 0;
+        zoom = 3;
+    }
+    
     public void moveCamera(double x, double y) {
         camera_x += x; camera_y += y;
         //camera_x = camera_x < 0 ? 0 : camera_x; camera_y = camera_y < 0 ? 0 : camera_y;
+    }
+    
+    public void setCamera(int x, int y) {
+        camera_x = x; camera_y = y;
+    }
+    
+    public void setZoom(int z) {
+        zoom = 0; addZoom(z);
     }
     
     private void addZoom(int amount) { zoom += amount; zoom = zoom > 8 ? 8 : (zoom < 1 ? 1 : zoom); }

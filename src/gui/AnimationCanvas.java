@@ -28,12 +28,13 @@ public class AnimationCanvas extends JPanel {
     public void nextFrame() {
         if (animation == null) return;
         frame++;
-        if (frame >= animation.getWidths().size()) frame = 0;
+        if (frame >= animation.frameCount()) frame = 0;
         int img_index = Assets.ANIMATION_TEXTURE_NAMES.indexOf(animation.getSpriteSheet());
         if (img_index < 0 || img_index >= Assets.ANIMATION_TEXTURES.size()) return;
         img = Assets.ANIMATION_TEXTURES.get(img_index);
-        if (img != null) {
-            img = img.getSubimage(getCropXOffset(), 0, animation.getWidths().get(frame), animation.getHeights().get(frame));
+        if (img != null && animation.frameCount() > 0) {
+            int x = img.getWidth() / animation.frameCount();
+            img = img.getSubimage(x, 0, img.getWidth() / animation.frameCount(), img.getHeight());
             BufferedImage resized = new BufferedImage(img.getWidth()*zoom, img.getHeight()*zoom, img.getType());
             Graphics2D g = resized.createGraphics();
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
@@ -57,17 +58,6 @@ public class AnimationCanvas extends JPanel {
     
     public void reset() {
         frame = -1; nextFrame();
-    }
-    
-    private int getCropXOffset() {
-        if (animation == null) return 0;
-        int x = 0;
-        for (int i = 0; i < animation.getWidths().size(); i++) {
-            if (i == frame) break;
-            int w = animation.getWidths().get(0);
-            x += w;
-        }
-        return x;
     }
 
     public void paintComponent(Graphics g) {

@@ -52,6 +52,16 @@ public class Assets {
         initBlockList();
     }
     
+    public static void delete(File dir) {
+        if (dir.isDirectory()) {
+            File[] list = dir.listFiles();
+            for (File f: list) {
+                if (f.isDirectory()) delete(f); else f.delete();
+            }
+        }
+        dir.delete();
+    }
+    
     public static void mkdirs() {
         USER_HOME = System.getProperty("user.home");
         new File(Assets.USER_HOME+"/platformr/").mkdir();

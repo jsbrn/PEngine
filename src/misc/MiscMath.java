@@ -179,22 +179,39 @@ public class MiscMath {
     }
     
     /**
-     * Returns a String object containing every element in the specified array, separated by "\n". Used for writing to the save file.
-     * @param str_arr
-     * @return A String object.
+     * Turns a String of numbers into an int array.
+     * @param s The string to parse.
+     * @return An int array.
      */
-    public static String mergeStrings(ArrayList<String> str_arr) {
-        String c = "";
-        for (String s: str_arr) {
-            c+=s+"\n";
-        }
-        return c;
+    public static int[] toIntArray(String s) {
+        if (s == null) return new int[]{};
+        String parsed[] = s.toLowerCase().split("[^0-9-+]");
+        return toIntArray(parsed);
     }
     
-    public static int[] parseIntegers(String[] s) {
-        int[] nums = new int[s.length];
-        for (int i = 0; i < s.length; i++) nums[i] = Integer.parseInt(s[i]);
-        return nums;
+    public static int[] toIntArray(String[] s) {
+        if (s == null) return new int[]{};
+        int[] result = new int[s.length];
+        for (int i = 0; i < s.length; i++) result[i] = Integer.parseInt(s[i]);
+        return result;
+    }
+    
+    public static double[] toDoubleArray(String[] s) {
+        if (s == null) return new double[]{};
+        double[] result = new double[s.length];
+        for (int i = 0; i < s.length; i++) result[i] = Double.parseDouble(s[i]);
+        return result;
+    }
+    
+    /**
+     * Turns a String of numbers into a double array.
+     * @param s The string to parse.
+     * @return A double array.
+     */
+    public static double[] toDoubleArray(String s) {
+        if (s == null) return new double[]{};
+        String parsed[] = s.toLowerCase().split("[^0-9-.+]");
+        return toDoubleArray(parsed);
     }
 
 }

@@ -22,7 +22,9 @@ public class AnimationPlayer extends Thread {
                 public void run() {
                     while (true) {
                         if (paused) continue;
-                        //gui animation canvas next frame
+                        long time = System.currentTimeMillis();
+                        if (time - last_time >= animation.getFrameDuration()) 
+                            GUI.getAnimationCanvas().nextFrame();
                     }
                 }
             });

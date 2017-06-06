@@ -1,6 +1,11 @@
 package project;
 
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import misc.MiscMath;
 import project.objects.SceneObject;
@@ -11,12 +16,13 @@ public class Level {
             MIDDLE_OBJECTS = 3, FOREGROUND_OBJECTS = 4;
     private final ArrayList<SceneObject> layers[];
     
-    private String name = "", ambient_sound = "", bg_music = "";
+    private String name = "", bg_ambience = "", bg_music = "";
     private Color bg_color_top, bg_color_bottom, lighting_color;
-    private int zoom = 4; private int[] bounds;
+    private int zoom = 4; 
+    private int[] bounds;
     private double lighting_intensity = 0;
-    private boolean loop_bg_music = true, loop_ambient_sound = true, auto_bg_music = true,
-            auto_ambient_sound = true;
+    private boolean loop_bg_music = true, loop_bg_ambience = true, auto_bg_music = true,
+            auto_bg_ambience = true;
     private float bg_music_vol = 1, bg_ambience_vol = 1;
     
     private int[] player_spawn = {0, 0}, camera_spawn = {0, 0};
@@ -33,13 +39,13 @@ public class Level {
     }
     
     public boolean loopBGMusic() { return loop_bg_music; }
-    public boolean loopBGAmbience() { return loop_ambient_sound; }
+    public boolean loopBGAmbience() { return loop_bg_ambience; }
     public boolean autoPlayBGMusic() { return auto_bg_music; }
-    public boolean autoPlayBGAmbience() { return auto_ambient_sound; }
+    public boolean autoPlayBGAmbience() { return auto_bg_ambience; }
     
     public void loopBGMusic(boolean b) { loop_bg_music = b; }
-    public void loopBGAmbience(boolean b) { loop_ambient_sound = b; }
-    public void autoPlayBGAmbience(boolean b) { auto_ambient_sound = b; }
+    public void loopBGAmbience(boolean b) { loop_bg_ambience = b; }
+    public void autoPlayBGAmbience(boolean b) { auto_bg_ambience = b; }
     public void autoPlayBGMusic(boolean b) { auto_bg_music = b; }
     
     public int[] playerSpawn() { return player_spawn; }
@@ -57,9 +63,9 @@ public class Level {
     public void setBottomBGColor(Color c) { bg_color_bottom = c; }
     public void setLightingIntensity(double i) { lighting_intensity = i; }
     
-    public void setAmbientSound(String filename) { ambient_sound = filename; }
+    public void setAmbientSound(String filename) { bg_ambience = filename; }
     public void setBGMusic(String filename) { bg_music = filename; }
-    public String getAmbientSound() { return ambient_sound; }
+    public String getAmbientSound() { return bg_ambience; }
     public String getBGMusic() { return bg_music; }
     
     public void setBGMusicVolume(float v) { bg_music_vol = v; }
@@ -72,7 +78,9 @@ public class Level {
     
     public int[] bounds() { return bounds; }
     public int getZoom() { return zoom; }
-    public void setZoom(int z) { zoom = z; }
+    public void setZoom(int z) { 
+        zoom = zoom + z > 8 ? 8 : (zoom + z < 1 ? 1 : zoom);
+    }
     
     public ArrayList<SceneObject> getObjects(int layer) { return layers[layer]; }
     
@@ -119,14 +127,13 @@ public class Level {
     }
     
     public void removeObject(SceneObject o) {
-        getObjects(ALL_OBJECTS).remove(o);
-        for (int i = 0; i != layers().length; i++) {
+        for (int i = 0; i < layers().length; i++) {
             layers()[i].remove(o);
         }
     }
     
     public void moveBackward(SceneObject o) {
-        for (int i = DISTANT_OBJECTS; i != layers().length; i++) {
+        for (int i = DISTANT_OBJECTS; i < layers().length; i++) {
             if (i == o.getLayer()) {
                 int orig = layers()[i].indexOf(o);
                 if (orig > 0) {
@@ -166,6 +173,81 @@ public class Level {
     
     public ArrayList[] layers() {
         return layers;
+    }
+    
+    public void save(BufferedWriter bw) {
+        try {
+            bw.write("l"+"\n");
+                bw.write("n="+name+"\n");
+                bw.write("b="+bounds[0]+" "+bounds[1]+" "+bounds[2]+" "+bounds[3]+"\n");
+                bw.write("tc="+bg_color_top.getRed()+" "+bg_color_top.getGreen()+" "+bg_color_top.getBlue()+"\n");
+                bw.write("bc="+bg_color_bottom.getRed()+" "+bg_color_bottom.getGreen()+" "+bg_color_bottom.getBlue()+"\n");
+                bw.write("lc="+lighting_color.getRed()+" "+lighting_color.getGreen()+" "+lighting_color.getBlue()+"\n");
+                bw.write("li="+lighting_intensity+"\n");
+                bw.write("z="+zoom+"\n");
+                bw.write("ps="+player_spawn[0]+" "+player_spawn[1]+"\n");
+                bw.write("cs="+camera_spawn[0]+" "+camera_spawn[1]+"\n");
+                bw.write("apm="+auto_bg_music+"\n");
+                bw.write("apa="+auto_bg_ambience+"\n");
+                bw.write("lm="+loop_bg_music+"\n");
+                bw.write("la="+loop_bg_ambience+"\n");
+                bw.write("mv="+bg_music_vol+"\n");
+                bw.write("av="+bg_ambience_vol+"\n");
+                bw.write("bgm="+bg_music+"\n");
+                bw.write("as="+bg_ambience+"\n");
+                
+                for (SceneObject o: getObjects(ALL_OBJECTS)) o.save(bw);
+                
+            bw.write("/l"+"\n");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public final boolean load(BufferedReader br) {
+        try {
+            while (true) {
+                String line = br.readLine();
+                if (line == null) break;
+                line = line.trim();
+                if (line.equals("/l")) return true;
+                
+                if (line.indexOf("n=") == 0) name = line.substring(2);
+                if (line.indexOf("b=") == 0) bounds = MiscMath.toIntArray(line.substring(2));
+                if (line.indexOf("tc=") == 0) {
+                    int[] rgb = MiscMath.toIntArray(line.substring(3).split(" "));
+                    bg_color_top = new Color(rgb[0], rgb[1], rgb[2]);
+                }
+                if (line.indexOf("bc=") == 0) {
+                    int[] rgb = MiscMath.toIntArray(line.substring(3).split(" "));
+                    bg_color_bottom = new Color(rgb[0], rgb[1], rgb[2]);
+                }
+                if (line.indexOf("lc=") == 0) {
+                    int[] rgb = MiscMath.toIntArray(line.substring(3).split(" "));
+                    lighting_color = new Color(rgb[0], rgb[1], rgb[2]);
+                }
+                if (line.indexOf("li=") == 0) lighting_intensity = Float.parseFloat(line.substring(3));
+                if (line.indexOf("z=") == 0) zoom = Integer.parseInt(line.substring(2));
+                if (line.indexOf("ps=") == 0) player_spawn = MiscMath.toIntArray(line.substring(3));
+                if (line.indexOf("cs=") == 0) camera_spawn = MiscMath.toIntArray(line.substring(3));
+                if (line.indexOf("apm=") == 0) auto_bg_music = Boolean.parseBoolean(line.substring(4));
+                if (line.indexOf("apa=") == 0) auto_bg_ambience = Boolean.parseBoolean(line.substring(4));
+                if (line.indexOf("lm=") == 0) loop_bg_music = Boolean.parseBoolean(line.substring(3));
+                if (line.indexOf("la=") == 0) loop_bg_ambience = Boolean.parseBoolean(line.substring(3));
+                if (line.indexOf("mv=") == 0) bg_music_vol = Float.parseFloat(line.substring(3));
+                if (line.indexOf("av=") == 0) bg_ambience_vol = Float.parseFloat(line.substring(3));
+                if (line.indexOf("bgm=") == 0) bg_music = line.substring(4);
+                if (line.indexOf("as=") == 0) bg_ambience = line.substring(3);
+                
+                if (line.equals("so")) {
+                    SceneObject o = new SceneObject();
+                    if (o.load(br)) add(o);
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
     
     @Override

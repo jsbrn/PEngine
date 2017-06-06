@@ -4,10 +4,13 @@ import project.objects.SceneObject;
 import gui.GUI;
 import project.objects.components.Animation;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -15,6 +18,7 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import misc.Assets;
+import misc.MiscMath;
 
 public class Project {
     
@@ -26,31 +30,51 @@ public class Project {
     
     private Level current_level;
     
-    public Project(String name) {
+    private Project(String name, boolean home, boolean gallery_player) {
         this.name = name;
         this.object_gallery = new ArrayList<SceneObject>();
         this.levels = new ArrayList<Level>();
-        SceneObject player = new SceneObject();
-        player.setHitbox(false);
-        player.setType("Player");
-        player.setName("player");
-        player.setGravity(true);
-        player.setCollides(true);
-        this.object_gallery.add(player);
+        if (gallery_player) {
+            SceneObject player = new SceneObject();
+            player.setHitbox(false);
+            player.setType("Player");
+            player.setName("player");
+            player.setGravity(true);
+            player.setCollides(true);
+            this.object_gallery.add(player);
+        }
+        if (home) {
+            Level l = new Level(); l.setName("home");
+            addLevel(l);
+            switchToLevel(l.getName());
+        }
     }
     
     public static Project getProject() { return project; }
+    public static boolean projectExists(String name) { 
+        if (name == null) return false;
+        return new File(Assets.USER_HOME+"/platformr/projects/"+name).exists(); 
+    }
     
-    public static void newProject(String name) { 
-        project = new Project(name); 
-        Level l = new Level(); l.setName("home");
-        project.addLevel(l);
-        project.switchToLevel(l.getName());
+    public static void deleteProject(String name, boolean everything) { 
+        if (name == null) return;
+        Assets.delete(new File(Assets.USER_HOME+"/platformr/projects/"+name+(!everything ? "/project.txt" : "")));
+    }
+    
+    public static void newProject(String name, boolean home, boolean player) { 
+        project = new Project(name, home, player);        
     }
     
     public String getName() { return name; }
+    /**
+     * Change the name of the project. Changes the directory as well, which means that the project will need to be resaved.
+     * @param n 
+     */
+    public void setName(String n) { 
+        name = n;
+    }
     public String getDirectory() { return Assets.USER_HOME+"/platformr/projects/"+name; }
-    public boolean existsOnDisk() { return new File(getDirectory()).exists(); }
+    public boolean existsOnDisk() { return projectExists(getName()); }
     
     public SceneObject getGalleryObject(int i) { return object_gallery.get(i); }
     public SceneObject getGalleryObject(String type) { 
@@ -98,37 +122,85 @@ public class Project {
     public Level getCurrentLevel() { return current_level; }
     
     public void switchToLevel(String level_id) {
-        for (Level l: Project.getProject().getLevels()) {
+        System.out.println("Switching to level: "+level_id);
+        for (Level l: getLevels()) {
+            System.out.println("Level: "+l.getName());
             if (l.getName().equals(level_id)) {
                 current_level = l;
-                GUI.updateWindowTitle();
-                GUI.refreshObjectProperties();
-                GUI.refreshLevelMenu();
+                System.out.println("Switched to level "+current_level.getName());
             }
         }
     }
     
-    public void save() {
-        System.err.println("Project.save() not implemented.");
+    public boolean save() {
+        mkdirs();
+        File f = new File(getDirectory()+"/project.txt");
+        FileWriter fw;
+        System.out.println("Saving to file " + f.getAbsoluteFile().getAbsolutePath());
+        try {
+            if (!f.exists()) f.createNewFile();
+            fw = new FileWriter(f);
+            BufferedWriter bw = new BufferedWriter(fw);
+            
+            for (Level l : levels) l.save(bw);
+            for (SceneObject o: object_gallery) o.save(bw);
+            
+            bw.write("curr="+current_level.getName()+"\n");
+            bw.write("camera="+(int)GUI.getSceneCanvas().getCameraX()+" "+(int)GUI.getSceneCanvas().getCameraY()+"\n");
+            bw.write("zoom="+(int)GUI.getSceneCanvas().getZoom()+"\n");
+            
+            bw.close();
+            System.out.println("Saved to "+f.getAbsolutePath());
+            return true;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
     
-    public void save(BufferedWriter bw, boolean verbose) {
-        
+    public void load() {
+        File f = new File(getDirectory()+"/project.txt");
+        if (!f.exists()) return;
+        FileReader fr;
+        System.out.println("Loading from file: " + f.getAbsoluteFile().getAbsolutePath());
+        try {
+            fr = new FileReader(f);
+            BufferedReader br = new BufferedReader(fr);
+            while (true) {
+                String line = br.readLine();
+                
+                if (line == null) break;
+                line = line.trim();
+                
+                System.out.println("Line: "+line);
+                
+                if (line.equals("l")) {
+                    Level l = new Level();
+                    if (l.load(br)) addLevel(l);
+                }
+                if (line.equals("so")) {
+                    SceneObject o = new SceneObject();
+                    if (o.load(br)) addGalleryObject(o);
+                }
+                
+                if (line.indexOf("curr=") == 0) switchToLevel(line.substring(5));
+                if (line.indexOf("zoom=") == 0) GUI.getSceneCanvas()
+                        .setZoom(Integer.parseInt(line.substring(5)));
+                if (line.indexOf("camera=") == 0) {
+                    int[] coords = MiscMath.toIntArray(line.substring(7));
+                    GUI.getSceneCanvas().setCamera(coords[0], coords[1]);
+                }
+                
+            }
+            br.close();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
     
-    public void mkdirs() {
-        File project = new File(getDirectory());
-        File assets = new File(getDirectory()+"/assets/");
-        File textures = new File(getDirectory()+"/assets/textures");
-        File object_textures = new File(getDirectory()+"/assets/textures/objects");
-        File animation_sprites = new File(getDirectory()+"/assets/textures/animations");
-        File audio_files = new File(getDirectory()+"/assets/audio/");
-        if (!project.exists()) project.mkdir();
-        if (!assets.exists()) assets.mkdir();
-        if (!textures.exists()) textures.mkdir();
-        if (!object_textures.exists()) object_textures.mkdir();
-        if (!animation_sprites.exists()) animation_sprites.mkdir();
-        if (!audio_files.exists()) animation_sprites.mkdir();
+    public boolean mkdirs() {
+        return new File(getDirectory()+"/assets").mkdirs();
     }
     
     public ArrayList<Level> getLevels() {
@@ -150,14 +222,6 @@ public class Project {
             }
         }
         return false;
-    }
-    
-    public static void deleteFromDisk(File dir) {
-        File[] list = dir.listFiles();
-        for (File f: list) {
-            if (f.isDirectory()) deleteFromDisk(f); else f.delete();
-        }
-        dir.delete();
     }
     
     /**

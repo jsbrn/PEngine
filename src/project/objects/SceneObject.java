@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class SceneObject {
     private double world_x, world_y, world_w, world_h;
     private String name, type;
     private int layer = Level.MIDDLE_OBJECTS;
-    private boolean grav, collides, locked;
+    private boolean gravity, collides, locked;
     
     public ArrayList<Animation> animations = new ArrayList<Animation>();
     private ArrayList<Flow> flows = new ArrayList<Flow>();
@@ -33,7 +34,7 @@ public class SceneObject {
     
     public SceneObject() {
         this.layer = Level.MIDDLE_OBJECTS;
-        this.grav = false;
+        this.gravity = false;
         this.type = "";
         this.collides = true;
         this.name = "";
@@ -81,6 +82,7 @@ public class SceneObject {
     }
     
     public void resize(double x, double y) {
+        if (!hitbox) return;
         world_w += x; world_h += y;
         world_w = world_w < 2 ? 2 : world_w;
         world_h = world_h < 2 ? 2 : world_h;
@@ -89,11 +91,11 @@ public class SceneObject {
     public void setLayer(int l) { layer = l; }
     
     public void setWidth(int w) {
-        world_w = w;
+        world_w = w < 2 ? 2 : w;
     }
     
     public void setHeight(int h) {
-        world_h = h;
+        world_h = h < 2 ? 2 : h;
     }
     
     public void setWorldX(int x) {
@@ -114,23 +116,21 @@ public class SceneObject {
     
     public int getLayer() { return layer; }
     
-    public boolean gravity() { return grav; }
+    public boolean gravity() { return gravity; }
     
     public boolean collides() { return collides; }
     
-    public void setGravity(boolean g) { this.grav = g; }
+    public void setGravity(boolean g) { this.gravity = g; }
     
     public void setCollides(boolean c) { this.collides = c; }
     
-    public int[] getWorldCoordinates() {
+    public int[] getWorldCoords() {
         return new int[]{(int)MiscMath.round(world_x, 1), (int)MiscMath.round(world_y, 1)};
     }
     
     public int[] getOnscreenCoords() {
-        int[] wc = getWorldCoordinates();
+        int[] wc = getWorldCoords();
         int[] osc = MiscMath.getOnscreenCoords(wc[0], wc[1]);
-        //osc[0] = (int)MiscMath.round(osc[0], GUI.getSceneCanvas().getZoom());
-        //osc[1] = (int)MiscMath.round(osc[1], GUI.getSceneCanvas().getZoom());
         return osc;
     }
     
@@ -151,28 +151,62 @@ public class SceneObject {
     public void save(BufferedWriter bw) {
         try {
             bw.write("so\n");
-            
-            bw.write("x="+world_x+"\n");
-            bw.write("y="+world_y+"\n");
-            bw.write("w="+world_w+"\n");
-            bw.write("h="+world_h+"\n");
-            bw.write("n="+name+"\n");
-            bw.write("t="+type+"\n");
-            bw.write("lk="+locked+"\n");
-            bw.write("tx="+texture+"\n");
-            bw.write("h="+hitbox+"\n");
-            bw.write("g="+grav+"\n");
-            bw.write("c="+collides+"\n");
-            bw.write("l="+layer+"\n");
-            
-            for (Flow f: flows) f.save(bw);
-            for (Animation a: animations) a.save(bw);
-            
-            bw.write("/so");
-            
+                bw.write("xy="+getWorldCoords()[0]+" "+getWorldCoords()[1]+"\n");
+                bw.write("wh="+getDimensions()[0]+" "+getDimensions()[1]+"\n");
+                bw.write("n="+name+"\n");
+                bw.write("t="+type+"\n");
+                bw.write("lk="+locked+"\n");
+                bw.write("tx="+texture+"\n");
+                bw.write("h="+hitbox+"\n");
+                bw.write("g="+gravity+"\n");
+                bw.write("c="+collides+"\n");
+                bw.write("l="+layer+"\n");
+                for (Flow f: flows) f.save(bw);
+                for (Animation a: animations) a.save(bw);
+            bw.write("/so\n");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+    
+    public boolean load(BufferedReader br) {
+        System.out.println("Remember to load flows/blocks in SceneObject.");
+        try {
+            while (true) {
+                String line = br.readLine();
+                if (line == null) break;
+                line = line.trim();
+                if (line.equals("/so")) return true;
+                
+                if (line.indexOf("n=") == 0) name = line.substring(2);
+                if (line.indexOf("t=") == 0) type = line.substring(2);
+                if (line.indexOf("tx=") == 0) texture = line.substring(3);
+                if (line.indexOf("lk=") == 0) locked = Boolean.parseBoolean(line.substring(3));
+                if (line.indexOf("h=") == 0) hitbox = Boolean.parseBoolean(line.substring(2));
+                if (line.indexOf("g=") == 0) gravity = Boolean.parseBoolean(line.substring(2));
+                if (line.indexOf("c=") == 0) collides = Boolean.parseBoolean(line.substring(2));
+                if (line.indexOf("l=") == 0) layer = Integer.parseInt(line.substring(2));
+                
+                if (line.indexOf("xy=") == 0) {
+                    int[] coords = MiscMath.toIntArray(line.substring(3));
+                    world_x = coords[0]; world_y = coords[1];
+                    System.out.println("SceneObject "+name+" loaded at "+world_x+", "+world_y);
+                }
+                if (line.indexOf("wh=") == 0) {
+                    int[] dims = MiscMath.toIntArray(line.substring(3));
+                    world_w = dims[0]; world_h = dims[1];
+                }
+                
+                if (line.equals("a")) {
+                    Animation a = new Animation();
+                    if (a.load(br)) animations.add(a);
+                }
+                
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
     
     /**
@@ -184,7 +218,7 @@ public class SceneObject {
         o.type = this.type;
         o.name = this.name+Math.abs(new Random().nextInt() % 10000);
         o.layer = this.layer;
-        o.grav = this.grav;
+        o.gravity = this.gravity;
         o.collides = this.collides;
         o.hitbox = this.hitbox;
 
@@ -203,11 +237,23 @@ public class SceneObject {
             new_f.setParent(o);
         }
         
-        o.setWorldX(this.getWorldCoordinates()[0] + 5);
-        o.setWorldY(this.getWorldCoordinates()[1] + 5);
+        o.setWorldX(this.getWorldCoords()[0] + 5);
+        o.setWorldY(this.getWorldCoords()[1] + 5);
         o.setWidth(this.getDimensions()[0]);
         o.setHeight(this.getDimensions()[1]);
         
+    }
+    
+    public void newFlow() {
+        Flow f = new Flow();
+        f.setName("animation"+new Random().nextInt(100000));
+        flows.add(f);
+    }
+    
+    public void newAnimation() {
+        Animation a = new Animation();
+        a.setName("animation"+new Random().nextInt(100000));
+        animations.add(a);
     }
     
     public void draw(Graphics g) {
