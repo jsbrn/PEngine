@@ -24,6 +24,7 @@ import java.util.Random;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -72,17 +73,7 @@ public class GUI extends javax.swing.JFrame {
         levelNameField = new javax.swing.JTextField();
         jLabel21 = new javax.swing.JLabel();
         renameLevelButton = new javax.swing.JButton();
-        objectGalleryDialog = new javax.swing.JDialog();
-        jScrollPane13 = new javax.swing.JScrollPane();
-        galleryList = new javax.swing.JList();
-        editGalleryObjectButton = new javax.swing.JButton();
-        newGalleryObjectButton = new javax.swing.JButton();
-        deleteGalleryObjectButton = new javax.swing.JButton();
-        duplicateGalleryObjectButton = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
-        inCurrentLevelLabel = new javax.swing.JLabel();
-        inCurrentProjectLabel = new javax.swing.JLabel();
-        newObjectEditor = new javax.swing.JFrame();
+        objectEditor = new javax.swing.JFrame();
         objectEditorTabs = new javax.swing.JTabbedPane();
         sceneObjectCanvas = new gui.SceneObjectCanvas();
         basicOptionsPanel = new javax.swing.JPanel();
@@ -109,6 +100,12 @@ public class GUI extends javax.swing.JFrame {
         jButton5 = new javax.swing.JButton();
         jToggleButton2 = new javax.swing.JToggleButton();
         jButton6 = new javax.swing.JButton();
+        galleryObjectPanel = new javax.swing.JPanel();
+        galleryObjectChooser = new javax.swing.JComboBox<>();
+        newGalleryObjectButton = new javax.swing.JButton();
+        deleteGalleryObjectButton = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         sceneCanvas = new gui.SceneCanvas();
         jPanel13 = new javax.swing.JPanel();
         playButton = new javax.swing.JButton();
@@ -288,132 +285,13 @@ public class GUI extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        objectGalleryDialog.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        objectGalleryDialog.setTitle("Object Gallery");
-        objectGalleryDialog.setBounds(new java.awt.Rectangle(0, 0, 450, 300));
-        objectGalleryDialog.setModalExclusionType(java.awt.Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
-        objectGalleryDialog.setResizable(false);
-        objectGalleryDialog.addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosed(java.awt.event.WindowEvent evt) {
-                objectGalleryDialogWindowClosed(evt);
-            }
+        objectEditor.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        objectEditor.setBounds(new java.awt.Rectangle(0, 0, 700, 500));
+        objectEditor.setMinimumSize(new java.awt.Dimension(700, 500));
+        objectEditor.setPreferredSize(new java.awt.Dimension(700, 500));
+        objectEditor.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
-                genericDialogWindowClosing(evt);
-            }
-        });
-
-        galleryList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = {};
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        galleryList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                galleryListValueChanged(evt);
-            }
-        });
-        jScrollPane13.setViewportView(galleryList);
-
-        editGalleryObjectButton.setText("Edit");
-        editGalleryObjectButton.setEnabled(false);
-        editGalleryObjectButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editGalleryObjectButtonActionPerformed(evt);
-            }
-        });
-
-        newGalleryObjectButton.setText("New");
-        newGalleryObjectButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newGalleryObjectButtonActionPerformed(evt);
-            }
-        });
-
-        deleteGalleryObjectButton.setText("Delete");
-        deleteGalleryObjectButton.setEnabled(false);
-        deleteGalleryObjectButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteGalleryObjectButtonActionPerformed(evt);
-            }
-        });
-
-        duplicateGalleryObjectButton.setText("Duplicate");
-        duplicateGalleryObjectButton.setEnabled(false);
-        duplicateGalleryObjectButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                duplicateGalleryObjectButtonActionPerformed(evt);
-            }
-        });
-
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Information"));
-
-        inCurrentLevelLabel.setText("N/A in current level");
-
-        inCurrentProjectLabel.setText("N/A in current project");
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(inCurrentLevelLabel)
-                    .addComponent(inCurrentProjectLabel))
-                .addContainerGap(35, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(inCurrentLevelLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(inCurrentProjectLabel)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout objectGalleryDialogLayout = new javax.swing.GroupLayout(objectGalleryDialog.getContentPane());
-        objectGalleryDialog.getContentPane().setLayout(objectGalleryDialogLayout);
-        objectGalleryDialogLayout.setHorizontalGroup(
-            objectGalleryDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(objectGalleryDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(objectGalleryDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane13)
-                    .addGroup(objectGalleryDialogLayout.createSequentialGroup()
-                        .addComponent(newGalleryObjectButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(duplicateGalleryObjectButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editGalleryObjectButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteGalleryObjectButton)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        objectGalleryDialogLayout.setVerticalGroup(
-            objectGalleryDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(objectGalleryDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(objectGalleryDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane13, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(objectGalleryDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(editGalleryObjectButton)
-                    .addComponent(newGalleryObjectButton)
-                    .addComponent(deleteGalleryObjectButton)
-                    .addComponent(duplicateGalleryObjectButton))
-                .addContainerGap(12, Short.MAX_VALUE))
-        );
-
-        newObjectEditor.setBounds(new java.awt.Rectangle(0, 0, 700, 500));
-        newObjectEditor.setMinimumSize(new java.awt.Dimension(700, 500));
-        newObjectEditor.setPreferredSize(new java.awt.Dimension(700, 500));
-        newObjectEditor.addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                newObjectEditorWindowClosing(evt);
+                objectEditorWindowClosing(evt);
             }
         });
 
@@ -524,7 +402,7 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(sceneObjectCanvasLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(basicOptionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(356, Short.MAX_VALUE))
+                .addContainerGap(294, Short.MAX_VALUE))
         );
 
         objectEditorTabs.addTab("Basics", sceneObjectCanvas);
@@ -537,7 +415,7 @@ public class GUI extends javax.swing.JFrame {
         );
         flowCanvasLayout.setVerticalGroup(
             flowCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 500, Short.MAX_VALUE)
+            .addGap(0, 438, Short.MAX_VALUE)
         );
 
         objectEditorTabs.addTab("Logic", flowCanvas);
@@ -649,21 +527,83 @@ public class GUI extends javax.swing.JFrame {
             animationCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(animationCanvasLayout.createSequentialGroup()
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 434, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 372, Short.MAX_VALUE)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         objectEditorTabs.addTab("Animations", animationCanvas);
 
-        javax.swing.GroupLayout newObjectEditorLayout = new javax.swing.GroupLayout(newObjectEditor.getContentPane());
-        newObjectEditor.getContentPane().setLayout(newObjectEditorLayout);
-        newObjectEditorLayout.setHorizontalGroup(
-            newObjectEditorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(objectEditorTabs)
+        galleryObjectPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        galleryObjectChooser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                galleryObjectChooserActionPerformed(evt);
+            }
+        });
+
+        newGalleryObjectButton.setText("New object...");
+        newGalleryObjectButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newGalleryObjectButtonActionPerformed(evt);
+            }
+        });
+
+        deleteGalleryObjectButton.setText("Delete object");
+        deleteGalleryObjectButton.setEnabled(false);
+        deleteGalleryObjectButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteGalleryObjectButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Gallery object:");
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel4.setText("Object Gallery");
+
+        javax.swing.GroupLayout galleryObjectPanelLayout = new javax.swing.GroupLayout(galleryObjectPanel);
+        galleryObjectPanel.setLayout(galleryObjectPanelLayout);
+        galleryObjectPanelLayout.setHorizontalGroup(
+            galleryObjectPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(galleryObjectPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(galleryObjectChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(newGalleryObjectButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(deleteGalleryObjectButton)
+                .addContainerGap())
         );
-        newObjectEditorLayout.setVerticalGroup(
-            newObjectEditorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(objectEditorTabs)
+        galleryObjectPanelLayout.setVerticalGroup(
+            galleryObjectPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(galleryObjectPanelLayout.createSequentialGroup()
+                .addGap(4, 4, 4)
+                .addGroup(galleryObjectPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(galleryObjectChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(newGalleryObjectButton)
+                    .addComponent(deleteGalleryObjectButton)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4))
+                .addGap(3, 3, 3))
+        );
+
+        javax.swing.GroupLayout objectEditorLayout = new javax.swing.GroupLayout(objectEditor.getContentPane());
+        objectEditor.getContentPane().setLayout(objectEditorLayout);
+        objectEditorLayout.setHorizontalGroup(
+            objectEditorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(objectEditorTabs, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
+            .addComponent(galleryObjectPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        objectEditorLayout.setVerticalGroup(
+            objectEditorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, objectEditorLayout.createSequentialGroup()
+                .addComponent(galleryObjectPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(objectEditorTabs))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -1227,7 +1167,7 @@ public class GUI extends javax.swing.JFrame {
         sceneCanvas.setSelectedObject(null);
         sceneCanvas.repaint();
         GUI.refreshObjectProperties();
-        newObjectEditor.setVisible(false);
+        objectEditor.setVisible(false);
     }//GEN-LAST:event_saveProjectButtonActionPerformed
 
     private void newProjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProjectButtonActionPerformed
@@ -1249,7 +1189,7 @@ public class GUI extends javax.swing.JFrame {
             sceneCanvas.setSelectedObject(null);
             sceneCanvas.repaint();
             GUI.refreshObjectProperties();
-            newObjectEditor.setVisible(false);
+            objectEditor.setVisible(false);
         }
     }//GEN-LAST:event_newProjectButtonActionPerformed
 
@@ -1338,79 +1278,6 @@ public class GUI extends javax.swing.JFrame {
 
     }//GEN-LAST:event_renameLevelButtonActionPerformed
 
-    private void galleryListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_galleryListValueChanged
-        int index = galleryList.getSelectedIndex();
-        duplicateGalleryObjectButton.setEnabled(index > -1);
-        deleteGalleryObjectButton.setEnabled(index > -1);
-        editGalleryObjectButton.setEnabled(index > -1);
-        if (index > -1) {
-            String type = galleryList.getSelectedValue().toString();
-            int in_level = 0;
-            int in_project = 0;
-            for (Level l : Project.getProject().getLevels()) {
-                for (SceneObject o : l.getObjects(Level.ALL_OBJECTS)) {
-                    if (o.getType().equals(type)) {
-                        if (l.equals(Project.getProject().getCurrentLevel())) {
-                            in_level++;
-                        }
-                        in_project++;
-                    }
-                }
-            }
-            inCurrentLevelLabel.setText(in_level + " in current level");
-            inCurrentProjectLabel.setText(in_project + " project-wide");
-            if (index == 0) {
-                deleteGalleryObjectButton.setEnabled(false);
-                inCurrentLevelLabel.setText("Use this to edit the");
-                inCurrentProjectLabel.setText("player's properties.");
-            }
-        } else {
-            inCurrentLevelLabel.setText("N/A in current level");
-            inCurrentProjectLabel.setText("N/A project-wide");
-        }
-    }//GEN-LAST:event_galleryListValueChanged
-
-    private void editGalleryObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editGalleryObjectButtonActionPerformed
-        SceneObject o = Project.getProject().getGalleryObject(galleryList.getSelectedIndex());
-        sceneCanvas.setActiveObject(o);
-        GUI.refreshObjectEditor();
-        GUI.refreshGalleryLists();
-        hideDialog(objectGalleryDialog);
-        showObjectEditor();
-    }//GEN-LAST:event_editGalleryObjectButtonActionPerformed
-
-    private void newGalleryObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGalleryObjectButtonActionPerformed
-        SceneObject o = new SceneObject();
-        o.setType("object" + Math.abs(new Random().nextInt()));
-        Project.getProject().addGalleryObject(o);
-        sceneCanvas.setActiveObject(o);
-        GUI.refreshObjectEditor();
-        GUI.refreshGalleryLists();
-        showObjectEditor();
-        hideDialog(objectGalleryDialog);
-    }//GEN-LAST:event_newGalleryObjectButtonActionPerformed
-
-    private void deleteGalleryObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteGalleryObjectButtonActionPerformed
-        int index = galleryList.getSelectedIndex();
-        String type = Project.getProject().getGalleryObject((index)).getType();
-        for (SceneObject o : Project.getProject().getObjectsByType(type)) {
-            Project.getProject().getCurrentLevel().removeObject(o);
-        }
-        Project.getProject().removeGalleryObject(index);
-        GUI.refreshGalleryLists();
-        sceneCanvas.repaint();
-    }//GEN-LAST:event_deleteGalleryObjectButtonActionPerformed
-
-    private void duplicateGalleryObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_duplicateGalleryObjectButtonActionPerformed
-        int index = galleryList.getSelectedIndex();
-        SceneObject o = Project.getProject().getGalleryObject(index);
-        SceneObject o2 = new SceneObject();
-        o.copyTo(o2);
-        Project.getProject().addGalleryObject(o2);
-        o2.setType(o2.getType() + "" + Math.abs(new Random().nextInt() / 10000));
-        GUI.refreshGalleryLists();
-    }//GEN-LAST:event_duplicateGalleryObjectButtonActionPerformed
-
     private void viewRootButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewRootButtonActionPerformed
         File folder = new File(Project.getProject().getDirectory());
         try {
@@ -1465,19 +1332,17 @@ public class GUI extends javax.swing.JFrame {
     private void objectCollidesCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectCollidesCheckboxActionPerformed
         sceneCanvas.getActiveObject().setCollides(!sceneCanvas.getActiveObject().collides());
         GUI.refreshObjectEditor();
-        GUI.refreshObjectProperties();
     }//GEN-LAST:event_objectCollidesCheckboxActionPerformed
 
     private void objectGravityCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectGravityCheckboxActionPerformed
         sceneCanvas.getActiveObject().setGravity(!sceneCanvas.getActiveObject().gravity());
         GUI.refreshObjectEditor();
-        GUI.refreshObjectProperties();
-        //TODO: figure out how to apply this to all objects (Collides toggle included)
     }//GEN-LAST:event_objectGravityCheckboxActionPerformed
 
     private void objectGalleryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectGalleryButtonActionPerformed
-        refreshGalleryLists();
-        showDialog(objectGalleryDialog);
+        sceneCanvas.setActiveObject(Project.getProject().getGalleryObject(0));
+        refreshObjectEditor();
+        showObjectEditor();
     }//GEN-LAST:event_objectGalleryButtonActionPerformed
 
     private void openProjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openProjectButtonActionPerformed
@@ -1501,7 +1366,7 @@ public class GUI extends javax.swing.JFrame {
         sceneCanvas.setSelectedObject(null);
         sceneCanvas.repaint();
         GUI.refreshObjectProperties();
-        newObjectEditor.setVisible(false);
+        hideObjectEditor();
     }//GEN-LAST:event_openProjectButtonActionPerformed
 
     private void sceneCanvasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sceneCanvasKeyPressed
@@ -1535,10 +1400,8 @@ public class GUI extends javax.swing.JFrame {
     private void editObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editObjectButtonActionPerformed
         sceneCanvas.setActiveObject(sceneCanvas.getSelectedObject());
         GUI.refreshObjectEditor();
-        objectEditorTabs.setSelectedIndex(0);
         sceneObjectCanvas.setObject(sceneCanvas.getSelectedObject());
         showObjectEditor();
-        this.disable();
     }//GEN-LAST:event_editObjectButtonActionPerformed
 
     private void spawnObjectAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_spawnObjectAction
@@ -1701,7 +1564,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void changeObjectProperty(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeObjectProperty
         char cmd = evt.getActionCommand().charAt(0);
-        String input = JOptionPane.showInputDialog(newObjectEditor,
+        String input = JOptionPane.showInputDialog(objectEditor,
                 cmd == 'c' ? "Type: " : (cmd == 'n' ? "Name:" : "Texture:"),
                 sceneCanvas.getActiveObject().getType());
         if (input == null) {
@@ -1710,7 +1573,7 @@ public class GUI extends javax.swing.JFrame {
         boolean gallery = Project.getProject().containsGalleryObject(input);
         boolean level = Project.getProject().getCurrentLevel().containsObject(input);
         if ((cmd == 'c' && gallery) || (cmd == 'n' && level)) {
-            JOptionPane.showMessageDialog(newObjectEditor, "This name is already taken!",
+            JOptionPane.showMessageDialog(objectEditor, "This name is already taken!",
                     "Whoops!", JOptionPane.PLAIN_MESSAGE, null);
             return;
         }
@@ -1761,25 +1624,34 @@ public class GUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_ambientSoundVolumeMenuItemActionPerformed
 
-    private void newObjectEditorWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_newObjectEditorWindowClosing
+    private void objectEditorWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_objectEditorWindowClosing
         hideObjectEditor();
-        if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject())) {
-            showDialog(objectGalleryDialog);
-            //apply the changes to ALL matching objects
-        }
-    }//GEN-LAST:event_newObjectEditorWindowClosing
+        //TODO: remember to apply changes if the active object is a gallery object
+    }//GEN-LAST:event_objectEditorWindowClosing
 
     private void sceneCanvasPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_sceneCanvasPropertyChange
         editObjectButton.setEnabled(sceneCanvas.getSelectedObject() != null);
     }//GEN-LAST:event_sceneCanvasPropertyChange
 
-    private void objectGalleryDialogWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_objectGalleryDialogWindowClosed
-        
-    }//GEN-LAST:event_objectGalleryDialogWindowClosed
+    private void galleryObjectChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_galleryObjectChooserActionPerformed
+        sceneCanvas.setActiveObject(
+                Project.getProject().getGalleryObject(galleryObjectChooser.getSelectedIndex()));
+        refreshObjectEditor();
+    }//GEN-LAST:event_galleryObjectChooserActionPerformed
 
-    public static void refreshGalleryLists() {
-        GUI.refreshList(galleryList, Project.getProject().getGalleryObjects());
-    }
+    private void newGalleryObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGalleryObjectButtonActionPerformed
+        String input = JOptionPane.showInputDialog(this, "Name:", "New gallery object...", JOptionPane.PLAIN_MESSAGE);
+        if (input == null) return;
+        SceneObject o = new SceneObject();
+        o.setName(input);
+        Project.getProject().addGalleryObject(o);
+        refreshObjectEditor();
+    }//GEN-LAST:event_newGalleryObjectButtonActionPerformed
+
+    private void deleteGalleryObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteGalleryObjectButtonActionPerformed
+        Project.getProject().removeGalleryObject(galleryObjectChooser.getSelectedIndex());
+    }//GEN-LAST:event_deleteGalleryObjectButtonActionPerformed
+
 
     public static void refreshBlockOptions() {
 
@@ -1830,7 +1702,7 @@ public class GUI extends javax.swing.JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();
-        JFrame d = newObjectEditor;
+        JFrame d = objectEditor;
         d.setSize(d.getPreferredSize());
         d.setLocation((int) (width / 2) - (d.getWidth() / 2),
                 (int) (height / 2) - ((d.getHeight() / 2)));
@@ -1840,7 +1712,7 @@ public class GUI extends javax.swing.JFrame {
     }
     
     public void hideObjectEditor() {
-        JFrame d = newObjectEditor;
+        JFrame d = objectEditor;
         d.setVisible(false);
         this.setEnabled(true);
         this.setVisible(true);
@@ -1867,6 +1739,11 @@ public class GUI extends javax.swing.JFrame {
         }
         l.setListData(list);
     }
+    
+    public static void refreshChooser(JComboBox l, ArrayList arr) {
+        l.removeAllItems();
+        for (int i = 0; i < arr.size(); i++) l.addItem(arr.get(i).toString());
+    }
 
     public static void updateWindowTitle() {
         if (window == null) {
@@ -1881,15 +1758,14 @@ public class GUI extends javax.swing.JFrame {
     }
 
     public static void refreshObjectEditor() {
-        if (sceneCanvas.getActiveObject() == null) {
-            return;
-        }
+        
+        if (sceneCanvas.getActiveObject() == null) return;
 
-        if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject())) {
-            newObjectEditor.setTitle("Editing '" + sceneCanvas.getActiveObject().getType() + "' in Object Gallery");
-        } else {
-            newObjectEditor.setTitle("Editing '" + sceneCanvas.getActiveObject().getName() + "' in '" + Project.getProject().getCurrentLevel().getName() + "'");
-        }
+        objectEditor.setTitle("Editing \"" + sceneCanvas.getActiveObject().getType() + "\"");
+        galleryObjectPanel.setVisible(Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()));
+        
+        GUI.refreshChooser(galleryObjectChooser, Project.getProject().getGalleryObjects());
+        deleteGalleryObjectButton.setEnabled(galleryObjectChooser.getSelectedIndex() > -1);
 
         objectTypeField.setText(sceneCanvas.getActiveObject().getType());
         objectTextureField.setText(sceneCanvas.getActiveObject().getTexture());
@@ -1901,7 +1777,8 @@ public class GUI extends javax.swing.JFrame {
         changeObjectNameButton.setEnabled(!Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()));
         changeObjectTextureButton.setEnabled(!sceneCanvas.getActiveObject().isHitbox());
 
-        //objectEditorTabs.setEnabledAt(2, !sceneCanvas.getActiveObject().isHitbox()); //animation tab
+        objectEditorTabs.setEnabledAt(2, !sceneCanvas.getActiveObject().isHitbox()); //animation tab
+        objectEditorTabs.setSelectedIndex(0);
     }
 
     public static void refreshFlowOptions() {
@@ -1928,7 +1805,7 @@ public class GUI extends javax.swing.JFrame {
         bringForwardButton.setEnabled(sceneCanvas.getSelectedObject() != null);
         sendBackwardsButton.setEnabled(sceneCanvas.getSelectedObject() != null);
         cloneObjectButton.setEnabled(sceneCanvas.getSelectedObject() != null);
-        //editObjectButton.setEnabled(sceneCanvas.getSelectedObject() != null);
+        editObjectButton.setEnabled(sceneCanvas.getSelectedObject() != null);
         deleteObjectButton.setEnabled(sceneCanvas.getSelectedObject() != null);
     }
 
@@ -1986,6 +1863,8 @@ public class GUI extends javax.swing.JFrame {
 
                 window = new GUI();
                 window.setVisible(true);
+                
+                galleryObjectPanel.setVisible(false);
 
                 Assets.mkdirs();
                 Project.newProject("[new project]", true, true);
@@ -2019,17 +1898,14 @@ public class GUI extends javax.swing.JFrame {
     private static javax.swing.JButton changeObjectTypeButton;
     public static javax.swing.JButton cloneObjectButton;
     private static javax.swing.JButton deleteAnimationButton;
-    private javax.swing.JButton deleteGalleryObjectButton;
+    private static javax.swing.JButton deleteGalleryObjectButton;
     private javax.swing.JButton deleteLevelButton;
     private static javax.swing.JButton deleteObjectButton;
-    private javax.swing.JButton duplicateGalleryObjectButton;
-    private javax.swing.JButton editGalleryObjectButton;
     private javax.swing.JButton editLevelButton;
     public static javax.swing.JButton editObjectButton;
     private static gui.FlowCanvas flowCanvas;
-    static javax.swing.JList galleryList;
-    private static javax.swing.JLabel inCurrentLevelLabel;
-    private static javax.swing.JLabel inCurrentProjectLabel;
+    private static javax.swing.JComboBox<String> galleryObjectChooser;
+    private static javax.swing.JPanel galleryObjectPanel;
     private static javax.swing.JButton jButton4;
     private static javax.swing.JButton jButton5;
     private static javax.swing.JButton jButton6;
@@ -2040,6 +1916,8 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;
@@ -2047,12 +1925,10 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel13;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane12;
-    private javax.swing.JScrollPane jScrollPane13;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator4;
@@ -2071,15 +1947,14 @@ public class GUI extends javax.swing.JFrame {
     public static javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem musicVolumeMenuItem;
     private static javax.swing.JButton newAnimationButton;
-    private javax.swing.JButton newGalleryObjectButton;
+    private static javax.swing.JButton newGalleryObjectButton;
     private javax.swing.JMenuItem newLevelButton;
     public static javax.swing.JButton newObjectButton;
-    private static javax.swing.JFrame newObjectEditor;
     private javax.swing.JMenuItem newProjectButton;
     private static javax.swing.JCheckBox objectCollidesCheckbox;
+    private static javax.swing.JFrame objectEditor;
     private static javax.swing.JTabbedPane objectEditorTabs;
     private javax.swing.JMenuItem objectGalleryButton;
-    public static javax.swing.JDialog objectGalleryDialog;
     private static javax.swing.JCheckBox objectGravityCheckbox;
     public static javax.swing.JComboBox objectLayerChooser;
     private static javax.swing.JTextField objectNameField;
