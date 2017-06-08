@@ -144,6 +144,12 @@ public class GUI extends javax.swing.JFrame {
         lockGravityButton = new JToggleButton();
         lockCollidesButton = new JToggleButton();
         flowCanvas = new FlowCanvas();
+        jPanel9 = new JPanel();
+        flowChooser = new JComboBox<>();
+        newFlowButton = new JButton();
+        deleteFlowButton = new JButton();
+        renameFlowButton = new JButton();
+        lockFlowButton = new JToggleButton();
         animationCanvas = new AnimationCanvas();
         jPanel8 = new JPanel();
         animationChooser = new JComboBox<>();
@@ -556,13 +562,81 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        flowChooser.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                flowChooserActionPerformed(evt);
+            }
+        });
+
+        newFlowButton.setText("New");
+        newFlowButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                newFlowButtonActionPerformed(evt);
+            }
+        });
+
+        deleteFlowButton.setText("Delete");
+        deleteFlowButton.setEnabled(false);
+        deleteFlowButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                deleteFlowButtonActionPerformed(evt);
+            }
+        });
+
+        renameFlowButton.setText("Rename...");
+        renameFlowButton.setEnabled(false);
+        renameFlowButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                renameFlowButtonActionPerformed(evt);
+            }
+        });
+
+        lockFlowButton.setText("🔒");
+        lockFlowButton.setActionCommand("a");
+        lockFlowButton.setEnabled(false);
+        lockFlowButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                lockFlowButtonlockTextureButtonActionPerformed(evt);
+            }
+        });
+
+        GroupLayout jPanel9Layout = new GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(jPanel9Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(newFlowButton)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(flowChooser, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lockFlowButton)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(deleteFlowButton)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(renameFlowButton)
+                .addContainerGap(269, Short.MAX_VALUE))
+        );
+        jPanel9Layout.setVerticalGroup(jPanel9Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(jPanel9Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(flowChooser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(newFlowButton)
+                    .addComponent(deleteFlowButton)
+                    .addComponent(renameFlowButton)
+                    .addComponent(lockFlowButton))
+                .addGap(5, 5, 5))
+        );
+
         GroupLayout flowCanvasLayout = new GroupLayout(flowCanvas);
         flowCanvas.setLayout(flowCanvasLayout);
         flowCanvasLayout.setHorizontalGroup(flowCanvasLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 745, Short.MAX_VALUE)
+            .addComponent(jPanel9, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         flowCanvasLayout.setVerticalGroup(flowCanvasLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 438, Short.MAX_VALUE)
+            .addGroup(flowCanvasLayout.createSequentialGroup()
+                .addComponent(jPanel9, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 405, Short.MAX_VALUE))
         );
 
         objectEditorTabs.addTab("Logic", flowCanvas);
@@ -717,7 +791,7 @@ public class GUI extends javax.swing.JFrame {
         animationCanvasLayout.setVerticalGroup(animationCanvasLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(animationCanvasLayout.createSequentialGroup()
                 .addComponent(jPanel8, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 366, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 372, Short.MAX_VALUE)
                 .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         );
 
@@ -726,7 +800,7 @@ public class GUI extends javax.swing.JFrame {
         GroupLayout objectEditorLayout = new GroupLayout(objectEditor.getContentPane());
         objectEditor.getContentPane().setLayout(objectEditorLayout);
         objectEditorLayout.setHorizontalGroup(objectEditorLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(objectEditorTabs, GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
+            .addComponent(objectEditorTabs)
             .addComponent(galleryObjectPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         objectEditorLayout.setVerticalGroup(objectEditorLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -910,7 +984,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(bringForwardButton, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sendBackwardsButton, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(133, Short.MAX_VALUE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         topPanelLayout.setVerticalGroup(topPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(topPanelLayout.createSequentialGroup()
@@ -976,7 +1050,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(topPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 409, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel13, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1238,6 +1312,7 @@ public class GUI extends javax.swing.JFrame {
 
         jMenuItem5.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
         jMenuItem5.setText("Help topics...");
+        jMenuItem5.setEnabled(false);
         jMenu3.add(jMenuItem5);
 
         jMenuItem6.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0));
@@ -1908,6 +1983,26 @@ public class GUI extends javax.swing.JFrame {
         flowCanvas.handleMouseClick(evt);
     }//GEN-LAST:event_flowCanvasMouseClicked
 
+    private void flowChooserActionPerformed(ActionEvent evt) {//GEN-FIRST:event_flowChooserActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_flowChooserActionPerformed
+
+    private void newFlowButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_newFlowButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_newFlowButtonActionPerformed
+
+    private void deleteFlowButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_deleteFlowButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_deleteFlowButtonActionPerformed
+
+    private void renameFlowButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_renameFlowButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_renameFlowButtonActionPerformed
+
+    private void lockFlowButtonlockTextureButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_lockFlowButtonlockTextureButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lockFlowButtonlockTextureButtonActionPerformed
+
     /**
      * Returns 0 if user made a YES or NO choice. 1 if the user canceled.
      *
@@ -2231,6 +2326,7 @@ public class GUI extends javax.swing.JFrame {
     private static JButton changeObjectTypeButton;
     public static JButton cloneObjectButton;
     private static JButton deleteAnimationButton;
+    private static JButton deleteFlowButton;
     private static JButton deleteGalleryObjectButton;
     JButton deleteLevelButton;
     private static JButton deleteObjectButton;
@@ -2238,6 +2334,7 @@ public class GUI extends javax.swing.JFrame {
     public static JButton editObjectButton;
     JMenu fileMenu;
     private static FlowCanvas flowCanvas;
+    private static JComboBox<String> flowChooser;
     private static JLabel frameCountLabel;
     private static JComboBox<String> galleryObjectChooser;
     private static JPanel galleryObjectPanel;
@@ -2260,6 +2357,7 @@ public class GUI extends javax.swing.JFrame {
     JPanel jPanel5;
     JPanel jPanel6;
     JPanel jPanel8;
+    JPanel jPanel9;
     JScrollPane jScrollPane9;
     JPopupMenu.Separator jSeparator4;
     JPopupMenu.Separator jSeparator5;
@@ -2272,6 +2370,7 @@ public class GUI extends javax.swing.JFrame {
     JMenuItem lightingColorMenuItem;
     private static JToggleButton lockAnimationButton;
     private static JToggleButton lockCollidesButton;
+    private static JToggleButton lockFlowButton;
     private static JToggleButton lockGravityButton;
     private static JToggleButton lockTextureButton;
     private static JCheckBoxMenuItem loopAmbientSoundMenuItem;
@@ -2279,6 +2378,7 @@ public class GUI extends javax.swing.JFrame {
     public static JMenuBar menuBar;
     JMenuItem musicVolumeMenuItem;
     private static JButton newAnimationButton;
+    private static JButton newFlowButton;
     private static JButton newGalleryObjectButton;
     JMenuItem newLevelButton;
     public static JButton newObjectButton;
@@ -2300,6 +2400,7 @@ public class GUI extends javax.swing.JFrame {
     JMenuItem reloadAssetsButton;
     private static JButton removeFrameButton;
     private static JButton renameAnimationButton;
+    private static JButton renameFlowButton;
     JButton renameLevelButton;
     private static JTextArea resultsTextBox;
     JMenuItem saveProjectButton;

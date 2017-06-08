@@ -91,8 +91,8 @@ public class FlowCanvas extends JPanel {
         }
         
         double[] wc = getWorldCoords((int)last_mouse_x, (int)last_mouse_y);
-        drawString("Mouse: "+wc[0]+", "+wc[1], 10, 20, g);
-        drawString("Camera: "+camera_x+", "+camera_y, 10, 40, g);
+        drawString("Mouse: "+wc[0]+", "+wc[1], 10, 50, g);
+        drawString("Camera: "+camera_x+", "+camera_y, 10, 70, g);
         
         g.setColor(Color.white);
         g.drawRect(oosc[0]-2, oosc[1]-2, 4, 4);
@@ -140,6 +140,7 @@ public class FlowCanvas extends JPanel {
     }
     
     public void handleMouseDrag(MouseEvent e) {
+        if (selected_flow == null) return;
         grabFocus();
         if (SwingUtilities.isLeftMouseButton(e)) {
         } else if (SwingUtilities.isRightMouseButton(e)) {
