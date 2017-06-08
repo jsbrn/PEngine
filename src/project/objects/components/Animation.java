@@ -12,9 +12,26 @@ import project.objects.SceneObject;
 
 public class Animation {
     
-    private String name = "", spritesheet = "";
-    private boolean locked = false;
-    private int frame_dur = 100, frame_count = 1; //dur in milliseconds
+    private String name, spritesheet;
+    private boolean locked;
+    private int frame_dur, frame_count; //dur in milliseconds
+    
+    public Animation() {
+        this.spritesheet = "";
+        this.name = "";
+        this.locked = false;
+        this.frame_count = 1;
+        this.frame_dur = 100;
+    }
+    
+    public void autoName(SceneObject o) {
+        int i = 1;
+        while (true) {
+            String n = "animation"+(i > 1 ? ""+i : "");
+            if (!o.containsAnimation(n)) { setName(n); break; }
+            i++;
+        }
+    }
     
     public int getFrameDuration() { return frame_dur; }
 
@@ -58,8 +75,8 @@ public class Animation {
         return true;
     }
     
-    public void copyTo(Animation new_a) {
-        new_a.name = name;
+    public void copyTo(Animation new_a, boolean copy_name) {
+        if (copy_name) new_a.name = name;
         new_a.spritesheet = spritesheet;
         new_a.frame_dur = frame_dur;
         new_a.frame_count = frame_count;

@@ -18,7 +18,7 @@ public class UpdateManager extends Thread {
     private static boolean editor_update = false, runtime_update = false, blocked = false;
     private static Thread thread;
     
-    public static final int VERSION_ID = 10;
+    public static final int VERSION_ID = 10, RUNTIME_VERSION_ID = 0;
     public static final String VERSION_NAME = "1.3-beta";
     
     /**
@@ -97,11 +97,15 @@ public class UpdateManager extends Thread {
         thread.start();
     }
     
+    public static boolean downloadInProgress() {
+        return blocked;
+    }
+    
     public static boolean editorUpdate() { return editor_update; }
     public static boolean runtimeUpdate() { return runtime_update; }
     
     public static void checkForUpdates() {
-        /*try {
+        try {
             URL url = new URL("https://computerology.bitbucket.io/tools/editor/version.txt");
             BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
             runtime_update = Integer.parseInt(br.readLine().replace("runtime = ", "")) >= 0;
@@ -110,19 +114,6 @@ public class UpdateManager extends Thread {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
-        runtime_update = false; //TODO: redo update workflow
-        editor_update = false;
-    }
-    
-    public static void handleUpdates() {
-        if (editorUpdate()) JOptionPane.showMessageDialog(null, "A newer version of the level editor has been uploaded!"
-                + "\nGo to http://computerology.bitbucket.io/ to grab it!");
-        if (runtimeUpdate()) {
-            JOptionPane.showMessageDialog(null, "A newer version of the runtime was found."
-                    + "\nThe editor will now download it in the background.");
-            downloadThreaded("https://computerology.bitbucket.io/tools/editor/runtime.jar",
-                Assets.USER_HOME+"/platformr/jars/runtime.jar");
         }
     }
     

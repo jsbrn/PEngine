@@ -30,7 +30,7 @@ public class AnimationCanvas extends JPanel {
     
     public void setAnimation(Animation a) {
         animation = new Animation();
-        a.copyTo(animation);
+        a.copyTo(animation, false);
     }
 
     public Animation getAnimation() {

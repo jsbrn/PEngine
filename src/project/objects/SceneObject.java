@@ -46,6 +46,15 @@ public class SceneObject {
         this.locked = new boolean[]{false, false, false};
     }
     
+    public void autoName(String prefix, Level l) {
+        int i = 1;
+        while (true) {
+            String n = prefix+(i > 1 ? ""+i : "");
+            if (!l.containsObject(n)) { setName(n); break; }
+            i++;
+        }
+    }
+    
     public void setLocked(int index, boolean l) {
         locked[index] = l;
         System.out.println("Setting locked state: "+index+" = "+l);
@@ -230,29 +239,35 @@ public class SceneObject {
      * Copies all properties and values (except for the name and coordinates) to the specified object.
      * @param o The specified object.
      */
-    public void copyTo(SceneObject o) {
-        if (!locked[0]) o.texture = this.texture;
+    public void copyTo(SceneObject o, boolean copy_name, boolean respect_locks) {
+        if (!o.locked[0] || !respect_locks) o.texture = this.texture;
         o.type = this.type;
+        if (copy_name) o.name = this.name;
         o.layer = this.layer;
-        if (!locked[1]) o.gravity = this.gravity;
-        if (!locked[2]) o.collides = this.collides;
+        if (!o.locked[1] || !respect_locks) o.gravity = this.gravity;
+        if (!o.locked[2] || !respect_locks) o.collides = this.collides;
         o.hitbox = this.hitbox;
 
-        ArrayList<Animation> new_list = new ArrayList<Animation>();
+        /*ArrayList<Animation> new_list = new ArrayList<Animation>();
         for (Animation a: o.animations) {
             Animation in_source = this.getAnimation(a.getName());
             if (in_source != null) {
                 if (!a.isLocked()) in_source.copyTo(a);
             }
+        }*/
+        //DELETE any unlocked anims in O
+        for (int i = o.animations.size() - 1; i > -1; i--) 
+            if (!o.animations.get(i).isLocked() || !respect_locks) o.animations.remove(i);
+        //copy over all anims in this obj that are not in O
+        for (Animation a: animations) {
+            if (o.getAnimation(a.getName()) == null) {
+                Animation copy_over = new Animation();
+                a.copyTo(copy_over, true);
+                o.animations.add(copy_over);
+            }
         }
         
-        o.flows.clear();
-        for (Flow f: this.flows) {
-            Flow new_f = new Flow();
-            f.copyTo(new_f);
-            o.flows.add(new_f);
-            new_f.setParent(o);
-        }
+        System.err.println("Remember to add copyTo for flows as well!");
         
         o.setWidth(this.getDimensions()[0]);
         o.setHeight(this.getDimensions()[1]);

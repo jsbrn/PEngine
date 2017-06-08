@@ -38,6 +38,15 @@ public class Level {
         this.lighting_color = new Color(0, 0, 0);
     }
     
+    public void autoName() {
+        int i = 1;
+        while (true) {
+            String n = "level"+(i > 1 ? ""+i : "");
+            if (!Project.getProject().containsLevel(n)) { setName(n); break; }
+            i++;
+        }
+    }
+    
     public boolean loopBGMusic() { return loop_bg_music; }
     public boolean loopBGAmbience() { return loop_bg_ambience; }
     public boolean autoPlayBGMusic() { return auto_bg_music; }

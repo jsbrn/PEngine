@@ -236,7 +236,7 @@ public class Project {
             boolean matching = false;
             for (SceneObject o: l.getObjects(Level.ALL_OBJECTS)) {
                 if (gallery_object.getType().equals(o.getType())) {
-                    gallery_object.copyTo(o);
+                    gallery_object.copyTo(o, false, true);
                     o_count++;
                     matching = true;
                 }
@@ -247,5 +247,14 @@ public class Project {
     }
     
     public ArrayList<SceneObject> getGalleryObjects() { return object_gallery; }
+    
+    public void autoName() {
+        int i = 1;
+        while (true) {
+            String n = "project"+(i > 1 ? ""+i : "");
+            if (!Project.projectExists(n)) { setName(n); break; }
+            i++;
+        }
+    }
     
 }

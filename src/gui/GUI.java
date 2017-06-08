@@ -1292,7 +1292,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void newLevelButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_newLevelButtonActionPerformed
         Level l = new Level();
-        l.setName("new_level" + (Math.abs(new Random().nextInt())));
+        l.autoName();
         Project.getProject().addLevel(l);
         Project.getProject().switchToLevel(l.getName());
         sceneCanvas.resetCamera();
@@ -1516,15 +1516,15 @@ public class GUI extends javax.swing.JFrame {
             }
             if ("Empty hitbox".equals(selection)) {
                 o.setHitbox(true);
-                o.setName("object" + Math.abs(new Random().nextInt()));
+                o.autoName("hitbox", Project.getProject().getCurrentLevel());
             } else {
                 src = Project.getProject().getGalleryObject((String) selection);
             }
         }
 
         if (src != null) {
-            src.copyTo(o);
-            o.setName(src + "_copy");
+            src.copyTo(o, false, false);
+            o.autoName(src.toString(), Project.getProject().getCurrentLevel());
         }
 
         o.setWorldX((int) sceneCanvas.getCameraX());
@@ -1716,7 +1716,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void objectEditorWindowClosing(WindowEvent evt) {//GEN-FIRST:event_objectEditorWindowClosing
         hideObjectEditor();
-        //TODO: remember to apply changes if the active object is a gallery object
+        Project.getProject().applyGalleryChanges(sceneCanvas.getActiveObject());
     }//GEN-LAST:event_objectEditorWindowClosing
 
     private void sceneCanvasPropertyChange(PropertyChangeEvent evt) {//GEN-FIRST:event_sceneCanvasPropertyChange
@@ -1748,13 +1748,8 @@ public class GUI extends javax.swing.JFrame {
 
     private void deleteGalleryObjectButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_deleteGalleryObjectButtonActionPerformed
         Project.getProject().removeGalleryObject(galleryObjectChooser.getSelectedIndex());
-        int o_index = galleryObjectChooser.getSelectedIndex();
-        if (o_index == 0) return;
         GUI.refreshChooser(galleryObjectChooser, Project.getProject().getGalleryObjects());
-        galleryObjectChooser.setSelectedIndex(o_index >= Project.getProject().getGalleryObjects().size() 
-                ? Project.getProject().getGalleryObjects().size() - 1 : o_index);
-        int index = galleryObjectChooser.getSelectedIndex();
-        sceneCanvas.setActiveObject(Project.getProject().getGalleryObject(index));
+        sceneCanvas.setActiveObject(Project.getProject().getGalleryObject(galleryObjectChooser.getSelectedIndex()));
         refreshObjectEditor();
     }//GEN-LAST:event_deleteGalleryObjectButtonActionPerformed
 
@@ -1868,8 +1863,9 @@ public class GUI extends javax.swing.JFrame {
                 (int) (height / 2) - ((d.getHeight() / 2)));
         d.setVisible(true);
         this.setEnabled(false);
-        if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject())) 
-            galleryObjectChooser.setSelectedIndex(0);
+        if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject())) {
+            GUI.refreshChooser(galleryObjectChooser, Project.getProject().getGalleryObjects());
+        }
         objectEditorTabs.setSelectedIndex(0);
         System.out.println("Showing " + d.getTitle());
     }
@@ -1962,9 +1958,10 @@ public class GUI extends javax.swing.JFrame {
         sceneObjectCanvas.repaint();
         
         boolean gallery = Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject());
-        lockTextureButton.setEnabled(!gallery);
-        lockGravityButton.setEnabled(!gallery);
-        lockCollidesButton.setEnabled(!gallery);
+        boolean hitbox = sceneCanvas.getActiveObject().isHitbox();
+        lockTextureButton.setEnabled(!gallery && !hitbox);
+        lockGravityButton.setEnabled(!gallery && !hitbox);
+        lockCollidesButton.setEnabled(!gallery && !hitbox);
         lockTextureButton.setSelected(sceneCanvas.getActiveObject().isLocked(0));
         lockGravityButton.setSelected(sceneCanvas.getActiveObject().isLocked(1));
         lockCollidesButton.setSelected(sceneCanvas.getActiveObject().isLocked(2));
@@ -1974,13 +1971,14 @@ public class GUI extends javax.swing.JFrame {
     public static void refreshAnimationOptions() {
         boolean inbound = animationChooser.getSelectedIndex() > -1;
         boolean gallery = Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject());
+        boolean hitbox = sceneCanvas.getActiveObject().isHitbox();
         deleteAnimationButton.setEnabled(inbound);
         renameAnimationButton.setEnabled(inbound);
         animationSpriteButton.setEnabled(inbound);
         animationSpeedButton.setEnabled(inbound);
         addFrameButton.setEnabled(inbound);
         playAnimationButton.setEnabled(inbound);
-        lockAnimationButton.setEnabled(inbound && !gallery);
+        lockAnimationButton.setEnabled(inbound && !gallery && !hitbox);
         lockAnimationButton.setSelected(false);
         
         if (animationChooser.getSelectedIndex() < 0) {
@@ -2021,10 +2019,17 @@ public class GUI extends javax.swing.JFrame {
         deleteObjectButton.setEnabled(sceneCanvas.getSelectedObject() != null);
     }
 
-    public static void runProject(String level_name) {
+    public void runProject(String level_name) {
         UpdateManager.checkForUpdates();
-        UpdateManager.handleUpdates();
-
+        
+        if (UpdateManager.runtimeUpdate()) {
+            JOptionPane.showMessageDialog(this, "Downloading an update!"
+                    + "\nWhen it is complete, you can run your project.");
+            if (!UpdateManager.downloadInProgress()) UpdateManager.downloadThreaded("https://computerology.bitbucket.io/tools/editor/runtime.jar",
+                Assets.USER_HOME+"/platformr/jars/runtime.jar");
+            return;
+        }
+        
         try {
             //Scene.DOWNLOAD_THREAD.download("https://computerology.bitbucket.io/index.html", "C:/Users/Jeremy/Desktop/index.html");
             GUI.statusIndicator.setText("Starting game...");
@@ -2080,10 +2085,19 @@ public class GUI extends javax.swing.JFrame {
                 galleryObjectPanel.setVisible(false);
 
                 Assets.mkdirs();
-                Project.newProject("[new project]", true, true);
+                Project.newProject("", true, true);
+                Project.getProject().autoName();
                 Assets.load();
+                
                 UpdateManager.checkForUpdates();
-                UpdateManager.handleUpdates();
+                if (UpdateManager.editorUpdate()) {
+                    JOptionPane.showMessageDialog(window, "A newer version of the level editor has been uploaded!"
+                        + "\nGo to http://computerology.bitbucket.io/ to grab it!");
+                }
+                if (UpdateManager.runtimeUpdate()) {
+                    UpdateManager.downloadThreaded("https://computerology.bitbucket.io/tools/editor/runtime.jar",
+                        Assets.USER_HOME+"/platformr/jars/runtime.jar");
+                }
 
                 updateWindowTitle();
                 sceneCanvas.repaint();
