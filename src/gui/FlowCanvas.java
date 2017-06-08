@@ -54,13 +54,19 @@ public class FlowCanvas extends JPanel {
         return null;
     }
     
+    public double[] getWorldCoords(int onscreen_x, int onscreen_y) {
+        return new double[]{((onscreen_x - (getWidth() / 2))) + getCameraX(),
+                ((onscreen_y - (getHeight() / 2))) + getCameraY()};
+    }
+    
     public int[] getOnscreenCoords(double world_x, double world_y) {
         world_x = MiscMath.round(world_x, 1);
         world_y = MiscMath.round(world_y, 1);
-        return new int[]{(int) MiscMath.round((world_x - getCameraX()) * 32, 1) + (getWidth() / 2),
-                (int) MiscMath.round((world_y - getCameraY()) * 32, 1) + (getHeight() / 2)};
+        return new int[]{(int) MiscMath.round((world_x - getCameraX()), 1) + (getWidth() / 2),
+                (int) MiscMath.round((world_y - getCameraY()), 1) + (getHeight() / 2)};
     }
 
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
@@ -74,12 +80,16 @@ public class FlowCanvas extends JPanel {
         g.setColor(top_color.brighter());
         
         //draw grid
-        int w = (int)(getWidth() / 32);
-        for (int i = -w; i < getWidth(); i++) {
+        int w = (int)(getWidth());
+        for (int i = -w; i < getWidth(); i+=32) {
             int[] osc = getOnscreenCoords(i+camera_x, i+camera_y);            
             if (!(osc[0] < 0 || osc[0] > getWidth())) g.drawLine(osc[0], 0, osc[0], Integer.MAX_VALUE);
             if (!(osc[1] < 0 || osc[1] > getHeight())) g.drawLine(0, osc[1], Integer.MAX_VALUE, osc[1]);
         }
+        
+        double[] wc = getWorldCoords((int)last_mouse_x, (int)last_mouse_y);
+        drawString("Mouse: "+wc[0]+", "+wc[1], 10, 30, g);
+        drawString("Camera: "+camera_x+", "+camera_y, 10, 50, g);
         
         if (selected_flow == null) return;
         
@@ -102,8 +112,16 @@ public class FlowCanvas extends JPanel {
         /*if (selected_block != null && selected_node > -1) {
             g.setColor(new Color(0, 0, 0, 100));
             //g.drawLine(ORIGIN_X + LAST_MOUSE_CLICK_X, ORIGIN_Y + LAST_MOUSE_CLICK_Y, LAST_MOUSE_X, LAST_MOUSE_Y);
-        }*/
+        }*/        
+        
     }  
+    
+    public static void drawString(String str, int x, int y, Graphics g) {
+        g.setColor(Color.gray.darker());
+        g.drawString(str, x+1, y+1);
+        g.setColor(Color.white);
+        g.drawString(str, x, y);
+    }
     
     /**
      * EVENT HANDLERS

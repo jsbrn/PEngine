@@ -158,7 +158,6 @@ public class GUI extends javax.swing.JFrame {
         removeFrameButton = new JButton();
         playAnimationButton = new JToggleButton();
         frameCountLabel = new JLabel();
-        jMenuItem2 = new JMenuItem();
         sceneCanvas = new SceneCanvas();
         jPanel13 = new JPanel();
         playButton = new JButton();
@@ -220,6 +219,8 @@ public class GUI extends javax.swing.JFrame {
         testOutputDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         testOutputDialog.setTitle("Game output");
         testOutputDialog.setBounds(new Rectangle(0, 0, 600, 490));
+        testOutputDialog.setIconImage(null);
+        testOutputDialog.setIconImages(getIconImages());
         testOutputDialog.setMinimumSize(new Dimension(400, 490));
         testOutputDialog.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
         testOutputDialog.setResizable(false);
@@ -252,6 +253,8 @@ public class GUI extends javax.swing.JFrame {
         levelManagerDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         levelManagerDialog.setTitle("Choose a level...");
         levelManagerDialog.setBounds(new Rectangle(300, 300, 356, 130));
+        levelManagerDialog.setIconImage(null);
+        levelManagerDialog.setIconImages(getIconImages());
         levelManagerDialog.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
         levelManagerDialog.setResizable(false);
         levelManagerDialog.addWindowListener(new WindowAdapter() {
@@ -333,6 +336,7 @@ public class GUI extends javax.swing.JFrame {
 
         objectEditor.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         objectEditor.setBounds(new Rectangle(0, 0, 700, 500));
+        objectEditor.setIconImages(getIconImages());
         objectEditor.setMinimumSize(new Dimension(700, 500));
         objectEditor.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
@@ -731,8 +735,6 @@ public class GUI extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addComponent(objectEditorTabs))
         );
-
-        jMenuItem2.setText("jMenuItem2");
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("PEngine");
@@ -2241,7 +2243,6 @@ public class GUI extends javax.swing.JFrame {
     JMenu jMenu2;
     JMenu jMenu3;
     JMenuItem jMenuItem1;
-    JMenuItem jMenuItem2;
     JMenuItem jMenuItem3;
     JMenuItem jMenuItem4;
     JMenuItem jMenuItem5;
