@@ -17,10 +17,9 @@ import project.objects.SceneObject;
 
 public class SceneCanvas extends JPanel {
 
-    
     private double camera_x, camera_y, last_mouse_x, last_mouse_y;
     private SceneObject selected_object, active_object;
-    private int zoom = 3;
+    private int zoom = 3, skip = 0;
     
     private boolean show_grid = false;
     
@@ -151,6 +150,17 @@ public class SceneCanvas extends JPanel {
             drawString(information.get(i), 10, (int)getHeight() + 5 - ((information.size() - i) * 16), g);
         }
         
+        //draw selected object highlight
+        if (selected_object != null) {
+            int osc[] = selected_object.getOnscreenCoords();
+            int width = selected_object.getOnscreenWidth();
+            int height = selected_object.getOnscreenHeight();
+            g.setColor(Color.white);
+            g.drawRect(osc[0]-1, osc[1]-1, width+2, height+2);
+            g.setColor(Color.black);
+            g.drawRect(osc[0]-2, osc[1]-2, width+4, height+4);
+        }
+        
     }
     
     public static void drawString(String str, int x, int y, Graphics g) {
@@ -166,6 +176,9 @@ public class SceneCanvas extends JPanel {
     
     public void handleMouseMovement(MouseEvent e) {
         repaint();
+        if (MiscMath.distanceBetween(e.getX(), e.getY(), last_mouse_x, last_mouse_y) > 4) {
+            skip = 0;
+        }
         last_mouse_x = e.getX();
         last_mouse_y = e.getY();
     }
@@ -195,9 +208,8 @@ public class SceneCanvas extends JPanel {
     }
     
     public void handleMouseClick(MouseEvent e) {
-        System.out.println("SceneCanvas: Mouse click at "+e.getX()+", "+e.getY());
-        selected_object = Project.getProject().getCurrentLevel().getObject(e.getX(), e.getY());
-        System.out.print(selected_object != null ? "Selected object: "+selected_object.getName()+"\n" : "");
+        selected_object = Project.getProject().getCurrentLevel().getObject(e.getX(), e.getY(), skip);
+        skip++; if (selected_object == null) skip = 0;
         GUI.refreshObjectProperties();
         repaint();
         grabFocus();

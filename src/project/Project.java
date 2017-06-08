@@ -28,7 +28,7 @@ public class Project {
     private ArrayList<Level> levels;
     private ArrayList<SceneObject> object_gallery;
     
-    private Level current_level;
+    private Level current_level, home_level;
     
     private Project(String name, boolean home, boolean gallery_player) {
         this.name = name;
@@ -44,10 +44,19 @@ public class Project {
             this.object_gallery.add(player);
         }
         if (home) {
-            Level l = new Level(); l.setName("home");
+            Level l = new Level(); l.setName("level");
             addLevel(l);
             switchToLevel(l.getName());
+            setHomeLevel(l);
         }
+    }
+    
+    public void setHomeLevel(Level l) {
+        if (containsLevel(l.getName())) home_level = l;
+    }
+
+    public Level getHomeLevel() {
+        return home_level;
     }
     
     public static Project getProject() { return project; }
@@ -121,14 +130,11 @@ public class Project {
     
     public Level getCurrentLevel() { return current_level; }
     
+    public void switchToLevel(Level l) { switchToLevel(l.getName()); }
+    
     public void switchToLevel(String level_id) {
-        System.out.println("Switching to level: "+level_id);
         for (Level l: getLevels()) {
-            System.out.println("Level: "+l.getName());
-            if (l.getName().equals(level_id)) {
-                current_level = l;
-                System.out.println("Switched to level "+current_level.getName());
-            }
+            if (l.getName().equals(level_id)) current_level = l;
         }
     }
     
@@ -146,6 +152,7 @@ public class Project {
             for (SceneObject o: object_gallery) o.save(bw);
             
             bw.write("curr="+current_level.getName()+"\n");
+            bw.write("home="+home_level.getName()+"\n");
             bw.write("camera="+(int)GUI.getSceneCanvas().getCameraX()+" "+(int)GUI.getSceneCanvas().getCameraY()+"\n");
             bw.write("zoom="+(int)GUI.getSceneCanvas().getZoom()+"\n");
             
@@ -184,6 +191,7 @@ public class Project {
                 }
                 
                 if (line.indexOf("curr=") == 0) switchToLevel(line.substring(5));
+                if (line.indexOf("home=") == 0) setHomeLevel(getLevel(line.substring(5)));
                 if (line.indexOf("zoom=") == 0) GUI.getSceneCanvas()
                         .setZoom(Integer.parseInt(line.substring(5)));
                 if (line.indexOf("camera=") == 0) {
@@ -207,12 +215,26 @@ public class Project {
         return levels;
     }
     
-    public void deleteLevel(String level_id) {
+    public Level getLevel(int i) {
+        return i > -1 && i < levels.size() ? levels.get(i) : null;
+    }
+    
+    public Level getLevel(String level_id) {
         for (Level l: levels) {
             if (l.getName().equals(level_id)) {
-                levels.remove(l);
+                return l;
             }
         }
+        return null;
+    }
+    
+    public void deleteLevel(Level l) {
+        deleteLevel(l.getName());
+    }
+    
+    public void deleteLevel(String level_id) {
+        Level l = getLevel(level_id);
+        if (l != null) levels.remove(l);
     }
     
     public boolean galleryObjectExists(String name) {

@@ -104,13 +104,11 @@ public class GUI extends javax.swing.JFrame {
         jScrollPane9 = new JScrollPane();
         resultsTextBox = new JTextArea();
         levelManagerDialog = new JDialog();
-        jScrollPane12 = new JScrollPane();
-        levelList = new JList();
         deleteLevelButton = new JButton();
         editLevelButton = new JButton();
-        levelNameField = new JTextField();
-        jLabel21 = new JLabel();
         renameLevelButton = new JButton();
+        setHomeButton = new JButton();
+        levelChooser = new JComboBox<>();
         objectEditor = new JFrame();
         galleryObjectPanel = new JPanel();
         galleryObjectChooser = new JComboBox<>();
@@ -240,7 +238,7 @@ public class GUI extends javax.swing.JFrame {
 
         levelManagerDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         levelManagerDialog.setTitle("Choose a level...");
-        levelManagerDialog.setBounds(new Rectangle(300, 300, 356, 270));
+        levelManagerDialog.setBounds(new Rectangle(300, 300, 356, 130));
         levelManagerDialog.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
         levelManagerDialog.setResizable(false);
         levelManagerDialog.addWindowListener(new WindowAdapter() {
@@ -252,20 +250,7 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        levelList.setModel(new AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        levelList.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent evt) {
-                levelListValueChanged(evt);
-            }
-        });
-        jScrollPane12.setViewportView(levelList);
-
         deleteLevelButton.setText("Delete");
-        deleteLevelButton.setEnabled(false);
         deleteLevelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 deleteLevelButtonActionPerformed(evt);
@@ -273,22 +258,29 @@ public class GUI extends javax.swing.JFrame {
         });
 
         editLevelButton.setText("Edit!");
-        editLevelButton.setEnabled(false);
         editLevelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 editLevelButtonActionPerformed(evt);
             }
         });
 
-        levelNameField.setEnabled(false);
-
-        jLabel21.setText("Name:");
-
-        renameLevelButton.setText("Rename");
-        renameLevelButton.setEnabled(false);
+        renameLevelButton.setText("Rename...");
         renameLevelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 renameLevelButtonActionPerformed(evt);
+            }
+        });
+
+        setHomeButton.setText("Set home");
+        setHomeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                setHomeButtonActionPerformed(evt);
+            }
+        });
+
+        levelChooser.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                levelChooserActionPerformed(evt);
             }
         });
 
@@ -298,33 +290,32 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(levelManagerDialogLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(levelManagerDialogLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane12)
+                    .addComponent(levelChooser, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(levelManagerDialogLayout.createSequentialGroup()
-                        .addComponent(editLevelButton, GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
+                        .addComponent(editLevelButton, GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteLevelButton))
-                    .addGroup(levelManagerDialogLayout.createSequentialGroup()
-                        .addComponent(jLabel21)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(levelNameField)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(renameLevelButton)))
+                        .addGroup(levelManagerDialogLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                            .addGroup(levelManagerDialogLayout.createSequentialGroup()
+                                .addComponent(setHomeButton)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(deleteLevelButton))
+                            .addComponent(renameLevelButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         levelManagerDialogLayout.setVerticalGroup(levelManagerDialogLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(levelManagerDialogLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane12, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addGroup(levelManagerDialogLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel21)
-                    .addComponent(levelNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(renameLevelButton))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(levelManagerDialogLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(deleteLevelButton)
-                    .addComponent(editLevelButton))
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(levelChooser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(levelManagerDialogLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                    .addGroup(levelManagerDialogLayout.createSequentialGroup()
+                        .addComponent(renameLevelButton)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(levelManagerDialogLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(deleteLevelButton)
+                            .addComponent(setHomeButton)))
+                    .addComponent(editLevelButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         objectEditor.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -533,6 +524,20 @@ public class GUI extends javax.swing.JFrame {
         );
 
         objectEditorTabs.addTab("Basics", sceneObjectCanvas);
+
+        flowCanvas.addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseDragged(MouseEvent evt) {
+                flowCanvasMouseDragged(evt);
+            }
+            public void mouseMoved(MouseEvent evt) {
+                flowCanvasMouseMoved(evt);
+            }
+        });
+        flowCanvas.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                flowCanvasMouseClicked(evt);
+            }
+        });
 
         GroupLayout flowCanvasLayout = new GroupLayout(flowCanvas);
         flowCanvas.setLayout(flowCanvasLayout);
@@ -1076,6 +1081,7 @@ public class GUI extends javax.swing.JFrame {
         });
         levelMenu.add(cameraLocationMenuItem);
 
+        jMenuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.ALT_MASK | InputEvent.CTRL_MASK));
         jMenuItem1.setText("Camera zoom...");
         jMenuItem1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -1215,9 +1221,11 @@ public class GUI extends javax.swing.JFrame {
 
         jMenu3.setText("Help");
 
+        jMenuItem5.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
         jMenuItem5.setText("Help topics...");
         jMenu3.add(jMenuItem5);
 
+        jMenuItem6.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0));
         jMenuItem6.setText("Check for updates");
         jMenuItem6.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -1226,6 +1234,7 @@ public class GUI extends javax.swing.JFrame {
         });
         jMenu3.add(jMenuItem6);
 
+        jMenuItem4.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0));
         jMenuItem4.setText("Visit website...");
         jMenuItem4.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -1304,8 +1313,7 @@ public class GUI extends javax.swing.JFrame {
                 if (input == null) break;
                 input = input.replaceAll("[\\/.,]", "");
                 if (Project.projectExists(input)) {
-                    JOptionPane.showMessageDialog(this, "Project \"" + input + "\" already exists!",
-                            "Whoops!", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Project \"" + input + "\" already exists!");
                 } else {
                     Project.newProject(input, true, true);
                     break;
@@ -1333,44 +1341,27 @@ public class GUI extends javax.swing.JFrame {
         GUI.refreshLevelMenu();
     }//GEN-LAST:event_newLevelButtonActionPerformed
 
-    private void levelListValueChanged(ListSelectionEvent evt) {//GEN-FIRST:event_levelListValueChanged
-        String selected = ((String) levelList.getSelectedValue());
-        System.out.println(selected);
-        if (selected != null) {
-            levelNameField.setText(selected);
-        }
-        levelNameField.setEnabled(selected != null);
-        editLevelButton.setEnabled(selected != null);
-        deleteLevelButton.setEnabled(selected != null);
-        renameLevelButton.setEnabled(selected != null);
-    }//GEN-LAST:event_levelListValueChanged
-
     private void deleteLevelButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_deleteLevelButtonActionPerformed
-        String selected = ((String) levelList.getSelectedValue());
-        int index = levelList.getSelectedIndex();
-        if (selected.equals(Project.getProject().getCurrentLevel().getName())) {
+        Level l = Project.getProject().getLevel(levelChooser.getSelectedIndex());
+        if (l == null) return;
+        if (l.equals(Project.getProject().getCurrentLevel())) {
             //JOptionPane.showMessageDialog(levelManagerDialog, "This level is being edited and cannot be deleted.");
             JOptionPane.showMessageDialog(levelManagerDialog, "This level is being edited and cannot be deleted.");
             return;
         }
-        Project.getProject().deleteLevel(selected);
-        GUI.refreshList(levelList, Project.getProject().getLevels());
-        levelList.setSelectedIndex(index);
-        if (levelList.getSelectedIndex() > levelList.getMaxSelectionIndex()) {
-            levelList.setSelectedIndex(levelList.getMaxSelectionIndex());
-        } else if (levelList.getSelectedIndex() < levelList.getMinSelectionIndex()) {
-            levelList.setSelectedIndex(0);
-        }
+        Project.getProject().deleteLevel(l);
+        GUI.refreshChooser(levelChooser, Project.getProject().getLevels());
     }//GEN-LAST:event_deleteLevelButtonActionPerformed
 
     private void editLevelButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_editLevelButtonActionPerformed
-        String selected = ((String) levelList.getSelectedValue());
-        if (selected.equals(Project.getProject().getCurrentLevel().getName())) {
+        Level l = Project.getProject().getLevel(levelChooser.getSelectedIndex());
+        if (l == null) return;
+        if (l.equals(Project.getProject().getCurrentLevel())) {
             //GUI.showMessage("You are already editing this level!", levelManagerDialog);
             JOptionPane.showMessageDialog(levelManagerDialog, "You are already editing this level!");
             return;
         }
-        Project.getProject().switchToLevel(selected);
+        Project.getProject().switchToLevel(l);
         GUI.updateWindowTitle();
         GUI.refreshObjectProperties();
         GUI.refreshLevelMenu();
@@ -1382,26 +1373,23 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_editLevelButtonActionPerformed
 
     private void levelManagerButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_levelManagerButtonActionPerformed
-        GUI.refreshList(levelList, Project.getProject().getLevels());
+        GUI.refreshChooser(levelChooser, Project.getProject().getLevels());
+        System.out.println("Level count: "+Project.getProject().getLevels().size());
+        System.out.println("Selected level: "+levelChooser.getSelectedIndex());
         showDialog(levelManagerDialog);
     }//GEN-LAST:event_levelManagerButtonActionPerformed
 
     private void renameLevelButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_renameLevelButtonActionPerformed
-        int index = levelList.getSelectedIndex();
-        ArrayList<Level> list = Project.getProject().getLevels();
-        Level l = list.get(index);
-
-        if (l.getName().equals(levelNameField.getText()) == false) {
-            if (Project.getProject().containsLevel(levelNameField.getText())) {
-                JOptionPane.showMessageDialog(levelManagerDialog, "A level already exists by that name!");
-                return;
-            }
-            l.setName(levelNameField.getText());
-            GUI.refreshList(levelList, Project.getProject().getLevels());
-            levelList.setSelectedIndex(index);
-            levelNameField.grabFocus();
-            GUI.updateWindowTitle();
+        Level l = Project.getProject().getLevel(levelChooser.getSelectedIndex());
+        if (l == null) return;
+        String input = JOptionPane.showInputDialog(levelManagerDialog, "Name:", l.getName());
+        if (input == null) return;
+        if (Project.getProject().containsLevel(input)) {
+            JOptionPane.showMessageDialog(objectEditor, "A level already exists by that name!");
+            return;
         }
+        l.setName(input);
+        GUI.refreshChooser(levelChooser, Project.getProject().getLevels());
 
     }//GEN-LAST:event_renameLevelButtonActionPerformed
 
@@ -1449,7 +1437,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_genericDialogWindowClosing
 
     private void levelManagerDialogWindowOpened(WindowEvent evt) {//GEN-FIRST:event_levelManagerDialogWindowOpened
-        GUI.refreshList(levelList, Project.getProject().getLevels());
+
     }//GEN-LAST:event_levelManagerDialogWindowOpened
 
     private void projectMenuActionPerformed(ActionEvent evt) {//GEN-FIRST:event_projectMenuActionPerformed
@@ -1486,6 +1474,7 @@ public class GUI extends javax.swing.JFrame {
             }
             Project.newProject((String) selection, false, false);
             Project.getProject().load();
+            Assets.load();
         }
         GUI.updateWindowTitle();
         sceneCanvas.setSelectedObject(null);
@@ -1600,7 +1589,8 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_lightingColorMenuItemActionPerformed
 
     private void jMenuItem3ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        String input = JOptionPane.showInputDialog(this, "Ambient light intensity:", "Set lighting intensity...", JOptionPane.PLAIN_MESSAGE);
+        String input = JOptionPane.showInputDialog(this, "Ambient light intensity (%):", 
+                (int)(Project.getProject().getCurrentLevel().getLightIntensity()*100));
         int[] parsed = MiscMath.toIntArray(input);
         if (parsed.length > 0) {
             double percent = (double) parsed[0] / 100d;
@@ -1609,7 +1599,8 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void spawnMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_spawnMenuItemActionPerformed
-        String input = JOptionPane.showInputDialog(this, "Coordinates:", "Set player spawn...", JOptionPane.PLAIN_MESSAGE);
+        int[] spawn = Project.getProject().getCurrentLevel().playerSpawn();
+        String input = JOptionPane.showInputDialog(this, "Coordinates:", spawn[0]+" "+spawn[1]);
         int[] parsed = MiscMath.toIntArray(input);
         if (parsed.length >= 2) {
             Project.getProject().getCurrentLevel().setPlayerSpawn(parsed[0], parsed[1]);
@@ -1617,7 +1608,8 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_spawnMenuItemActionPerformed
 
     private void cameraLocationMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_cameraLocationMenuItemActionPerformed
-        String input = JOptionPane.showInputDialog(this, "Coordinates:", "Set camera location...", JOptionPane.PLAIN_MESSAGE);
+        int[] spawn = Project.getProject().getCurrentLevel().cameraSpawn();
+        String input = JOptionPane.showInputDialog(this, "Camera location:", spawn[0]+" "+spawn[1]);
         int[] parsed = MiscMath.toIntArray(input);
         if (parsed.length >= 2) {
             Project.getProject().getCurrentLevel().setCameraSpawn(parsed[0], parsed[1]);
@@ -1662,7 +1654,9 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_playButtonActionPerformed
 
     private void levelBoundsMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_levelBoundsMenuItemActionPerformed
-        String input = JOptionPane.showInputDialog(this, "Bounds:", "Set level bounds...", JOptionPane.PLAIN_MESSAGE);
+        int[] bounds = Project.getProject().getCurrentLevel().bounds();
+        String input = JOptionPane.showInputDialog(this, "Bounds:", 
+                bounds[0]+" "+bounds[1]+" "+bounds[2]+" "+bounds[3]);
         int[] parsed = MiscMath.toIntArray(input);
         if (parsed.length >= 4) {
             Project.getProject().getCurrentLevel()
@@ -1682,17 +1676,17 @@ public class GUI extends javax.swing.JFrame {
 
     private void changeObjectProperty(ActionEvent evt) {//GEN-FIRST:event_changeObjectProperty
         char cmd = evt.getActionCommand().charAt(0);
+        SceneObject o = sceneCanvas.getActiveObject();
         String input = JOptionPane.showInputDialog(objectEditor,
-                cmd == 'c' ? "Type: " : (cmd == 'n' ? "Name:" : "Texture:"),
-                sceneCanvas.getActiveObject().getTexture());
+                cmd == 'c' ? "Type:" : (cmd == 'n' ? "Name:" : "Texture:"),
+                cmd == 'c' ? o.getType() : (cmd == 'n' ? o.getName() : o.getTexture()));
         if (input == null) {
             return;
         }
         boolean gallery = Project.getProject().containsGalleryObject(input);
         boolean level = Project.getProject().getCurrentLevel().containsObject(input);
         if ((cmd == 'c' && gallery) || (cmd == 'n' && level)) {
-            JOptionPane.showMessageDialog(objectEditor, "This name is already taken!",
-                    "Whoops!", JOptionPane.PLAIN_MESSAGE, null);
+            JOptionPane.showMessageDialog(objectEditor, "This name is already taken!");
             return;
         }
         if (cmd == 'c') {
@@ -1792,7 +1786,7 @@ public class GUI extends javax.swing.JFrame {
         String input = JOptionPane.showInputDialog(objectEditor, "Name:", a.getName());
         if (input == null) return;
         if (sceneCanvas.getActiveObject().containsAnimation(input)) {
-            JOptionPane.showMessageDialog(objectEditor, "An animation already exists by that name!", "Whoops!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(objectEditor, "An animation already exists by that name!");
             return;
         }
         a.setName(input);
@@ -1857,8 +1851,35 @@ public class GUI extends javax.swing.JFrame {
         if (UpdateManager.editorUpdate()) {
             JOptionPane.showMessageDialog(window, "A newer version of the level editor has been found!"
                 + "\nGo to 'Help → Visit website' to download it.");
+        } else {
+            JOptionPane.showMessageDialog(window, "Looks like you have the latest version!");
         }
     }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    private void setHomeButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_setHomeButtonActionPerformed
+        Level l = Project.getProject().getLevel(levelChooser.getSelectedIndex());
+        if (l == null) return;
+        Project.getProject().setHomeLevel(l);
+        GUI.refreshChooser(levelChooser, Project.getProject().getLevels());
+    }//GEN-LAST:event_setHomeButtonActionPerformed
+
+    private void levelChooserActionPerformed(ActionEvent evt) {//GEN-FIRST:event_levelChooserActionPerformed
+        Level l = Project.getProject().getLevel(levelChooser.getSelectedIndex());
+        if (l == null) return;
+        setHomeButton.setEnabled(!l.equals(Project.getProject().getHomeLevel()));
+    }//GEN-LAST:event_levelChooserActionPerformed
+
+    private void flowCanvasMouseMoved(MouseEvent evt) {//GEN-FIRST:event_flowCanvasMouseMoved
+        flowCanvas.handleMouseMovement(evt);
+    }//GEN-LAST:event_flowCanvasMouseMoved
+
+    private void flowCanvasMouseDragged(MouseEvent evt) {//GEN-FIRST:event_flowCanvasMouseDragged
+        flowCanvas.handleMouseDrag(evt);
+    }//GEN-LAST:event_flowCanvasMouseDragged
+
+    private void flowCanvasMouseClicked(MouseEvent evt) {//GEN-FIRST:event_flowCanvasMouseClicked
+        flowCanvas.handleMouseClick(evt);
+    }//GEN-LAST:event_flowCanvasMouseClicked
 
     /**
      * Returns 0 if user made a YES or NO choice. 1 if the user canceled.
@@ -1888,13 +1909,17 @@ public class GUI extends javax.swing.JFrame {
     public static AnimationCanvas getAnimationCanvas() {
         return animationCanvas;
     }
+    
+    public static FlowCanvas getFlowCanvas() {
+        return flowCanvas;
+    }
 
     public static void showDialog(JDialog d) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();
-        d.setLocation((int) (width / 2) - (d.getWidth() / 2),
-                (int) (height / 2) - ((d.getHeight() / 2)));
+        d.setLocation(window.getX() + (int) (window.getWidth() / 2) - (d.getWidth() / 2),
+                window.getY() + (int) (window.getHeight() / 2) - ((d.getHeight() / 2)));
         d.setModal(true);
         d.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         d.setVisible(true);
@@ -1947,7 +1972,6 @@ public class GUI extends javax.swing.JFrame {
         }
         l.setListData(list);
         if (index >= arr.size()) index = arr.size() - 1;
-        if (index < 0) index = 0;
         if (index < 0 && arr.size() > 0) index = 0;
         l.setSelectedIndex(index);
     }
@@ -2193,7 +2217,6 @@ public class GUI extends javax.swing.JFrame {
     JCheckBox jCheckBox1;
     JLabel jLabel1;
     JLabel jLabel2;
-    JLabel jLabel21;
     JLabel jLabel3;
     JLabel jLabel4;
     JMenu jMenu1;
@@ -2211,17 +2234,15 @@ public class GUI extends javax.swing.JFrame {
     JPanel jPanel5;
     JPanel jPanel6;
     JPanel jPanel8;
-    JScrollPane jScrollPane12;
     JScrollPane jScrollPane9;
     JPopupMenu.Separator jSeparator4;
     JPopupMenu.Separator jSeparator5;
     JPopupMenu.Separator jSeparator6;
     JMenuItem levelBoundsMenuItem;
-    private static JList levelList;
+    private static JComboBox<String> levelChooser;
     JMenuItem levelManagerButton;
     public static JDialog levelManagerDialog;
     JMenu levelMenu;
-    JTextField levelNameField;
     JMenuItem lightingColorMenuItem;
     private static JToggleButton lockAnimationButton;
     private static JToggleButton lockCollidesButton;
@@ -2261,6 +2282,7 @@ public class GUI extends javax.swing.JFrame {
     JMenuItem selectAmbienceMenuItem;
     JMenuItem selectBGMusic;
     public static JButton sendBackwardsButton;
+    private static JButton setHomeButton;
     JMenuItem spawnMenuItem;
     public static JCheckBox startAtCurrentLevelCheckBox;
     public static JMenu statusIndicator;

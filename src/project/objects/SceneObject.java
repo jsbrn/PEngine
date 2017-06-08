@@ -331,13 +331,6 @@ public class SceneObject {
                 canvas.drawString(this.texture, osc[0], osc[1], g);
             }
         }
-        //draw highlight if selected
-        if (equals(canvas.getSelectedObject())) {
-            g.setColor(Color.white);
-            g.drawRect(osc[0]-1, osc[1]-1, w+2, h+2);
-            g.setColor(Color.black);
-            g.drawRect(osc[0]-2, osc[1]-2, w+4, h+4);
-        }
     }
     
     public ArrayList<Animation> getAnimations() { return animations; }

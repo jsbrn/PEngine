@@ -104,13 +104,17 @@ public class Level {
     }
     
     public SceneObject getObject(int onscreen_x, int onscreen_y) {
+        return getObject(onscreen_x, onscreen_y, 0); //skip none
+    }
+    
+    public SceneObject getObject(int onscreen_x, int onscreen_y, int skip) {
         for (int l = FOREGROUND_OBJECTS; l >= DISTANT_OBJECTS; l--) {
             for (int i = layers[l].size()-1; i != -1; i--) {
                 SceneObject o = layers[l].get(i);
                 int[] on_screen = o.getOnscreenCoords();
                 if (MiscMath.pointIntersects(onscreen_x, onscreen_y, 
                         on_screen[0], on_screen[1], o.getOnscreenWidth(), o.getOnscreenHeight())) {
-                    return o;
+                    if (skip == 0) return o; else skip--;
                 }
             }
         }
@@ -261,7 +265,7 @@ public class Level {
     
     @Override
     public String toString() {
-        return getName();
+        return getName()+(equals(Project.getProject().getHomeLevel()) ? " ★" : "");
     }
     
 }

@@ -24,8 +24,8 @@ public class UpdateManager extends Thread {
     private static boolean editor_update = false, runtime_update = false, blocked = false;
     private static Thread thread;
     
-    public static int VERSION_ID = 10, RUNTIME_VERSION_ID = 0;
-    public static int LATEST_VERSION_ID = 10, LATEST_RUNTIME_VERSION_ID = 0;
+    public static int VERSION_ID = 0, RUNTIME_VERSION_ID;
+    public static int LATEST_VERSION_ID, LATEST_RUNTIME_VERSION_ID;
     public static final String VERSION_NAME = "1.3-beta";
     
     /**
@@ -98,7 +98,7 @@ public class UpdateManager extends Thread {
                 if (line == null) break;
                 line = line.trim();
                 if (line.indexOf("runtime_id = ") == 0) {
-                    RUNTIME_VERSION_ID = Integer.parseInt(line.substring(10));
+                    RUNTIME_VERSION_ID = Integer.parseInt(line.substring(13));
                 }
                 
             }
@@ -173,8 +173,8 @@ public class UpdateManager extends Thread {
             System.out.println("Runtime: "+RUNTIME_VERSION_ID+" -> "+LATEST_RUNTIME_VERSION_ID);
             System.out.println("Editor: "+VERSION_ID+" -> "+LATEST_VERSION_ID);
             
-            runtime_update = LATEST_RUNTIME_VERSION_ID >= RUNTIME_VERSION_ID;
-            editor_update = LATEST_VERSION_ID >= VERSION_ID;
+            runtime_update = LATEST_RUNTIME_VERSION_ID > RUNTIME_VERSION_ID;
+            editor_update = LATEST_VERSION_ID > VERSION_ID;
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

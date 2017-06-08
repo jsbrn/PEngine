@@ -1,36 +1,34 @@
 package project.objects.components;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-import project.Level;
-import project.Project;
 import project.objects.SceneObject;
 
 public class Flow {
+        
+    ArrayList<Block> blocks;
+    SceneObject parent_object;
     
-    private ArrayList<Block> blocks;
-    private Level parent_level = null;
-    private SceneObject parent_object = null;
-    
-    private String name;
-    private boolean run_on_spawn, locked = false;
+    private String id;
+    private boolean run; //run on entity creation
     
     public Flow() {
         this.blocks = new ArrayList<Block>();
-        this.run_on_spawn = false;
-        this.name = "";
+        this.run = false;
+        this.id = "";
+        this.parent_object = null;
     }
     
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getName() { return id; }
     
+    public void setName(String new_) { id = new_; }
+    
+    public boolean willRunOnCreation() { return run; }
     
     public Block getBlock(int index) {
         return blocks.get(index);
@@ -45,8 +43,11 @@ public class Flow {
     }
     
     public void addBlock(Block b) {
-        if (blocks.contains(b) == false) blocks.add(b);
-        System.out.println("Added Block "+b.category +" "+ b.title+" to Flow "+this.name);
+        if (blocks.contains(b) == false) {
+            blocks.add(b);
+            b.setParent(this);
+        } else return;
+        System.out.println("Added Block "+ b.getTitle()+" to Flow "+id+" ("+b.getCoords()[0]+", "+b.getCoords()[1]+")");
     }
     
     public Block getBlockByID(int id) {
@@ -58,39 +59,47 @@ public class Flow {
         return null;
     }
     
-    public void removeBlock(int index) {
-        blocks.remove(index);
-    }
-    
-    public void setParent(Level l) {
-        parent_level = l;
-        parent_object = null;
+    public boolean removeBlock(int index) {
+        if (index < 0 || index >= blocks.size()) return false;
+        Block b = blocks.get(index);
+        b.clearAllConnections();
+        return blocks.remove(index) != null;
     }
     
     public void setParent(SceneObject o) {
-        parent_level = null;
         parent_object = o;
     }
     
     public void save(BufferedWriter bw) {
         try {
             bw.write("f\n");
-            bw.write("n="+name+"\n");
-            bw.write("r="+run_on_spawn+"\n");
-            bw.write("lk="+locked+"\n");
-            for (Block b: blocks) { b.save(bw); }
+            bw.write("id="+id+"\n");
+            for (Block b: blocks) b.save(bw);
             bw.write("/f\n");
         } catch (IOException ex) {
-            Logger.getLogger(Animation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            Logger.getLogger(Flow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
-    public boolean equalTo(Flow f) {
-        if (!name.equals(f.name)) return false;
-        for (Block b: blocks) {
-            if (!b.equalTo(b)) return false;
+    public boolean load(BufferedReader br) {
+        System.out.println("Loading flow...");
+        try {
+            while (true) {
+                String line = br.readLine();
+                if (line == null) break;
+                if (line.equals("/f")) return true;
+                if (line.indexOf("id=") == 0) id = line.trim().replace("id=", "");
+                if (line.equals("b")) {
+                    Block b = new Block();
+                    if (b.load(br)) blocks.add(b);
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Flow.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Flow.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return true;
+        return false;
     }
     
     /**
@@ -98,9 +107,8 @@ public class Flow {
      * @param f The flow, stupid.
      */
     public void copyTo(Flow f) {
-        f.parent_level = parent_level;
         f.parent_object = parent_object;
-        f.name = name;
+        f.id = id;
         f.blocks.clear();
         for (Block b: blocks) {
             Block new_b = new Block();
@@ -108,10 +116,4 @@ public class Flow {
             f.blocks.add(new_b);
         }
     }
-    
-    @Override
-    public String toString() {
-        return getName();
-    }
-    
 }

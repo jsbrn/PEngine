@@ -24,9 +24,9 @@ public class Assets {
         if (index > -1 && index < blocks.length) return blocks[index];
         return null;
     }
-    public static Block getBlock(String title, String category) {
+    public static Block getBlock(String title) {
         for (Block b: blocks) {
-            if (b.getTitle().equals(title) && b.getCategory().contains(category)) return b;
+            if (b.getTitle().equals(title)) return b;
         }
         return null;
     }
@@ -63,9 +63,7 @@ public class Assets {
     }
     
     private static void initBlockList() {   
-        Block setcampos = new Block("Set camera position", "set_cam_pos", "Actions", "ttttt", "",
-                new String[][]{ {"", "x", "number"}, {"", "y", "number"} });
-        blocks = new Block[]{setcampos};
+        
     }
     
     public static Object get(String key) {
