@@ -45,62 +45,6 @@ public class Block {
         this.parametres = new Object[NODE_COUNT][2]; //name, type
     }
     
-    /**
-     * Sets the ID of the block to i. This will break any connections referencing the old ID.
-     * Should only be used in saving/loading block data.
-     */
-    public void setID(int i) {
-        id = i;
-    }
-    
-    public void setParent(Flow f) {
-        parent = f;
-    }
-    
-    /**
-     * Returns an integer describing the dot that was clicked. 0-4 represents the in/out/yes/no/etc dots,
-     * while anything above represents the parameter dots.
-     * @param x Coordinates from the origin.
-     * @param y Coordinates from the origin.
-     * @return An integer (see above). Returns -1 if no dot was clicked.
-     */
-    public int getNode(double x, double y) {
-        //check for parametres
-        for (int i = 0; i < NODE_COUNT + paramCount(); i++) {
-            if (i < nodes.length) if (!nodes[i]) continue;
-            int[] rc = getRenderCoords();
-            int[] offset = getNodeOffset(i);
-            if (MiscMath.pointIntersects(rc[0], rc[1], rc[0]+offset[0], rc[1]+offset[1], 20, 20)) return i;
-        }
-        return -1;
-    }
-    
-    public void setX(int new_x) { x = new_x; if (x < 0) x = 0; }
-    public void setY(int new_y) { y = new_y; if (y < 0) y = 0; }
-    
-    public boolean[] nodes() {
-        return nodes;
-    }
-    
-    public int getID() {
-        return id;
-    }
-    
-    public int[] getCoords() {
-        return new int[]{x, y};
-    }
-    
-    public int paramCount() {
-        return connections.length - NODE_COUNT;
-    }
-    
-    public String getTitle() { return title; }
-    
-    public int[] dimensions() {
-        int b_width = (getTitle().length()*5), b_height = 25 + (20*paramCount());
-        if (b_width < 100) b_width = 100;
-        return new int[]{b_width, b_height};
-    }
     
     /**
      * Creates a new flowchart block for the list of template blocks.
@@ -126,7 +70,8 @@ public class Block {
         this.output_type = output_type;
         this.parametres = params;
         
-    }
+    }    
+    
     
     /**
      * Connects this block to the specified block via the specified nodes.
@@ -223,6 +168,64 @@ public class Block {
             Logger.getLogger(Block.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+    
+    
+    /**
+     * Sets the ID of the block to i. This will break any connections referencing the old ID.
+     * Should only be used in saving/loading block data.
+     */
+    public void setID(int i) {
+        id = i;
+    }
+    
+    public void setParent(Flow f) {
+        parent = f;
+    }
+    
+    /**
+     * Returns an integer describing the dot that was clicked. 0-4 represents the in/out/yes/no/etc dots,
+     * while anything above represents the parameter dots.
+     * @param x Coordinates from the origin.
+     * @param y Coordinates from the origin.
+     * @return An integer (see above). Returns -1 if no dot was clicked.
+     */
+    public int getNode(double x, double y) {
+        //check for parametres
+        for (int i = 0; i < NODE_COUNT + paramCount(); i++) {
+            if (i < nodes.length) if (!nodes[i]) continue;
+            int[] rc = getRenderCoords();
+            int[] offset = getNodeOffset(i);
+            if (MiscMath.pointIntersects(rc[0], rc[1], rc[0]+offset[0], rc[1]+offset[1], 20, 20)) return i;
+        }
+        return -1;
+    }
+    
+    public void setX(int new_x) { x = new_x; if (x < 0) x = 0; }
+    public void setY(int new_y) { y = new_y; if (y < 0) y = 0; }
+    
+    public boolean[] nodes() {
+        return nodes;
+    }
+    
+    public int getID() {
+        return id;
+    }
+    
+    public int[] getCoords() {
+        return new int[]{x, y};
+    }
+    
+    public int paramCount() {
+        return connections.length - NODE_COUNT;
+    }
+    
+    public String getTitle() { return title; }
+    
+    public int[] dimensions() {
+        int b_width = (getTitle().length()*5), b_height = 25 + (20*paramCount());
+        if (b_width < 100) b_width = 100;
+        return new int[]{b_width, b_height};
     }
     
     public int getOutputType() {

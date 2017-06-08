@@ -3,14 +3,11 @@ package misc;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import project.Project;
 import project.objects.components.Block;
-import threads.UpdateManager;
 
 public class Assets {
     
@@ -63,7 +60,26 @@ public class Assets {
     }
     
     private static void initBlockList() {   
-        
+        /*ArrayList<Block> list = new ArrayList<Block>();
+        InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("/assets/blocks.txt");
+        if (in == null) return;
+        System.out.println("Loading from file: " + f.getAbsoluteFile().getAbsolutePath());
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            while (true) {
+                String line = br.readLine();
+                if (line == null) break;
+                line = line.trim();
+                String block[] = line.split("\t");
+                Block b = new Block(block[0], block[1], block[2], block[3]);
+            }
+            br.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }*/
+        blocks = new Block[2];
+        blocks[0] = new Block("Set background music", Block.ACTION_BLOCK, Block.TYPE_NONE, new Object[][]{{"Sound file", Block.TYPE_STRING, ""}});
+        blocks[1] = new Block("When music changes", Block.EVENT_BLOCK, Block.TYPE_NONE, new Object[][]{});
     }
     
     public static Object get(String key) {

@@ -79,17 +79,23 @@ public class FlowCanvas extends JPanel {
         
         g.setColor(top_color.brighter());
         
+        int[] oosc = getOnscreenCoords(0, 0);
+        
         //draw grid
         int w = (int)(getWidth());
-        for (int i = -w; i < getWidth(); i+=32) {
-            int[] osc = getOnscreenCoords(i+camera_x, i+camera_y);            
+        for (int i = -w; i <= w; i++) {
+            g.setColor(i == 0 ? Color.white : top_color.brighter());
+            int[] osc = new int[]{oosc[0] + (i*32), oosc[1] + (i*32)};            
             if (!(osc[0] < 0 || osc[0] > getWidth())) g.drawLine(osc[0], 0, osc[0], Integer.MAX_VALUE);
             if (!(osc[1] < 0 || osc[1] > getHeight())) g.drawLine(0, osc[1], Integer.MAX_VALUE, osc[1]);
         }
         
         double[] wc = getWorldCoords((int)last_mouse_x, (int)last_mouse_y);
-        drawString("Mouse: "+wc[0]+", "+wc[1], 10, 30, g);
-        drawString("Camera: "+camera_x+", "+camera_y, 10, 50, g);
+        drawString("Mouse: "+wc[0]+", "+wc[1], 10, 20, g);
+        drawString("Camera: "+camera_x+", "+camera_y, 10, 40, g);
+        
+        g.setColor(Color.white);
+        g.drawRect(oosc[0]-2, oosc[1]-2, 4, 4);
         
         if (selected_flow == null) return;
         
@@ -97,7 +103,7 @@ public class FlowCanvas extends JPanel {
         
         for (int i = 0; i < selected_flow.blockCount(); i++) {
             Block b = selected_flow.getBlock(i);
-            //b.draw(g);
+            b.draw(g);
             int node = b.getNode(last_mouse_x, last_mouse_y);
             String t = node < 0 ? "" : (node < text.length ? text[node] : b.getParametre(node-Block.NODE_COUNT)[0]
                     +" ("+Block.TYPE_NAMES[(int)b.getParametre(node-Block.NODE_COUNT)[1]]+")");

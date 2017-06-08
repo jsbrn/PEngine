@@ -2,21 +2,13 @@ package project;
 
 import project.objects.SceneObject;
 import gui.GUI;
-import project.objects.components.Animation;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Properties;
-import java.util.Random;
-import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 import misc.Assets;
 import misc.MiscMath;
 

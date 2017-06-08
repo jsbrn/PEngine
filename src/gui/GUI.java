@@ -1592,6 +1592,7 @@ public class GUI extends javax.swing.JFrame {
         if (c != null) {
             Project.getProject().getCurrentLevel().setTopBGColor(c);
         }
+        sceneCanvas.repaint();
     }//GEN-LAST:event_topColorMenuItemActionPerformed
 
     private void bottomColorMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_bottomColorMenuItemActionPerformed
@@ -1599,6 +1600,7 @@ public class GUI extends javax.swing.JFrame {
         if (c != null) {
             Project.getProject().getCurrentLevel().setBottomBGColor(c);
         }
+        sceneCanvas.repaint();
     }//GEN-LAST:event_bottomColorMenuItemActionPerformed
 
     private void lightingColorMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_lightingColorMenuItemActionPerformed
@@ -1606,6 +1608,7 @@ public class GUI extends javax.swing.JFrame {
         if (c != null) {
             Project.getProject().getCurrentLevel().setLightingColor(c);
         }
+        sceneCanvas.repaint();
     }//GEN-LAST:event_lightingColorMenuItemActionPerformed
 
     private void jMenuItem3ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
@@ -1616,6 +1619,7 @@ public class GUI extends javax.swing.JFrame {
             double percent = (double) parsed[0] / 100d;
             Project.getProject().getCurrentLevel().setLightingIntensity(percent);
         }
+        sceneCanvas.repaint();
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void spawnMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_spawnMenuItemActionPerformed
@@ -1625,6 +1629,7 @@ public class GUI extends javax.swing.JFrame {
         if (parsed.length >= 2) {
             Project.getProject().getCurrentLevel().setPlayerSpawn(parsed[0], parsed[1]);
         }
+        sceneCanvas.repaint();
     }//GEN-LAST:event_spawnMenuItemActionPerformed
 
     private void cameraLocationMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_cameraLocationMenuItemActionPerformed
@@ -1634,6 +1639,7 @@ public class GUI extends javax.swing.JFrame {
         if (parsed.length >= 2) {
             Project.getProject().getCurrentLevel().setCameraSpawn(parsed[0], parsed[1]);
         }
+        sceneCanvas.repaint();
     }//GEN-LAST:event_cameraLocationMenuItemActionPerformed
 
     private void selectBGMusicActionPerformed(ActionEvent evt) {//GEN-FIRST:event_selectBGMusicActionPerformed
@@ -1682,6 +1688,7 @@ public class GUI extends javax.swing.JFrame {
             Project.getProject().getCurrentLevel()
                     .setBounds(parsed[0], parsed[1], parsed[2], parsed[3]);
         }
+        sceneCanvas.repaint();
     }//GEN-LAST:event_levelBoundsMenuItemActionPerformed
 
     private void jCheckBox1ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
