@@ -62,12 +62,12 @@ public class Project {
     public static Project getProject() { return project; }
     public static boolean projectExists(String name) { 
         if (name == null) return false;
-        return new File(Assets.USER_HOME+"/platformr/projects/"+name).exists(); 
+        return new File(Assets.USER_HOME+"/.pengine/projects/"+name).exists(); 
     }
     
     public static void deleteProject(String name, boolean everything) { 
         if (name == null) return;
-        Assets.delete(new File(Assets.USER_HOME+"/platformr/projects/"+name+(!everything ? "/project.txt" : "")));
+        Assets.delete(new File(Assets.USER_HOME+"/.pengine/projects/"+name+(!everything ? "/project.txt" : "")));
     }
     
     public static void newProject(String name, boolean home, boolean player) { 
@@ -82,7 +82,7 @@ public class Project {
     public void setName(String n) { 
         name = n;
     }
-    public String getDirectory() { return Assets.USER_HOME+"/platformr/projects/"+name; }
+    public String getDirectory() { return Assets.USER_HOME+"/.pengine/projects/"+name; }
     public boolean existsOnDisk() { return projectExists(getName()); }
     
     public SceneObject getGalleryObject(int i) { return object_gallery.get(i); }

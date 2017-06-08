@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.Color;
 import java.awt.GradientPaint;
-import project.Project;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
@@ -11,7 +10,6 @@ import javax.swing.SwingUtilities;
 import project.objects.components.Block;
 import project.objects.components.Flow;
 import misc.MiscMath;
-import static misc.MiscMath.round;
 
 public class FlowCanvas extends JPanel {
 
@@ -59,8 +57,8 @@ public class FlowCanvas extends JPanel {
     public int[] getOnscreenCoords(double world_x, double world_y) {
         world_x = MiscMath.round(world_x, 1);
         world_y = MiscMath.round(world_y, 1);
-        return new int[]{(int) round((world_x - getCameraX()) * 32, 1) + (getWidth() / 2),
-                (int) round((world_y - getCameraY()) * 32, 1) + (getHeight() / 2)};
+        return new int[]{(int) MiscMath.round((world_x - getCameraX()) * 32, 1) + (getWidth() / 2),
+                (int) MiscMath.round((world_y - getCameraY()) * 32, 1) + (getHeight() / 2)};
     }
 
     public void paintComponent(Graphics g) {
@@ -125,6 +123,7 @@ public class FlowCanvas extends JPanel {
         }
         repaint();            
         setLastMousePosition(e.getX(), e.getY());
+        System.out.println("Logic cam: "+camera_x+", "+camera_y);
     }
     
     public void handleMouseClick(MouseEvent e) {

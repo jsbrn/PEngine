@@ -85,7 +85,7 @@ public class UpdateManager extends Thread {
     }
     
     public static void load() {
-        File f = new File(Assets.USER_HOME+"/platformr/jars/versions.txt");
+        File f = new File(Assets.USER_HOME+"/.pengine/jars/versions.txt");
         if (!f.exists()) return;
         FileReader fr;
         System.out.println("Saving version info: " + f.getAbsoluteFile().getAbsolutePath());
@@ -110,7 +110,7 @@ public class UpdateManager extends Thread {
     }
     
     public static void save() {
-        File f = new File(Assets.USER_HOME+"/platformr/jars/versions.txt");
+        File f = new File(Assets.USER_HOME+"/.pengine/jars/versions.txt");
         FileWriter fw;
         System.out.println("Saving version info: " + f.getAbsoluteFile().getAbsolutePath());
         try {
@@ -149,7 +149,7 @@ public class UpdateManager extends Thread {
     
     public static void downloadRuntime() {
         downloadThreaded("https://computerology.bitbucket.io/tools/editor/runtime.jar",
-                Assets.USER_HOME+"/platformr/jars/runtime.jar");
+                Assets.USER_HOME+"/.pengine/jars/runtime.jar");
         RUNTIME_VERSION_ID = LATEST_RUNTIME_VERSION_ID;
         save();
     }

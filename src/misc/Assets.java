@@ -57,9 +57,9 @@ public class Assets {
     
     public static void mkdirs() {
         USER_HOME = System.getProperty("user.home");
-        new File(Assets.USER_HOME+"/platformr/").mkdir();
-        new File(Assets.USER_HOME+"/platformr/jars").mkdir();
-        new File(Assets.USER_HOME+"/platformr/projects").mkdir();
+        new File(Assets.USER_HOME+"/.pengine/").mkdir();
+        new File(Assets.USER_HOME+"/.pengine/jars").mkdir();
+        new File(Assets.USER_HOME+"/.pengine/projects").mkdir();
     }
     
     private static void initBlockList() {   

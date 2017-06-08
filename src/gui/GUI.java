@@ -36,6 +36,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 import javax.swing.AbstractListModel;
@@ -90,6 +91,18 @@ public class GUI extends javax.swing.JFrame {
     public GUI() {
         initComponents();
     }
+    
+    @Override
+    public List<Image> getIconImages() {
+        ArrayList imageList = new ArrayList();
+        imageList.add(new ImageIcon(getClass().getResource(
+            "/assets/icon.png")).getImage());
+        imageList.add(new ImageIcon(getClass().getResource(
+            "/assets/icon32x32.png")).getImage());
+        imageList.add(new ImageIcon(getClass().getResource(
+            "/assets/icon16x16.png")).getImage());
+        return imageList;
+      }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -722,7 +735,7 @@ public class GUI extends javax.swing.JFrame {
         jMenuItem2.setText("jMenuItem2");
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("PlatformR Engine");
+        setTitle("PEngine");
         setBackground(new Color(1, 1, 1));
         setBounds(new Rectangle(150, 150, 1000, 600));
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -1311,7 +1324,8 @@ public class GUI extends javax.swing.JFrame {
             while (true) {
                 String input = JOptionPane.showInputDialog(this, "Project name:", "New project...", JOptionPane.PLAIN_MESSAGE);
                 if (input == null) break;
-                input = input.replaceAll("[\\/.,]", "");
+                input = input.replaceAll("[\\/.,]", "").trim();
+                if (input.length() == 0) continue;
                 if (Project.projectExists(input)) {
                     JOptionPane.showMessageDialog(this, "Project \"" + input + "\" already exists!");
                 } else {
@@ -1417,7 +1431,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_reloadAssetsButtonActionPerformed
 
     private void openAssetsFolderButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_openAssetsFolderButtonActionPerformed
-        File folder = new File(System.getProperty("user.home") + "/platformr/projects/" + Project.getProject().getName() + "/assets/");
+        File folder = new File(System.getProperty("user.home") + "/.pengine/projects/" + Project.getProject().getName() + "/assets/");
         try {
             if (folder.exists()) {
                 Desktop.getDesktop().open(folder);
@@ -1462,16 +1476,20 @@ public class GUI extends javax.swing.JFrame {
     private void openProjectButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_openProjectButtonActionPerformed
         if (promptSave() == 0) {
             ArrayList<String> spawnList = new ArrayList<String>();
-            for (File f : new File(Assets.USER_HOME + "/platformr/projects").listFiles()) {
+            for (File f : new File(Assets.USER_HOME + "/.pengine/projects").listFiles()) {
+                if (!f.isDirectory()) continue;
                 if (new File(f.getAbsolutePath() + "/project.txt").exists()) {
                     spawnList.add(f.getName());
                 }
             }
-            Object selection = JOptionPane.showInputDialog(this, "Choose a project:", "Open project...",
-                    JOptionPane.PLAIN_MESSAGE, null, spawnList.toArray(), null);
-            if (selection == null) {
+            if (spawnList.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "There are no existing projects to open!");
                 return;
             }
+            Object selection = JOptionPane.showInputDialog(this, "Choose a project:", "Open project...",
+                    JOptionPane.PLAIN_MESSAGE, null, spawnList.toArray(), null);
+            if (selection == null) { return; }
+            if (selection.equals(Project.getProject().getName()));
             Project.newProject((String) selection, false, false);
             Project.getProject().load();
             Assets.load();
@@ -1987,7 +2005,7 @@ public class GUI extends javax.swing.JFrame {
 
     public static void updateWindowTitle() {
         if (window == null) return;
-        String title = "PlatformR Engine "+UpdateManager.VERSION_NAME+" - ";
+        String title = "PEngine "+UpdateManager.VERSION_NAME+" - ";
         title += "/" + Project.getProject().getName();
         if (Project.getProject().getCurrentLevel() != null) {
             title += "/" + Project.getProject().getCurrentLevel().getName();
@@ -2113,7 +2131,7 @@ public class GUI extends javax.swing.JFrame {
             //start the runtime jar and pass in the project directory and the name of the level to start in
             //you will need to update this in the runtime jar when you reach that point
 
-            String cmd = "java -jar \"" + Assets.USER_HOME + "/platformr/jars/runtime.jar\" \"" + Project.getProject().getDirectory() + "\""
+            String cmd = "java -jar \"" + Assets.USER_HOME + "/.pengine/jars/runtime.jar\" \"" + Project.getProject().getDirectory() + "\""
                     + (level_name != null ? " \"" + level_name + "\"" : "");
             System.out.println(cmd);
 
