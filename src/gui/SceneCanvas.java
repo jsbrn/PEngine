@@ -20,7 +20,7 @@ public class SceneCanvas extends JPanel {
     
     private double camera_x, camera_y, last_mouse_x, last_mouse_y;
     private SceneObject selected_object, active_object;
-    private int zoom = 4;
+    private int zoom = 3;
     
     private boolean show_grid = false;
     

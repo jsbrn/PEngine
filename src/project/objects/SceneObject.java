@@ -9,6 +9,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -145,6 +146,11 @@ public class SceneObject {
     }
     
     public int[] getDimensions() {
+        Object o = Assets.get(texture);
+        if (o != null) {
+            BufferedImage img = (BufferedImage)o;
+            return new int[]{img.getWidth(), img.getHeight()};
+        }
         return new int[]{(int)MiscMath.round(world_w, 1), (int)MiscMath.round(world_h, 1)};
     }
     
@@ -262,10 +268,9 @@ public class SceneObject {
     }
     
     public void draw(int x, int y, int z, Graphics g) {
-        BufferedImage texture = null;
-        if (Assets.OBJECT_TEXTURE_NAMES.contains(this.texture)) {
-            texture = Assets.OBJECT_TEXTURES.get(Assets.OBJECT_TEXTURE_NAMES.indexOf(this.texture));
-        }
+        
+        Object asset = Assets.get(texture);
+        BufferedImage img = (BufferedImage)asset;
         
         SceneCanvas canvas = GUI.getSceneCanvas();
         
@@ -277,18 +282,19 @@ public class SceneObject {
             g.setColor(new Color(50, 50, 100, 100));
             g.fillRect(osc[0], osc[1], w, h);
         } else {
-            if (texture != null && Assets.OBJECT_TEXTURE_NAMES.contains(this.texture)) {
+            if (img != null) {
                 g.setColor(Color.white);
-                g.drawImage(texture.getScaledInstance(w, h, Image.SCALE_FAST), osc[0], osc[1], null);
+                g.drawImage(img.getScaledInstance(w, h, Image.SCALE_FAST), osc[0], osc[1], null);
             } else {
                 g.setColor(Color.red);
                 g.drawRect(osc[0], osc[1], w, h);
                 g.drawLine(osc[0], osc[1], (int)(osc[0])+w, (int)(osc[1])+h);
                 g.setColor(Color.white);
-                canvas.drawString(this.texture+".png", osc[0], osc[1], g);
+                canvas.drawString(this.texture, osc[0], osc[1], g);
             }
         }
-        if (this.equals(canvas.getSelectedObject())) {
+        //draw highlight if selected
+        if (equals(canvas.getSelectedObject())) {
             g.setColor(Color.white);
             g.drawRect(osc[0]-1, osc[1]-1, w+2, h+2);
             g.setColor(Color.black);

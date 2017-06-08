@@ -5,45 +5,64 @@ import java.awt.GradientPaint;
 import project.Project;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import misc.Assets;
 import project.objects.components.Animation;
 
 public class AnimationCanvas extends JPanel {
     
-    Animation animation;
-    int frame = 0, zoom = 3;
-    BufferedImage img;
+    private Animation animation;
+    private int frame = 0, zoom = 3;
+    private BufferedImage img;
+    private AnimationThread thread;
+    private boolean paused;
+    private long last_time;
     
     public AnimationCanvas() {
-
+        initThread();
+        this.paused = false;
+        this.last_time = System.currentTimeMillis();
     }
     
     public void setAnimation(Animation a) {
-        animation = a;
+        animation = new Animation();
+        a.copyTo(animation);
+    }
+
+    public Animation getAnimation() {
+        return animation;
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void setLastTime(long last_time) {
+        this.last_time = last_time;
+    }
+
+    public long getLastTime() {
+        return last_time;
+    }
+    
+    public void clearAnimation() {
+        animation = null;
     }
     
     public void nextFrame() {
         if (animation == null) return;
         frame++;
         if (frame >= animation.frameCount()) frame = 0;
-        int img_index = Assets.ANIMATION_TEXTURE_NAMES.indexOf(animation.getSpriteSheet());
-        if (img_index < 0 || img_index >= Assets.ANIMATION_TEXTURES.size()) return;
-        img = Assets.ANIMATION_TEXTURES.get(img_index);
-        if (img != null && animation.frameCount() > 0) {
-            int x = img.getWidth() / animation.frameCount();
-            img = img.getSubimage(x, 0, img.getWidth() / animation.frameCount(), img.getHeight());
-            BufferedImage resized = new BufferedImage(img.getWidth()*zoom, img.getHeight()*zoom, img.getType());
-            Graphics2D g = resized.createGraphics();
-            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
-            g.drawImage(img, 0, 0, img.getWidth()*zoom, img.getHeight()*zoom, 0, 0, img.getWidth(),
-                img.getHeight(), null);
-            g.dispose();
-            img = resized;
-        }
+        Object asset = Assets.get(animation.getSpriteSheet());
+        if (asset == null) return;
+        BufferedImage temp_img = (BufferedImage)asset;
+        int w = temp_img.getWidth() / animation.frameCount();
+        img = temp_img.getSubimage(frame*w, 0, w, temp_img.getHeight());
     }
     
     public void addZoom(int z) {
@@ -56,13 +75,18 @@ public class AnimationCanvas extends JPanel {
         reset();
     }
     
+    public void setFrame(int f) {
+        frame = f < 0 ? 0 : f;
+    }
+    
     public void reset() {
+        img = null;
         frame = -1; nextFrame();
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
+        System.out.println("Repainting! "+animation.getSpriteSheet()+" "+img);
         g.setColor(Color.black);
         g.fillRect(0, 0, getWidth(), getHeight());
         
@@ -77,9 +101,70 @@ public class AnimationCanvas extends JPanel {
         g2d.fillRect(0, 0, getWidth(), getHeight());
         
         if (animation == null) return;
-        if (img == null) return;
-        g.drawImage(img, (getWidth() - img.getWidth())/2, 
-                (getHeight() - img.getHeight())/2, null);
+        if (img != null) {
+            System.out.println("Drawing image!");
+            g.drawImage(img.getScaledInstance(img.getWidth()*zoom, 
+                    img.getHeight()*zoom, Image.SCALE_SMOOTH), (getWidth() - img.getWidth()*zoom)/2, 
+                    (getHeight() - img.getHeight()*zoom)/2, null);
+        }
         
-    }  
+    }
+
+    public void setPaused(boolean p) {
+        paused = p;
+    }
+    
+    private void initThread() {
+        thread = new AnimationThread(this, new AnimationRunnable());
+        thread.start();
+    }
+    
+}
+
+class AnimationThread extends Thread {
+    
+    private AnimationCanvas parent;
+    
+    public AnimationThread(AnimationCanvas parent, AnimationRunnable r) {
+        super(r);
+        this.parent = parent;
+        r.setParent(this);
+    }
+
+    public AnimationCanvas getParent() {
+        return parent;
+    }
+    
+}
+
+class AnimationRunnable implements Runnable {
+    
+    private AnimationThread parent;
+
+    public void setParent(AnimationThread parent) {
+        this.parent = parent;
+    }
+    
+    @Override
+    public void run() {
+        while (true) {
+            
+            System.out.print("");
+            
+            if (parent.getParent().isPaused()) continue;
+            if (parent.getParent().getAnimation() == null) continue;
+            
+            try {
+                Thread.sleep(parent.getParent().getAnimation().getFrameDuration());
+            } catch (InterruptedException ex) {
+                Logger.getLogger(AnimationRunnable.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                
+            parent.getParent().nextFrame();
+            parent.getParent().repaint();
+            System.out.println(parent.getParent().getAnimation()+" -> nextFrame");
+            
+        }
+    }
+    
 }

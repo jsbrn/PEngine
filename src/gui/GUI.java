@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -38,7 +39,6 @@ import project.objects.components.Block;
 import project.objects.components.Flow;
 import threads.UpdateManager;
 import project.Level;
-import threads.AnimationPlayer;
 import project.Project;
 import project.objects.SceneObject;
 
@@ -92,14 +92,13 @@ public class GUI extends javax.swing.JFrame {
         newAnimationButton = new javax.swing.JButton();
         deleteAnimationButton = new javax.swing.JButton();
         renameAnimationButton = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
+        animationSpeedButton = new javax.swing.JButton();
+        animationSpriteButton = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jToggleButton2 = new javax.swing.JToggleButton();
-        jButton6 = new javax.swing.JButton();
+        addFrameButton = new javax.swing.JButton();
+        removeFrameButton = new javax.swing.JButton();
+        playAnimationButton = new javax.swing.JToggleButton();
+        frameCountLabel = new javax.swing.JLabel();
         galleryObjectPanel = new javax.swing.JPanel();
         galleryObjectChooser = new javax.swing.JComboBox<>();
         newGalleryObjectButton = new javax.swing.JButton();
@@ -420,6 +419,12 @@ public class GUI extends javax.swing.JFrame {
 
         objectEditorTabs.addTab("Logic", flowCanvas);
 
+        animationChooser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                animationChooserActionPerformed(evt);
+            }
+        });
+
         newAnimationButton.setText("New");
         newAnimationButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -435,10 +440,25 @@ public class GUI extends javax.swing.JFrame {
         });
 
         renameAnimationButton.setText("Rename...");
+        renameAnimationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                renameAnimationButtonActionPerformed(evt);
+            }
+        });
 
-        jButton7.setText("Speed...");
+        animationSpeedButton.setText("Speed...");
+        animationSpeedButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                animationSpeedButtonActionPerformed(evt);
+            }
+        });
 
-        jButton8.setText("Spritesheet...");
+        animationSpriteButton.setText("Spritesheet...");
+        animationSpriteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                animationSpriteButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -451,12 +471,12 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(newAnimationButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(deleteAnimationButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addComponent(renameAnimationButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton8)
+                .addComponent(animationSpriteButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton7)
+                .addComponent(animationSpeedButton)
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -468,23 +488,35 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(newAnimationButton)
                     .addComponent(deleteAnimationButton)
                     .addComponent(renameAnimationButton)
-                    .addComponent(jButton7)
-                    .addComponent(jButton8))
+                    .addComponent(animationSpeedButton)
+                    .addComponent(animationSpriteButton))
                 .addGap(5, 5, 5))
         );
 
-        jButton4.setText("+");
-
-        jButton5.setText("-");
-
-        jToggleButton2.setText("►");
-
-        jButton6.setText("Reset");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        addFrameButton.setText("+");
+        addFrameButton.setActionCommand("1");
+        addFrameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                addFrameButtonActionPerformed(evt);
             }
         });
+
+        removeFrameButton.setText("-");
+        removeFrameButton.setActionCommand("-1");
+        removeFrameButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addFrameButtonActionPerformed(evt);
+            }
+        });
+
+        playAnimationButton.setText("►");
+        playAnimationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                playAnimationButtonActionPerformed(evt);
+            }
+        });
+
+        frameCountLabel.setText("Frame count: 1");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -492,15 +524,13 @@ public class GUI extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(addFrameButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(removeFrameButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(frameCountLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToggleButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(playAnimationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -508,11 +538,10 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4)
-                    .addComponent(jButton5)
-                    .addComponent(jToggleButton2)
-                    .addComponent(jButton6))
+                    .addComponent(addFrameButton)
+                    .addComponent(removeFrameButton)
+                    .addComponent(playAnimationButton)
+                    .addComponent(frameCountLabel))
                 .addGap(5, 5, 5))
         );
 
@@ -535,6 +564,7 @@ public class GUI extends javax.swing.JFrame {
 
         galleryObjectPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        galleryObjectChooser.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Player" }));
         galleryObjectChooser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 galleryObjectChooserActionPerformed(evt);
@@ -607,10 +637,11 @@ public class GUI extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setTitle("PlatformR Engine");
         setBackground(new java.awt.Color(1, 1, 1));
         setBounds(new java.awt.Rectangle(150, 150, 1000, 600));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setMinimumSize(new java.awt.Dimension(700, 300));
+        setMinimumSize(new java.awt.Dimension(700, 330));
         setModalExclusionType(null);
         setName("windowFrame"); // NOI18N
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
@@ -647,6 +678,7 @@ public class GUI extends javax.swing.JFrame {
         sceneCanvas.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 sceneCanvasPropertyChange(evt);
+                sceneCanvasPropertyChange1(evt);
             }
         });
         sceneCanvas.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -657,6 +689,7 @@ public class GUI extends javax.swing.JFrame {
 
         jPanel13.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        playButton.setMnemonic('R');
         playButton.setText("►");
         playButton.setDoubleBuffered(true);
         playButton.addActionListener(new java.awt.event.ActionListener() {
@@ -851,7 +884,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(topPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 284, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 409, Short.MAX_VALUE)
                 .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1163,8 +1196,6 @@ public class GUI extends javax.swing.JFrame {
             }
         }
         GUI.updateWindowTitle();
-        sceneCanvas.resetCamera();
-        sceneCanvas.setSelectedObject(null);
         sceneCanvas.repaint();
         GUI.refreshObjectProperties();
         objectEditor.setVisible(false);
@@ -1283,6 +1314,8 @@ public class GUI extends javax.swing.JFrame {
         try {
             if (folder.exists()) {
                 Desktop.getDesktop().open(folder);
+            } else {
+                JOptionPane.showMessageDialog(this, "Project files have not been created!\nSave your project first.");
             }
         } catch (IOException ex) {
             Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -1292,11 +1325,9 @@ public class GUI extends javax.swing.JFrame {
     private void reloadAssetsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reloadAssetsButtonActionPerformed
         if (Project.getProject().existsOnDisk()) {
             Assets.load();
-            JOptionPane.showMessageDialog(null,
-                    Assets.OBJECT_TEXTURES.size() + " object textures loaded!\n"
-                    + Assets.ANIMATION_TEXTURES.size() + " animation sprites loaded!\n");
+            JOptionPane.showMessageDialog(null, "Successfully loaded "+Assets.assetCount()+" project assets!");
         } else {
-            JOptionPane.showMessageDialog(null, "Project files have not been created!\nSave your project first.");
+            JOptionPane.showMessageDialog(this, "Project files have not been created!\nSave your project first.");
         }
 
     }//GEN-LAST:event_reloadAssetsButtonActionPerformed
@@ -1307,7 +1338,7 @@ public class GUI extends javax.swing.JFrame {
             if (folder.exists()) {
                 Desktop.getDesktop().open(folder);
             } else {
-                JOptionPane.showMessageDialog(null, "You must save your project first!");
+                JOptionPane.showMessageDialog(this, "Project files have not been created!\nSave your project first.");
             }
         } catch (IOException ex) {
             Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -1331,17 +1362,16 @@ public class GUI extends javax.swing.JFrame {
 
     private void objectCollidesCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectCollidesCheckboxActionPerformed
         sceneCanvas.getActiveObject().setCollides(!sceneCanvas.getActiveObject().collides());
-        GUI.refreshObjectEditor();
+        GUI.refreshBasicObjectOptions();
     }//GEN-LAST:event_objectCollidesCheckboxActionPerformed
 
     private void objectGravityCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectGravityCheckboxActionPerformed
         sceneCanvas.getActiveObject().setGravity(!sceneCanvas.getActiveObject().gravity());
-        GUI.refreshObjectEditor();
+        GUI.refreshBasicObjectOptions();
     }//GEN-LAST:event_objectGravityCheckboxActionPerformed
 
     private void objectGalleryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectGalleryButtonActionPerformed
         sceneCanvas.setActiveObject(Project.getProject().getGalleryObject(0));
-        refreshObjectEditor();
         showObjectEditor();
     }//GEN-LAST:event_objectGalleryButtonActionPerformed
 
@@ -1362,7 +1392,6 @@ public class GUI extends javax.swing.JFrame {
             Project.getProject().load();
         }
         GUI.updateWindowTitle();
-        sceneCanvas.resetCamera();
         sceneCanvas.setSelectedObject(null);
         sceneCanvas.repaint();
         GUI.refreshObjectProperties();
@@ -1390,9 +1419,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_sceneCanvasMouseDragged
 
     private void objectLayerChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectLayerChooserActionPerformed
-        if (sceneCanvas.getSelectedObject() == null) {
-            return;
-        }
+        if (sceneCanvas.getSelectedObject() == null) return;
         Project.getProject().getCurrentLevel().moveToLayer(1 + objectLayerChooser.getSelectedIndex(), sceneCanvas.getSelectedObject());
         sceneCanvas.repaint();
     }//GEN-LAST:event_objectLayerChooserActionPerformed
@@ -1400,7 +1427,6 @@ public class GUI extends javax.swing.JFrame {
     private void editObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editObjectButtonActionPerformed
         sceneCanvas.setActiveObject(sceneCanvas.getSelectedObject());
         GUI.refreshObjectEditor();
-        sceneObjectCanvas.setObject(sceneCanvas.getSelectedObject());
         showObjectEditor();
     }//GEN-LAST:event_editObjectButtonActionPerformed
 
@@ -1558,15 +1584,11 @@ public class GUI extends javax.swing.JFrame {
         sceneCanvas.repaint();
     }//GEN-LAST:event_deleteObjectButtonActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
-
     private void changeObjectProperty(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeObjectProperty
         char cmd = evt.getActionCommand().charAt(0);
         String input = JOptionPane.showInputDialog(objectEditor,
                 cmd == 'c' ? "Type: " : (cmd == 'n' ? "Name:" : "Texture:"),
-                sceneCanvas.getActiveObject().getType());
+                sceneCanvas.getActiveObject().getTexture());
         if (input == null) {
             return;
         }
@@ -1586,16 +1608,18 @@ public class GUI extends javax.swing.JFrame {
         if (cmd == 't') {
             sceneCanvas.getActiveObject().setTexture(input);
         }
-        GUI.refreshObjectEditor();
+        GUI.refreshBasicObjectOptions();
     }//GEN-LAST:event_changeObjectProperty
 
     private void newAnimationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newAnimationButtonActionPerformed
         sceneCanvas.getActiveObject().newAnimation();
-        GUI.refreshObjectEditor();
+        GUI.refreshChooser(animationChooser, sceneCanvas.getActiveObject().getAnimations());
+        animationChooser.setSelectedIndex(sceneCanvas.getActiveObject().getAnimations().size() - 1);
     }//GEN-LAST:event_newAnimationButtonActionPerformed
 
     private void deleteAnimationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteAnimationButtonActionPerformed
-        sceneCanvas.getActiveObject().getAnimations().remove(00000000);
+        sceneCanvas.getActiveObject().getAnimations().remove(animationChooser.getSelectedIndex());
+        GUI.refreshChooser(animationChooser, sceneCanvas.getActiveObject().getAnimations());
     }//GEN-LAST:event_deleteAnimationButtonActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -1634,28 +1658,87 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_sceneCanvasPropertyChange
 
     private void galleryObjectChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_galleryObjectChooserActionPerformed
+        int index = galleryObjectChooser.getSelectedIndex();
+        deleteGalleryObjectButton.setEnabled(index > 0);
+        if (index < 0) return;
         sceneCanvas.setActiveObject(
-                Project.getProject().getGalleryObject(galleryObjectChooser.getSelectedIndex()));
+                Project.getProject().getGalleryObject(index));
         refreshObjectEditor();
+        objectEditorTabs.setSelectedIndex(0);
     }//GEN-LAST:event_galleryObjectChooserActionPerformed
 
     private void newGalleryObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGalleryObjectButtonActionPerformed
-        String input = JOptionPane.showInputDialog(this, "Name:", "New gallery object...", JOptionPane.PLAIN_MESSAGE);
+        String input = JOptionPane.showInputDialog(objectEditor, "Name:", "New gallery object...", JOptionPane.PLAIN_MESSAGE);
         if (input == null) return;
+        input = input.replaceAll("[\\/.,!@#$%^&*()_+]", "");
         SceneObject o = new SceneObject();
-        o.setName(input);
+        o.setType(input);
         Project.getProject().addGalleryObject(o);
+        GUI.refreshChooser(galleryObjectChooser, Project.getProject().getGalleryObjects());
+        galleryObjectChooser.setSelectedIndex(Project.getProject().getGalleryObjects().size() - 1);
+        sceneCanvas.setActiveObject(o);
         refreshObjectEditor();
     }//GEN-LAST:event_newGalleryObjectButtonActionPerformed
 
     private void deleteGalleryObjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteGalleryObjectButtonActionPerformed
         Project.getProject().removeGalleryObject(galleryObjectChooser.getSelectedIndex());
+        int o_index = galleryObjectChooser.getSelectedIndex();
+        if (o_index == 0) return;
+        GUI.refreshChooser(galleryObjectChooser, Project.getProject().getGalleryObjects());
+        galleryObjectChooser.setSelectedIndex(o_index >= Project.getProject().getGalleryObjects().size() 
+                ? Project.getProject().getGalleryObjects().size() - 1 : o_index);
+        int index = galleryObjectChooser.getSelectedIndex();
+        sceneCanvas.setActiveObject(Project.getProject().getGalleryObject(index));
+        refreshObjectEditor();
     }//GEN-LAST:event_deleteGalleryObjectButtonActionPerformed
 
+    private void sceneCanvasPropertyChange1(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_sceneCanvasPropertyChange1
+        editObjectButton.setEnabled(sceneCanvas.getSelectedObject() != null);
+    }//GEN-LAST:event_sceneCanvasPropertyChange1
 
-    public static void refreshBlockOptions() {
+    private void renameAnimationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_renameAnimationButtonActionPerformed
+        Animation a = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
+        String input = JOptionPane.showInputDialog(objectEditor, "Name:", a.getName());
+        if (input == null) return;
+        if (sceneCanvas.getActiveObject().containsAnimation(input)) {
+            JOptionPane.showMessageDialog(objectEditor, "An animation already exists by that name!", "Whoops!", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        a.setName(input);
+        GUI.refreshChooser(animationChooser, sceneCanvas.getActiveObject().getAnimations());
+    }//GEN-LAST:event_renameAnimationButtonActionPerformed
 
-    }
+    private void animationSpriteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_animationSpriteButtonActionPerformed
+        Animation a = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
+        String input = JOptionPane.showInputDialog(objectEditor, "Spritesheet:", a.getSpriteSheet());
+        if (input == null) return;
+        a.setSpriteSheet(input);
+        GUI.refreshAnimationOptions();
+    }//GEN-LAST:event_animationSpriteButtonActionPerformed
+
+    private void animationSpeedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_animationSpeedButtonActionPerformed
+        Animation a = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
+        String input = JOptionPane.showInputDialog(objectEditor, "Frame duration (ms):", a.getFrameDuration());
+        if (input == null) return;
+        a.setFrameDuration(Integer.parseInt(input));
+        GUI.refreshAnimationOptions();
+    }//GEN-LAST:event_animationSpeedButtonActionPerformed
+
+    private void playAnimationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playAnimationButtonActionPerformed
+        animationCanvas.reset();
+        animationCanvas.setPaused(!playAnimationButton.isSelected());
+        GUI.refreshAnimationOptions();
+    }//GEN-LAST:event_playAnimationButtonActionPerformed
+
+    private void animationChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_animationChooserActionPerformed
+        GUI.refreshAnimationOptions();
+    }//GEN-LAST:event_animationChooserActionPerformed
+
+    private void addFrameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addFrameButtonActionPerformed
+        Animation a = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
+        a.addFrameCount(Integer.parseInt(evt.getActionCommand()));
+        GUI.refreshAnimationOptions();
+    }//GEN-LAST:event_addFrameButtonActionPerformed
 
     /**
      * Returns 0 if user made a YES or NO choice. 1 if the user canceled.
@@ -1708,6 +1791,9 @@ public class GUI extends javax.swing.JFrame {
                 (int) (height / 2) - ((d.getHeight() / 2)));
         d.setVisible(true);
         this.setEnabled(false);
+        if (Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject())) 
+            galleryObjectChooser.setSelectedIndex(0);
+        objectEditorTabs.setSelectedIndex(0);
         System.out.println("Showing " + d.getTitle());
     }
     
@@ -1733,23 +1819,30 @@ public class GUI extends javax.swing.JFrame {
      * @param arr The list.
      */
     public static void refreshList(JList l, ArrayList arr) {
+        int index = l.getSelectedIndex();
         String[] list = new String[arr.size()];
         for (int i = 0; i < arr.size(); i++) {
             list[i] = arr.get(i).toString();
         }
         l.setListData(list);
+        if (index >= arr.size()) index = arr.size() - 1;
+        if (index < 0) index = 0;
+        if (index < 0 && arr.size() > 0) index = 0;
+        l.setSelectedIndex(index);
     }
     
     public static void refreshChooser(JComboBox l, ArrayList arr) {
+        int index = l.getSelectedIndex();
         l.removeAllItems();
         for (int i = 0; i < arr.size(); i++) l.addItem(arr.get(i).toString());
+        if (index >= arr.size()) index = arr.size() - 1;
+        if (index < 0 && arr.size() > 0) index = 0;
+        l.setSelectedIndex(index);
     }
 
     public static void updateWindowTitle() {
-        if (window == null) {
-            return;
-        }
-        String title = "PlatformR Engine 1.3 - ";
+        if (window == null) return;
+        String title = "PlatformR Engine "+UpdateManager.VERSION_NAME+" - ";
         title += "/" + Project.getProject().getName();
         if (Project.getProject().getCurrentLevel() != null) {
             title += "/" + Project.getProject().getCurrentLevel().getName();
@@ -1761,12 +1854,25 @@ public class GUI extends javax.swing.JFrame {
         
         if (sceneCanvas.getActiveObject() == null) return;
 
-        objectEditor.setTitle("Editing \"" + sceneCanvas.getActiveObject().getType() + "\"");
+        /**
+         * GENERAL EDITOR STUFF
+         */
+        objectEditor.setTitle("Editing \"" + sceneCanvas.getActiveObject() + "\"");
         galleryObjectPanel.setVisible(Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()));
+        deleteGalleryObjectButton.setEnabled(galleryObjectChooser.getSelectedIndex() > 0);
         
-        GUI.refreshChooser(galleryObjectChooser, Project.getProject().getGalleryObjects());
-        deleteGalleryObjectButton.setEnabled(galleryObjectChooser.getSelectedIndex() > -1);
-
+        /**
+         * TABS
+         */
+        refreshBasicObjectOptions();
+        GUI.refreshChooser(animationChooser, sceneCanvas.getActiveObject().getAnimations());
+        //GUI.refreshChooser(flowChooser, sceneCanvas.getActiveObject().getFlows());
+        
+        objectEditorTabs.setEnabledAt(2, !sceneCanvas.getActiveObject().isHitbox()); //animation tab
+        
+    }
+    
+    public static void refreshBasicObjectOptions() {
         objectTypeField.setText(sceneCanvas.getActiveObject().getType());
         objectTextureField.setText(sceneCanvas.getActiveObject().getTexture());
         objectNameField.setText(sceneCanvas.getActiveObject().getName());
@@ -1776,17 +1882,32 @@ public class GUI extends javax.swing.JFrame {
                 && !"Player".equals(sceneCanvas.getActiveObject().getType()));
         changeObjectNameButton.setEnabled(!Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject()));
         changeObjectTextureButton.setEnabled(!sceneCanvas.getActiveObject().isHitbox());
-
-        objectEditorTabs.setEnabledAt(2, !sceneCanvas.getActiveObject().isHitbox()); //animation tab
-        objectEditorTabs.setSelectedIndex(0);
+        sceneObjectCanvas.repaint();
+    }
+    
+    public static void refreshAnimationOptions() {
+        deleteAnimationButton.setEnabled(animationChooser.getSelectedIndex() > -1);
+        renameAnimationButton.setEnabled(animationChooser.getSelectedIndex() > -1);
+        animationSpriteButton.setEnabled(animationChooser.getSelectedIndex() > -1);
+        animationSpeedButton.setEnabled(animationChooser.getSelectedIndex() > -1);
+        addFrameButton.setEnabled(animationChooser.getSelectedIndex() > -1);
+        playAnimationButton.setEnabled(animationChooser.getSelectedIndex() > -1);
+        
+        if (animationChooser.getSelectedIndex() < 0) {
+            animationCanvas.clearAnimation();
+            return;
+        }
+        Animation a = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
+        removeFrameButton.setEnabled(a.frameCount() > 0 && animationChooser.getSelectedIndex() > -1);
+        frameCountLabel.setText("Frame count: "+a.frameCount());
+        removeFrameButton.setEnabled(a.frameCount() > 1);
+        animationCanvas.setAnimation(a);
+        animationCanvas.reset();
+        animationCanvas.repaint();
     }
 
     public static void refreshFlowOptions() {
-
-    }
-
-    public static void refreshDialogueOptions() {
-
+        flowCanvas.repaint();
     }
 
     public static void refreshLevelMenu() {
@@ -1875,7 +1996,7 @@ public class GUI extends javax.swing.JFrame {
                 updateWindowTitle();
                 sceneCanvas.repaint();
 
-                JOptionPane.showMessageDialog(null, "Welcome, " + System.getProperty("user.name") + "!\n"
+                JOptionPane.showMessageDialog(window, "Welcome, " + System.getProperty("user.name") + "!\n"
                         + "A blank project has been created for you. You can load previous\n"
                         + "projects using the Project menu.\n");
 
@@ -1884,9 +2005,12 @@ public class GUI extends javax.swing.JFrame {
 
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private static javax.swing.JButton addFrameButton;
     private javax.swing.JMenuItem ambientSoundVolumeMenuItem;
     private static gui.AnimationCanvas animationCanvas;
     private static javax.swing.JComboBox<String> animationChooser;
+    private static javax.swing.JButton animationSpeedButton;
+    private static javax.swing.JButton animationSpriteButton;
     private static javax.swing.JCheckBoxMenuItem autoplayAmbientSoundMenuItem;
     private static javax.swing.JCheckBoxMenuItem autoplayBGMusicMenuItem;
     private javax.swing.JPanel basicOptionsPanel;
@@ -1904,15 +2028,10 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton editLevelButton;
     public static javax.swing.JButton editObjectButton;
     private static gui.FlowCanvas flowCanvas;
+    private static javax.swing.JLabel frameCountLabel;
     private static javax.swing.JComboBox<String> galleryObjectChooser;
     private static javax.swing.JPanel galleryObjectPanel;
-    private static javax.swing.JButton jButton4;
-    private static javax.swing.JButton jButton5;
-    private static javax.swing.JButton jButton6;
-    private static javax.swing.JButton jButton7;
-    private static javax.swing.JButton jButton8;
     private javax.swing.JCheckBox jCheckBox1;
-    private static javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel21;
@@ -1934,7 +2053,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparator6;
-    private static javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JMenuItem levelBoundsMenuItem;
     private static javax.swing.JList levelList;
     private javax.swing.JMenuItem levelManagerButton;
@@ -1962,9 +2080,11 @@ public class GUI extends javax.swing.JFrame {
     private static javax.swing.JTextField objectTypeField;
     private javax.swing.JMenuItem openAssetsFolderButton;
     private javax.swing.JMenuItem openProjectButton;
+    private static javax.swing.JToggleButton playAnimationButton;
     public static javax.swing.JButton playButton;
     private javax.swing.JMenu projectMenu;
     private javax.swing.JMenuItem reloadAssetsButton;
+    private static javax.swing.JButton removeFrameButton;
     private static javax.swing.JButton renameAnimationButton;
     private javax.swing.JButton renameLevelButton;
     private static javax.swing.JTextArea resultsTextBox;

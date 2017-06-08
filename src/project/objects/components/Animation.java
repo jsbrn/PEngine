@@ -23,7 +23,7 @@ public class Animation {
     }
     
     public int frameCount() { return frame_count; }
-    public void setFrameCount(int c) { frame_count = c < 0 ? 0 : c; }
+    public void setFrameCount(int c) { frame_count = c < 1 ? 1 : c; }
     public void addFrameCount(int d) { setFrameCount(frame_count + d); }
     
     @Override

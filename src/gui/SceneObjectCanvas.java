@@ -10,14 +10,8 @@ import project.objects.SceneObject;
 
 public class SceneObjectCanvas extends JPanel {
     
-    SceneObject o;
-    
     public SceneObjectCanvas() {
 
-    }
-    
-    public void setObject(SceneObject a) {
-        o = a;
     }
 
     public void paintComponent(Graphics g) {
@@ -36,9 +30,13 @@ public class SceneObjectCanvas extends JPanel {
         g2d.setPaint(gp1);
         g2d.fillRect(0, 0, getWidth(), getHeight());
         
+        SceneObject o = GUI.getSceneCanvas().getActiveObject();
+        if (o == null) return;
+        
         if (o == null) return;
         int z = (getWidth() - 150 > getHeight() ? (int)(getWidth() - 150) / o.getDimensions()[0]
-                : getHeight() / o.getDimensions()[1]) / 5;
+                : getHeight() / o.getDimensions()[1]) / 2;
+        if (z < 1) z = 1;
         int w = o.getDimensions()[0] * z, h = o.getDimensions()[1] * z;
         o.draw((int)(getWidth()/2 + 150) - w/2, getHeight()/2 - h/2, z, g);
   

@@ -19,6 +19,7 @@ public class UpdateManager extends Thread {
     private static Thread thread;
     
     public static final int VERSION_ID = 10;
+    public static final String VERSION_NAME = "1.3-beta";
     
     /**
      * Downloads a file in the main thread. Only use this for smaller files.
@@ -100,7 +101,7 @@ public class UpdateManager extends Thread {
     public static boolean runtimeUpdate() { return runtime_update; }
     
     public static void checkForUpdates() {
-        try {
+        /*try {
             URL url = new URL("https://computerology.bitbucket.io/tools/editor/version.txt");
             BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
             runtime_update = Integer.parseInt(br.readLine().replace("runtime = ", "")) >= 0;
@@ -109,7 +110,9 @@ public class UpdateManager extends Thread {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+        runtime_update = false; //TODO: redo update workflow
+        editor_update = false;
     }
     
     public static void handleUpdates() {
