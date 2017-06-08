@@ -22,6 +22,9 @@ public class Animation {
         this.frame_dur = frame_dur;
     }
     
+    public void setLocked(boolean l) { locked = l; }
+    public boolean isLocked() { return locked; }
+    
     public int frameCount() { return frame_count; }
     public void setFrameCount(int c) { frame_count = c < 1 ? 1 : c; }
     public void addFrameCount(int d) { setFrameCount(frame_count + d); }

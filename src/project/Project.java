@@ -226,16 +226,24 @@ public class Project {
     
     /**
      * Pass in a gallery object to copy it's contents to all objects in the project
-     * that have a matching type. TODO: FIX WHAT HAPPENS WHEN YOU CHANGE THE TYPE
+     * that have a matching type.
      * @param gallery_object 
      */
     public void applyGalleryChanges(SceneObject gallery_object) {
         if (!Project.getProject().containsGalleryObject(gallery_object)) return;
+        int o_count = 0, l_count = 0;
         for (Level l: levels) {
+            boolean matching = false;
             for (SceneObject o: l.getObjects(Level.ALL_OBJECTS)) {
-                if (gallery_object.getType().equals(o.getType())) gallery_object.copyTo(o);
+                if (gallery_object.getType().equals(o.getType())) {
+                    gallery_object.copyTo(o);
+                    o_count++;
+                    matching = true;
+                }
             }
+            if (matching) l_count++;
         }
+        System.out.println("Copied object properties to "+o_count+" instances across "+l_count+" levels.");
     }
     
     public ArrayList<SceneObject> getGalleryObjects() { return object_gallery; }

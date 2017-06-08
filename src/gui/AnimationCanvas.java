@@ -6,7 +6,6 @@ import project.Project;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,7 +85,6 @@ public class AnimationCanvas extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        System.out.println("Repainting! "+animation.getSpriteSheet()+" "+img);
         g.setColor(Color.black);
         g.fillRect(0, 0, getWidth(), getHeight());
         
@@ -102,7 +100,6 @@ public class AnimationCanvas extends JPanel {
         
         if (animation == null) return;
         if (img != null) {
-            System.out.println("Drawing image!");
             g.drawImage(img.getScaledInstance(img.getWidth()*zoom, 
                     img.getHeight()*zoom, Image.SCALE_SMOOTH), (getWidth() - img.getWidth()*zoom)/2, 
                     (getHeight() - img.getHeight()*zoom)/2, null);
@@ -150,7 +147,6 @@ class AnimationRunnable implements Runnable {
         while (true) {
             
             System.out.print("");
-            
             if (parent.getParent().isPaused()) continue;
             if (parent.getParent().getAnimation() == null) continue;
             
@@ -162,7 +158,6 @@ class AnimationRunnable implements Runnable {
                 
             parent.getParent().nextFrame();
             parent.getParent().repaint();
-            System.out.println(parent.getParent().getAnimation()+" -> nextFrame");
             
         }
     }

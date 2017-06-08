@@ -213,5 +213,18 @@ public class MiscMath {
         String parsed[] = s.toLowerCase().split("[^0-9-.+]");
         return toDoubleArray(parsed);
     }
+    
+    public static boolean[] toBooleanArray(String s) {
+        if (s == null) return new boolean[]{};
+        String parsed[] = s.toLowerCase().split(" ");
+        return toBooleanArray(parsed);
+    }
+    
+    public static boolean[] toBooleanArray(String[] s) {
+        if (s == null) return new boolean[]{};
+        boolean[] result = new boolean[s.length];
+        for (int i = 0; i < s.length; i++) result[i] = Boolean.parseBoolean(s[i]);
+        return result;
+    }
 
 }

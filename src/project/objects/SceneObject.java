@@ -22,16 +22,15 @@ import project.Project;
 public class SceneObject {
     
     private double world_x, world_y, world_w, world_h;
-    private String name, type;
-    private int layer = Level.MIDDLE_OBJECTS;
-    private boolean gravity, collides, locked;
+    private String name, type, texture;
+    private int layer;
+    private boolean gravity, collides;
+    private boolean[] locked; //texture, gravity, collides
     
-    public ArrayList<Animation> animations = new ArrayList<Animation>();
-    private ArrayList<Flow> flows = new ArrayList<Flow>();
+    public ArrayList<Animation> animations;
+    private ArrayList<Flow> flows;
     
     boolean hitbox = false;
-    
-    public String texture;
     
     public SceneObject() {
         this.layer = Level.MIDDLE_OBJECTS;
@@ -42,6 +41,18 @@ public class SceneObject {
         this.texture = "";
         this.world_w = 16;
         this.world_h = 16;
+        this.animations = new ArrayList<Animation>();
+        this.flows = new ArrayList<Flow>();
+        this.locked = new boolean[]{false, false, false};
+    }
+    
+    public void setLocked(int index, boolean l) {
+        locked[index] = l;
+        System.out.println("Setting locked state: "+index+" = "+l);
+    }
+    
+    public boolean isLocked(int index) {
+        return locked[index];
     }
     
     public void setHitbox(boolean b) {
@@ -161,7 +172,7 @@ public class SceneObject {
                 bw.write("wh="+getDimensions()[0]+" "+getDimensions()[1]+"\n");
                 bw.write("n="+name+"\n");
                 bw.write("t="+type+"\n");
-                bw.write("lk="+locked+"\n");
+                bw.write("lk="+locked[0]+" "+locked[1]+" "+locked[2]+"\n");
                 bw.write("tx="+texture+"\n");
                 bw.write("h="+hitbox+"\n");
                 bw.write("g="+gravity+"\n");
@@ -187,7 +198,7 @@ public class SceneObject {
                 if (line.indexOf("n=") == 0) name = line.substring(2);
                 if (line.indexOf("t=") == 0) type = line.substring(2);
                 if (line.indexOf("tx=") == 0) texture = line.substring(3);
-                if (line.indexOf("lk=") == 0) locked = Boolean.parseBoolean(line.substring(3));
+                if (line.indexOf("lk=") == 0) locked = MiscMath.toBooleanArray(line.substring(3));
                 if (line.indexOf("h=") == 0) hitbox = Boolean.parseBoolean(line.substring(2));
                 if (line.indexOf("g=") == 0) gravity = Boolean.parseBoolean(line.substring(2));
                 if (line.indexOf("c=") == 0) collides = Boolean.parseBoolean(line.substring(2));
@@ -216,23 +227,23 @@ public class SceneObject {
     }
     
     /**
-     * Copies all properties and values (except for the unique name) to the specified object.
+     * Copies all properties and values (except for the name and coordinates) to the specified object.
      * @param o The specified object.
      */
     public void copyTo(SceneObject o) {
-        o.texture = this.texture;
+        if (!locked[0]) o.texture = this.texture;
         o.type = this.type;
-        o.name = this.name+Math.abs(new Random().nextInt() % 10000);
         o.layer = this.layer;
-        o.gravity = this.gravity;
-        o.collides = this.collides;
+        if (!locked[1]) o.gravity = this.gravity;
+        if (!locked[2]) o.collides = this.collides;
         o.hitbox = this.hitbox;
 
-        o.animations.clear();
-        for (Animation a: this.animations) {
-            Animation new_a = new Animation();
-            a.copyTo(new_a);
-            o.animations.add(new_a);
+        ArrayList<Animation> new_list = new ArrayList<Animation>();
+        for (Animation a: o.animations) {
+            Animation in_source = this.getAnimation(a.getName());
+            if (in_source != null) {
+                if (!a.isLocked()) in_source.copyTo(a);
+            }
         }
         
         o.flows.clear();
@@ -243,11 +254,23 @@ public class SceneObject {
             new_f.setParent(o);
         }
         
-        o.setWorldX(this.getWorldCoords()[0] + 5);
-        o.setWorldY(this.getWorldCoords()[1] + 5);
         o.setWidth(this.getDimensions()[0]);
         o.setHeight(this.getDimensions()[1]);
         
+    }
+    
+    public Animation getAnimation(String name) {
+        for (Animation a: animations) {
+            if (a.getName().equals(name)) return a;
+        }
+        return null;
+    }
+    
+    public Flow getFlow(String name) {
+        for (Flow f: flows) {
+            if (f.getName().equals(name)) return f;
+        }
+        return null;
     }
     
     public void newFlow() {
