@@ -2,15 +2,21 @@ package threads;
 
 import gui.GUI;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import javax.swing.JOptionPane;
 import misc.Assets;
+import misc.MiscMath;
+import project.Level;
+import project.objects.SceneObject;
 
 public class UpdateManager extends Thread {
     
@@ -18,7 +24,8 @@ public class UpdateManager extends Thread {
     private static boolean editor_update = false, runtime_update = false, blocked = false;
     private static Thread thread;
     
-    public static final int VERSION_ID = 10, RUNTIME_VERSION_ID = 0;
+    public static int VERSION_ID = 10, RUNTIME_VERSION_ID = 0;
+    public static int LATEST_VERSION_ID = 10, LATEST_RUNTIME_VERSION_ID = 0;
     public static final String VERSION_NAME = "1.3-beta";
     
     /**
@@ -77,13 +84,56 @@ public class UpdateManager extends Thread {
         return false;
     }
     
+    public static void load() {
+        File f = new File(Assets.USER_HOME+"/platformr/jars/versions.txt");
+        if (!f.exists()) return;
+        FileReader fr;
+        System.out.println("Saving version info: " + f.getAbsoluteFile().getAbsolutePath());
+        try {
+            fr = new FileReader(f);
+            BufferedReader br = new BufferedReader(fr);
+            while (true) {
+                String line = br.readLine();
+                
+                if (line == null) break;
+                line = line.trim();
+                if (line.indexOf("runtime_id = ") == 0) {
+                    RUNTIME_VERSION_ID = Integer.parseInt(line.substring(10));
+                }
+                
+            }
+            br.close();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public static void save() {
+        File f = new File(Assets.USER_HOME+"/platformr/jars/versions.txt");
+        FileWriter fw;
+        System.out.println("Saving version info: " + f.getAbsoluteFile().getAbsolutePath());
+        try {
+            if (!f.exists()) f.createNewFile();
+            fw = new FileWriter(f);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            bw.write("runtime_id = "+RUNTIME_VERSION_ID);
+            
+            bw.close();
+            System.out.println("Saved to "+f.getAbsolutePath());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
     /**
      * Downloads a file in a different thread. 
      * Should only use it for the game jar; server meta data will download quick enough without it.
      * @param src The source URL.
      * @param dst The file path you wish to save the downloaded file to.
      */
-    public static void downloadThreaded(String src, String dst) {
+    private static void downloadThreaded(String src, String dst) {
         if (blocked) { System.err.println("Download failed: download already in progress."); }
         thread = new Thread(new Runnable() {
             public void run() {
@@ -97,6 +147,13 @@ public class UpdateManager extends Thread {
         thread.start();
     }
     
+    public static void downloadRuntime() {
+        downloadThreaded("https://computerology.bitbucket.io/tools/editor/runtime.jar",
+                Assets.USER_HOME+"/platformr/jars/runtime.jar");
+        RUNTIME_VERSION_ID = LATEST_RUNTIME_VERSION_ID;
+        save();
+    }
+    
     public static boolean downloadInProgress() {
         return blocked;
     }
@@ -105,11 +162,19 @@ public class UpdateManager extends Thread {
     public static boolean runtimeUpdate() { return runtime_update; }
     
     public static void checkForUpdates() {
+        load();
         try {
-            URL url = new URL("https://computerology.bitbucket.io/tools/editor/version.txt");
+            URL url = new URL("https://computerology.bitbucket.io/tools/editor/versions.txt");
             BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-            runtime_update = Integer.parseInt(br.readLine().replace("runtime = ", "")) >= 0;
-            editor_update = Integer.parseInt(br.readLine().replace("editor = ", "")) >= VERSION_ID;
+            
+            LATEST_RUNTIME_VERSION_ID = Integer.parseInt(br.readLine().replace("runtime = ", ""));
+            LATEST_VERSION_ID = Integer.parseInt(br.readLine().replace("editor = ", ""));
+            
+            System.out.println("Runtime: "+RUNTIME_VERSION_ID+" -> "+LATEST_RUNTIME_VERSION_ID);
+            System.out.println("Editor: "+VERSION_ID+" -> "+LATEST_VERSION_ID);
+            
+            runtime_update = LATEST_RUNTIME_VERSION_ID >= RUNTIME_VERSION_ID;
+            editor_update = LATEST_VERSION_ID >= VERSION_ID;
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

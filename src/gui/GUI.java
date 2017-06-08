@@ -165,11 +165,11 @@ public class GUI extends javax.swing.JFrame {
         jCheckBox1 = new JCheckBox();
         jLabel2 = new JLabel();
         menuBar = new JMenuBar();
-        projectMenu = new JMenu();
+        fileMenu = new JMenu();
         newProjectButton = new JMenuItem();
         openProjectButton = new JMenuItem();
         saveProjectButton = new JMenuItem();
-        jSeparator1 = new JPopupMenu.Separator();
+        projectMenu = new JMenu();
         newLevelButton = new JMenuItem();
         levelManagerButton = new JMenuItem();
         jSeparator5 = new JPopupMenu.Separator();
@@ -200,6 +200,10 @@ public class GUI extends javax.swing.JFrame {
         loopAmbientSoundMenuItem = new JCheckBoxMenuItem();
         autoplayAmbientSoundMenuItem = new JCheckBoxMenuItem();
         ambientSoundVolumeMenuItem = new JMenuItem();
+        jMenu3 = new JMenu();
+        jMenuItem5 = new JMenuItem();
+        jMenuItem6 = new JMenuItem();
+        jMenuItem4 = new JMenuItem();
         statusIndicator = new JMenu();
 
         testOutputDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -957,40 +961,43 @@ public class GUI extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        fileMenu.setText("File");
+
+        newProjectButton.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK));
+        newProjectButton.setText("New project...");
+        newProjectButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                newProjectButtonActionPerformed(evt);
+            }
+        });
+        fileMenu.add(newProjectButton);
+
+        openProjectButton.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+        openProjectButton.setText("Open existing project...");
+        openProjectButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                openProjectButtonActionPerformed(evt);
+            }
+        });
+        fileMenu.add(openProjectButton);
+
+        saveProjectButton.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
+        saveProjectButton.setText("Save project...");
+        saveProjectButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                saveProjectButtonActionPerformed(evt);
+            }
+        });
+        fileMenu.add(saveProjectButton);
+
+        menuBar.add(fileMenu);
+
         projectMenu.setText("Project");
         projectMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 projectMenuActionPerformed(evt);
             }
         });
-
-        newProjectButton.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK));
-        newProjectButton.setText("New");
-        newProjectButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                newProjectButtonActionPerformed(evt);
-            }
-        });
-        projectMenu.add(newProjectButton);
-
-        openProjectButton.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
-        openProjectButton.setText("Open...");
-        openProjectButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                openProjectButtonActionPerformed(evt);
-            }
-        });
-        projectMenu.add(openProjectButton);
-
-        saveProjectButton.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
-        saveProjectButton.setText("Save...");
-        saveProjectButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                saveProjectButtonActionPerformed(evt);
-            }
-        });
-        projectMenu.add(saveProjectButton);
-        projectMenu.add(jSeparator1);
 
         newLevelButton.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_MASK));
         newLevelButton.setText("New level");
@@ -1205,6 +1212,29 @@ public class GUI extends javax.swing.JFrame {
         levelMenu.add(jMenu1);
 
         menuBar.add(levelMenu);
+
+        jMenu3.setText("Help");
+
+        jMenuItem5.setText("Help topics...");
+        jMenu3.add(jMenuItem5);
+
+        jMenuItem6.setText("Check for updates");
+        jMenuItem6.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem6);
+
+        jMenuItem4.setText("Visit website...");
+        jMenuItem4.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem4);
+
+        menuBar.add(jMenu3);
 
         statusIndicator.setEnabled(false);
         statusIndicator.setFont(new Font("Segoe UI", 2, 12)); // NOI18N
@@ -1812,6 +1842,24 @@ public class GUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_lockTextureButtonActionPerformed
 
+    private void jMenuItem4ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        try {
+            java.awt.Desktop.getDesktop().browse(new URI("http://computerology.bitbucket.io"));
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jMenuItem6ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        UpdateManager.checkForUpdates();
+        if (UpdateManager.editorUpdate()) {
+            JOptionPane.showMessageDialog(window, "A newer version of the level editor has been found!"
+                + "\nGo to 'Help → Visit website' to download it.");
+        }
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
+
     /**
      * Returns 0 if user made a YES or NO choice. 1 if the user canceled.
      *
@@ -2023,11 +2071,16 @@ public class GUI extends javax.swing.JFrame {
         UpdateManager.checkForUpdates();
         
         if (UpdateManager.runtimeUpdate()) {
-            JOptionPane.showMessageDialog(this, "Downloading an update!"
-                    + "\nWhen it is complete, you can run your project.");
-            if (!UpdateManager.downloadInProgress()) UpdateManager.downloadThreaded("https://computerology.bitbucket.io/tools/editor/runtime.jar",
-                Assets.USER_HOME+"/platformr/jars/runtime.jar");
+            JOptionPane.showMessageDialog(this, "Your game files are being updated!"
+                    + "\nWhen complete, you can run your project.");
+            if (!UpdateManager.downloadInProgress()) UpdateManager.downloadRuntime();
             return;
+        } else {
+            if (UpdateManager.editorUpdate()) {
+                JOptionPane.showMessageDialog(this, "An update is available for your editor!"
+                    + "\nIf you have any issues with this test, try downloading it\n"
+                        + "via the Help menu.");
+            }
         }
         
         try {
@@ -2091,12 +2144,11 @@ public class GUI extends javax.swing.JFrame {
                 
                 UpdateManager.checkForUpdates();
                 if (UpdateManager.editorUpdate()) {
-                    JOptionPane.showMessageDialog(window, "A newer version of the level editor has been uploaded!"
-                        + "\nGo to http://computerology.bitbucket.io/ to grab it!");
+                    JOptionPane.showMessageDialog(window, "A newer version of the level editor has been found!"
+                        + "\nGo to 'Help → Visit website' to download it.");
                 }
                 if (UpdateManager.runtimeUpdate()) {
-                    UpdateManager.downloadThreaded("https://computerology.bitbucket.io/tools/editor/runtime.jar",
-                        Assets.USER_HOME+"/platformr/jars/runtime.jar");
+                    UpdateManager.downloadRuntime();
                 }
 
                 updateWindowTitle();
@@ -2133,6 +2185,7 @@ public class GUI extends javax.swing.JFrame {
     private static JButton deleteObjectButton;
     JButton editLevelButton;
     public static JButton editObjectButton;
+    JMenu fileMenu;
     private static FlowCanvas flowCanvas;
     private static JLabel frameCountLabel;
     private static JComboBox<String> galleryObjectChooser;
@@ -2145,9 +2198,13 @@ public class GUI extends javax.swing.JFrame {
     JLabel jLabel4;
     JMenu jMenu1;
     JMenu jMenu2;
+    JMenu jMenu3;
     JMenuItem jMenuItem1;
     JMenuItem jMenuItem2;
     JMenuItem jMenuItem3;
+    JMenuItem jMenuItem4;
+    JMenuItem jMenuItem5;
+    JMenuItem jMenuItem6;
     JMenuItem jMenuItem8;
     JMenuItem jMenuItem9;
     JPanel jPanel13;
@@ -2156,7 +2213,6 @@ public class GUI extends javax.swing.JFrame {
     JPanel jPanel8;
     JScrollPane jScrollPane12;
     JScrollPane jScrollPane9;
-    JPopupMenu.Separator jSeparator1;
     JPopupMenu.Separator jSeparator4;
     JPopupMenu.Separator jSeparator5;
     JPopupMenu.Separator jSeparator6;
