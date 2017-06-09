@@ -7,28 +7,45 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import misc.Assets;
 import project.objects.SceneObject;
 
 public class Flow {
         
-    ArrayList<Block> blocks;
-    SceneObject parent_object;
+    private ArrayList<Block> blocks;
+    private boolean locked;
     
-    private String id;
-    private boolean run; //run on entity creation
+    private String name;
     
     public Flow() {
+        this.locked = false;
         this.blocks = new ArrayList<Block>();
-        this.run = false;
-        this.id = "";
-        this.parent_object = null;
+        this.name = "";
+        addBlock(Assets.getBlock(0));
+        addBlock(Assets.getBlock(1));
+        addBlock(Assets.getBlock(2));
+        addBlock(Assets.getBlock(3));
+        addBlock(Assets.getBlock(4));
     }
     
-    public String getName() { return id; }
+    public void autoName(SceneObject o) {
+        int i = 1;
+        while (true) {
+            String n = "flow"+(i > 1 ? ""+i : "");
+            if (!o.containsFlow(n)) { setName(n); break; }
+            i++;
+        }
+    }
     
-    public void setName(String new_) { id = new_; }
+    public String getName() { return name; }
     
-    public boolean willRunOnCreation() { return run; }
+    public void setName(String new_) { name = new_; }
+    
+    public void setLocked(boolean l) {
+        locked = l;
+    }
+    
+    public boolean isLocked() { return locked; }
     
     public Block getBlock(int index) {
         return blocks.get(index);
@@ -47,7 +64,7 @@ public class Flow {
             blocks.add(b);
             b.setParent(this);
         } else return;
-        System.out.println("Added Block "+ b.getTitle()+" to Flow "+id+" ("+b.getCoords()[0]+", "+b.getCoords()[1]+")");
+        System.out.println("Added Block "+ b.getTitle()+" to Flow "+name+" ("+b.getCoords()[0]+", "+b.getCoords()[1]+")");
     }
     
     public Block getBlockByID(int id) {
@@ -66,14 +83,10 @@ public class Flow {
         return blocks.remove(index) != null;
     }
     
-    public void setParent(SceneObject o) {
-        parent_object = o;
-    }
-    
     public void save(BufferedWriter bw) {
         try {
             bw.write("f\n");
-            bw.write("id="+id+"\n");
+            bw.write("id="+name+"\n");
             for (Block b: blocks) b.save(bw);
             bw.write("/f\n");
         } catch (IOException ex) {
@@ -88,7 +101,7 @@ public class Flow {
                 String line = br.readLine();
                 if (line == null) break;
                 if (line.equals("/f")) return true;
-                if (line.indexOf("id=") == 0) id = line.trim().replace("id=", "");
+                if (line.indexOf("id=") == 0) name = line.trim().replace("id=", "");
                 if (line.equals("b")) {
                     Block b = new Block();
                     if (b.load(br)) blocks.add(b);
@@ -106,14 +119,19 @@ public class Flow {
      * Copies the contents of this flow to flow F.
      * @param f The flow, stupid.
      */
-    public void copyTo(Flow f) {
-        f.parent_object = parent_object;
-        f.id = id;
+    public void copyTo(Flow f, boolean copy_name) {
+        if (copy_name) f.name = name;
         f.blocks.clear();
         for (Block b: blocks) {
             Block new_b = new Block();
-            b.copyTo(new_b);
-            f.blocks.add(new_b);
+            b.copyTo(new_b, true);
+            f.addBlock(new_b);
         }
     }
+    
+    @Override
+    public String toString() {
+        return getName();
+    }
+    
 }

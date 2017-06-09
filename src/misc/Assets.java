@@ -77,9 +77,14 @@ public class Assets {
         } catch (IOException ex) {
             ex.printStackTrace();
         }*/
-        blocks = new Block[2];
-        blocks[0] = new Block("Set background music", Block.ACTION_BLOCK, Block.TYPE_NONE, new Object[][]{{"Sound file", Block.TYPE_STRING, ""}});
-        blocks[1] = new Block("When music changes", Block.EVENT_BLOCK, Block.TYPE_NONE, new Object[][]{});
+        blocks = new Block[5];
+        blocks[0] = new Block("Function", "f", Block.ACTION_BLOCK, Block.TYPE_NONE, new Object[][]{{"Sound file", Block.TYPE_STRING, ""}});
+        blocks[1] = new Block("String function", "sf", Block.ACTION_BLOCK, Block.TYPE_NONE, 
+                new Object[][]{{"Sound file", Block.TYPE_STRING, ""}, {"Volume", Block.TYPE_NUMBER, 100}});
+        blocks[2] = new Block("Event", "e", Block.EVENT_BLOCK, Block.TYPE_NONE, new Object[][]{});
+        blocks[3] = new Block("If", "e", Block.CONDITIONAL_BLOCK, Block.TYPE_NONE, 
+                new Object[][]{{"x", Block.TYPE_STRING, ""}, {"y", Block.TYPE_STRING, ""}});
+        blocks[4] = new Block("Variable", "v", Block.CONDITIONAL_BLOCK, Block.TYPE_NUMBER, new Object[][]{});
     }
     
     public static Object get(String key) {

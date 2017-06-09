@@ -178,6 +178,12 @@ public class MiscMath {
                 (int) round((world_y - canvas.getCameraY()) * canvas.getZoom(), 1) + (canvas.getHeight() / 2)};
     }
     
+    public static int[] toIntArray(String s, int size) {
+        int[] arr = toIntArray(s);
+        if (arr.length == 0) return new int[size];
+        return arr;
+    }
+    
     /**
      * Turns a String of numbers into an int array.
      * @param s The string to parse.
@@ -185,6 +191,7 @@ public class MiscMath {
      */
     public static int[] toIntArray(String s) {
         if (s == null) return new int[]{};
+        if (s.length() == 0) return new int[]{};
         String parsed[] = s.toLowerCase().split("[^0-9-+]");
         return toIntArray(parsed);
     }

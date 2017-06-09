@@ -228,6 +228,11 @@ public class SceneObject {
                     if (a.load(br)) animations.add(a);
                 }
                 
+                if (line.equals("f")) {
+                    Flow a = new Flow();
+                    if (a.load(br)) flows.add(a);
+                }
+                
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -267,7 +272,17 @@ public class SceneObject {
             }
         }
         
-        System.err.println("Remember to add copyTo for flows as well!");
+        //DELETE any unlocked anims in O
+        for (int i = o.flows.size() - 1; i > -1; i--) 
+            if (!o.flows.get(i).isLocked() || !respect_locks) o.flows.remove(i);
+        //copy over all anims in this obj that are not in O
+        for (Flow a: flows) {
+            if (o.getFlow(a.getName()) == null) {
+                Flow copy_over = new Flow();
+                a.copyTo(copy_over, true);
+                o.flows.add(copy_over);
+            }
+        }
         
         o.setWidth(this.getDimensions()[0]);
         o.setHeight(this.getDimensions()[1]);
@@ -290,7 +305,7 @@ public class SceneObject {
     
     public void newFlow() {
         Flow f = new Flow();
-        f.setName("animation"+new Random().nextInt(100000));
+        f.setName("flow"+new Random().nextInt(100000));
         flows.add(f);
     }
     

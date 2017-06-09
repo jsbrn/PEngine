@@ -25,13 +25,13 @@ public class Block {
     private boolean[] nodes; //in, out, yes, no
     private int[][] connections; //the first 4 are for the nodes, the rest are for params. {id, other_port}
     
-    private Object[][] parametres; //a list of {name, type} entries
+    private Object[][] parametres; //a list of {name, type, default_value} entries
     
     private int output_type; //the type of value that the OUT connection supplies
     
     private Flow parent;
     
-    private String title;
+    private String title, type;
     private int id;
     
     private int x = 50, y = 50;
@@ -39,24 +39,26 @@ public class Block {
     public Block() {
         this.id = Math.abs(new Random().nextInt());
         this.title = "";
+        this.type = "";
         this.nodes = new boolean[NODE_COUNT];
         this.connections = new int[NODE_COUNT][2];
         this.output_type = TYPE_NONE;
-        this.parametres = new Object[NODE_COUNT][2]; //name, type
+        this.parametres = new Object[NODE_COUNT][3]; //name, type, default value
     }
     
     
     /**
      * Creates a new flowchart block for the list of template blocks.
-     * @param title The title visible in the menu and in the editor.
+     * @param name The title visible in the menu and in the editor.
      * @param block_type An integer representing the block's type (which determines its form).
      * @param output_type The type of value this block outputs.
      * @param params Specify the list of parametres and their starting values.
      */
-    public Block(String title, int block_type, int output_type, Object[][] params) {
+    public Block(String name, String type, int block_type, int output_type, Object[][] params) {
         
         this.id = Math.abs(new Random().nextInt());
-        this.title = title;
+        this.title = name;
+        this.type = type;
         this.nodes = new boolean[]{
         
             block_type == ACTION_BLOCK //in
@@ -112,7 +114,7 @@ public class Block {
      */
     public void clearConnection(int index, boolean two_sided) {
         if (index < 0 || index >= connections.length) return;
-        System.out.print("Cleared ["+getTitle()+", "+index+"] ... ");
+        System.out.print("Cleared ["+getType()+", "+index+"] ... ");
         if (two_sided) {
             Block other = parent.getBlockByID(connections[index][0]);
             if (other != null) other.clearConnection(connections[index][1], false);
@@ -125,12 +127,16 @@ public class Block {
         for (int i = 0; i < connections.length; i++) clearConnection(i, true);
     }
     
+    public void move(double x, double y) {
+        this.x += x; this.y += y;
+    }
+    
     public void save(BufferedWriter bw) {
         try {
             bw.write("b\n");
             bw.write("t="+title+"\n");
             bw.write("id="+id+"\n");
-            String conns = ""; for (int s[]: connections) conns+=s[0]+" "+s[1]+"\t";
+            String conns = ""; for (int c[]: connections) conns+=c[0]+" "+c[1]+"\t";
             bw.write("conns="+conns.trim()+"\n");
             bw.write("x="+x+"\n");
             bw.write("y="+y+"\n");
@@ -159,7 +165,7 @@ public class Block {
                 if (line.indexOf("conns=") == 0) {
                     String[] b = line.split("\t");
                     connections = new int[NODE_COUNT][2];
-                    for (int i = 0; i != b.length; i++) connections[i] = MiscMath.toIntArray(b[i]);
+                    for (int i = 0; i != b.length; i++) connections[i] = MiscMath.toIntArray(b[i], NODE_COUNT);
                 }
             }
         } catch (FileNotFoundException ex) {
@@ -196,10 +202,12 @@ public class Block {
             if (i < nodes.length) if (!nodes[i]) continue;
             int[] rc = getRenderCoords();
             int[] offset = getNodeOffset(i);
-            if (MiscMath.pointIntersects(rc[0], rc[1], rc[0]+offset[0], rc[1]+offset[1], 20, 20)) return i;
+            if (MiscMath.pointIntersects(x, y, rc[0]+offset[0], rc[1]+offset[1], 20, 20)) return i;
         }
         return -1;
     }
+    
+    public String getType() { return type; }
     
     public void setX(int new_x) { x = new_x; if (x < 0) x = 0; }
     public void setY(int new_y) { y = new_y; if (y < 0) y = 0; }
@@ -246,9 +254,10 @@ public class Block {
         return connections[index][0];
     }
     
-    public void copyTo(Block b) {
+    public void copyTo(Block b, boolean copy_id) {
         b.title = title;
-        b.id = id;
+        b.type = type;
+        if (copy_id) b.id = id;
         b.x = x;
         b.y = y;
         b.output_type = output_type;

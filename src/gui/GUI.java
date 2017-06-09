@@ -150,6 +150,8 @@ public class GUI extends javax.swing.JFrame {
         deleteFlowButton = new JButton();
         renameFlowButton = new JButton();
         lockFlowButton = new JToggleButton();
+        addBlockButton = new JButton();
+        jButton1 = new JButton();
         animationCanvas = new AnimationCanvas();
         jPanel8 = new JPanel();
         animationChooser = new JComboBox<>();
@@ -592,13 +594,24 @@ public class GUI extends javax.swing.JFrame {
         });
 
         lockFlowButton.setText("🔒");
-        lockFlowButton.setActionCommand("a");
+        lockFlowButton.setActionCommand("f");
         lockFlowButton.setEnabled(false);
         lockFlowButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                lockFlowButtonlockTextureButtonActionPerformed(evt);
+                lockTextureButtonActionPerformed(evt);
             }
         });
+
+        addBlockButton.setMnemonic('b');
+        addBlockButton.setText("Add block...");
+        addBlockButton.setEnabled(false);
+        addBlockButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                addBlockButtonActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Delete block");
 
         GroupLayout jPanel9Layout = new GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -614,7 +627,11 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(deleteFlowButton)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(renameFlowButton)
-                .addContainerGap(269, Short.MAX_VALUE))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(addBlockButton)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addContainerGap(75, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(jPanel9Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
@@ -624,7 +641,9 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(newFlowButton)
                     .addComponent(deleteFlowButton)
                     .addComponent(renameFlowButton)
-                    .addComponent(lockFlowButton))
+                    .addComponent(lockFlowButton)
+                    .addComponent(addBlockButton)
+                    .addComponent(jButton1))
                 .addGap(5, 5, 5))
         );
 
@@ -636,7 +655,7 @@ public class GUI extends javax.swing.JFrame {
         flowCanvasLayout.setVerticalGroup(flowCanvasLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(flowCanvasLayout.createSequentialGroup()
                 .addComponent(jPanel9, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 405, Short.MAX_VALUE))
+                .addContainerGap(405, Short.MAX_VALUE))
         );
 
         objectEditorTabs.addTab("Logic", flowCanvas);
@@ -747,6 +766,7 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        playAnimationButton.setSelected(true);
         playAnimationButton.setText("►");
         playAnimationButton.setEnabled(false);
         playAnimationButton.addActionListener(new ActionListener() {
@@ -881,7 +901,7 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(startAtCurrentLevelCheckBox)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(playButton, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE))
         );
         jPanel13Layout.setVerticalGroup(jPanel13Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -1021,7 +1041,7 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel2)
-                        .addGap(0, 22, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jCheckBox1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -1774,6 +1794,8 @@ public class GUI extends javax.swing.JFrame {
     private void deleteObjectButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_deleteObjectButtonActionPerformed
         Project.getProject().getCurrentLevel().removeObject(sceneCanvas.getSelectedObject());
         sceneCanvas.repaint();
+        sceneCanvas.setSelectedObject(null);
+        GUI.refreshBasicObjectOptions();
     }//GEN-LAST:event_deleteObjectButtonActionPerformed
 
     private void changeObjectProperty(ActionEvent evt) {//GEN-FIRST:event_changeObjectProperty
@@ -1933,7 +1955,10 @@ public class GUI extends javax.swing.JFrame {
         if (cmd == 'a') {
             Animation a = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
             a.setLocked(source.isSelected());
-        } else {
+        } else if (cmd == 'f') {
+            Flow f = sceneCanvas.getActiveObject().getFlows().get(flowChooser.getSelectedIndex());
+            f.setLocked(source.isSelected());
+        }  else {
             sceneCanvas.getActiveObject().setLocked(Integer.parseInt(cmd+""), source.isSelected());
         }
     }//GEN-LAST:event_lockTextureButtonActionPerformed
@@ -1984,24 +2009,35 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_flowCanvasMouseClicked
 
     private void flowChooserActionPerformed(ActionEvent evt) {//GEN-FIRST:event_flowChooserActionPerformed
-        // TODO add your handling code here:
+        GUI.refreshFlowOptions();
     }//GEN-LAST:event_flowChooserActionPerformed
 
     private void newFlowButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_newFlowButtonActionPerformed
-        // TODO add your handling code here:
+        sceneCanvas.getActiveObject().newFlow();
+        GUI.refreshChooser(flowChooser, sceneCanvas.getActiveObject().getFlows());
+        flowChooser.setSelectedIndex(sceneCanvas.getActiveObject().getFlows().size() - 1);
     }//GEN-LAST:event_newFlowButtonActionPerformed
 
     private void deleteFlowButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_deleteFlowButtonActionPerformed
-        // TODO add your handling code here:
+        sceneCanvas.getActiveObject().getFlows().remove(flowChooser.getSelectedIndex());
+        GUI.refreshChooser(flowChooser, sceneCanvas.getActiveObject().getFlows());
     }//GEN-LAST:event_deleteFlowButtonActionPerformed
 
     private void renameFlowButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_renameFlowButtonActionPerformed
-        // TODO add your handling code here:
+        Flow a = sceneCanvas.getActiveObject().getFlows().get(flowChooser.getSelectedIndex());
+        String input = JOptionPane.showInputDialog(objectEditor, "Name:", a.getName());
+        if (input == null) return;
+        if (sceneCanvas.getActiveObject().containsFlow(input)) {
+            JOptionPane.showMessageDialog(objectEditor, "A flowchart already exists by that name!");
+            return;
+        }
+        a.setName(input);
+        GUI.refreshChooser(flowChooser, sceneCanvas.getActiveObject().getFlows());
     }//GEN-LAST:event_renameFlowButtonActionPerformed
 
-    private void lockFlowButtonlockTextureButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_lockFlowButtonlockTextureButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_lockFlowButtonlockTextureButtonActionPerformed
+    private void addBlockButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_addBlockButtonActionPerformed
+        //GUI.refreshChooser
+    }//GEN-LAST:event_addBlockButtonActionPerformed
 
     /**
      * Returns 0 if user made a YES or NO choice. 1 if the user canceled.
@@ -2133,7 +2169,7 @@ public class GUI extends javax.swing.JFrame {
          */
         refreshBasicObjectOptions();
         GUI.refreshChooser(animationChooser, sceneCanvas.getActiveObject().getAnimations());
-        //GUI.refreshChooser(flowChooser, sceneCanvas.getActiveObject().getFlows());
+        GUI.refreshChooser(flowChooser, sceneCanvas.getActiveObject().getFlows());
         
         objectEditorTabs.setEnabledAt(2, !sceneCanvas.getActiveObject().isHitbox()); //animation tab
         
@@ -2190,6 +2226,23 @@ public class GUI extends javax.swing.JFrame {
     }
 
     public static void refreshFlowOptions() {
+        boolean inbound = flowChooser.getSelectedIndex() > -1;
+        boolean gallery = Project.getProject().containsGalleryObject(sceneCanvas.getActiveObject());
+        boolean hitbox = sceneCanvas.getActiveObject().isHitbox();
+        deleteFlowButton.setEnabled(inbound);
+        renameFlowButton.setEnabled(inbound);
+        addBlockButton.setEnabled(inbound);
+        lockFlowButton.setEnabled(inbound && !gallery && !hitbox);
+        lockFlowButton.setSelected(false);
+        flowCanvas.setFlow(null);
+        
+        if (inbound) {
+            Flow a = sceneCanvas.getActiveObject().getFlows().get(flowChooser.getSelectedIndex());
+            lockAnimationButton.setSelected(a.isLocked());
+            flowCanvas.setFlow(a);
+            lockFlowButton.setSelected(a.isLocked());
+        }
+        
         flowCanvas.repaint();
     }
 
@@ -2309,6 +2362,7 @@ public class GUI extends javax.swing.JFrame {
 
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private static JButton addBlockButton;
     private static JButton addFrameButton;
     JMenuItem ambientSoundVolumeMenuItem;
     private static AnimationCanvas animationCanvas;
@@ -2338,6 +2392,7 @@ public class GUI extends javax.swing.JFrame {
     private static JLabel frameCountLabel;
     private static JComboBox<String> galleryObjectChooser;
     private static JPanel galleryObjectPanel;
+    JButton jButton1;
     JCheckBox jCheckBox1;
     JLabel jLabel1;
     JLabel jLabel2;

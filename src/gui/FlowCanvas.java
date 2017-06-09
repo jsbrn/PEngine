@@ -15,8 +15,13 @@ public class FlowCanvas extends JPanel {
 
     private double camera_x, camera_y, last_mouse_x, last_mouse_y;
     private Block selected_block; private Flow selected_flow;
+    private int selected_node, last_mouse_click_x, last_mouse_click_y;
     
     public void setLastMousePosition(int x, int y) { last_mouse_x = x; last_mouse_y = y; }
+    
+    public FlowCanvas() {
+        selected_node = -1;
+    }
     
     public void setSelectedBlock(Block o) {
         selected_block = o;
@@ -71,7 +76,7 @@ public class FlowCanvas extends JPanel {
         super.paintComponent(g);
         
         //draw gradient background
-        Color top_color = new Color(0, 76, 150), bttm_color = new Color(0, 25, 100);
+        Color top_color = new Color(25, 75, 120), bttm_color = new Color(10, 85, 140);
         Graphics2D g2d = (Graphics2D) g;
         GradientPaint gp1 = new GradientPaint(0, 0, top_color, 0, getHeight(), bttm_color, true);
         g2d.setPaint(gp1);
@@ -117,16 +122,25 @@ public class FlowCanvas extends JPanel {
         //draw the line
         /*if (selected_block != null && selected_node > -1) {
             g.setColor(new Color(0, 0, 0, 100));
-            //g.drawLine(ORIGIN_X + LAST_MOUSE_CLICK_X, ORIGIN_Y + LAST_MOUSE_CLICK_Y, LAST_MOUSE_X, LAST_MOUSE_Y);
-        }*/        
+            
+            g.drawLine(ORIGIN_X + LAST_MOUSE_CLICK_X, ORIGIN_Y + LAST_MOUSE_CLICK_Y, LAST_MOUSE_X, LAST_MOUSE_Y);
+        }*/
         
     }  
     
-    public static void drawString(String str, int x, int y, Graphics g) {
+    public void drawString(String str, int x, int y, Graphics g) {
         g.setColor(Color.gray.darker());
         g.drawString(str, x+1, y+1);
         g.setColor(Color.white);
         g.drawString(str, x, y);
+    }
+    
+    public void setFlow(Flow f) {
+        selected_flow = f;
+        if (f == null) {
+            selected_block = null;
+            selected_node = -1;
+        }
     }
     
     /**
@@ -143,16 +157,66 @@ public class FlowCanvas extends JPanel {
         if (selected_flow == null) return;
         grabFocus();
         if (SwingUtilities.isLeftMouseButton(e)) {
+            if (selected_block != null) {
+                int[] osc = selected_block.getRenderCoords();
+                int[] osd = new int[]{osc[0], osc[1], selected_block.dimensions()[0], selected_block.dimensions()[1]};
+                double move_x = (e.getX()-last_mouse_x);
+                double move_y = (e.getY()-last_mouse_y);
+                if (MiscMath.pointIntersects(last_mouse_x, last_mouse_y, osd[0], osd[1], osd[2], osd[3])) {
+                    selected_block.move(move_x, move_y);
+                }
+            }
         } else if (SwingUtilities.isRightMouseButton(e)) {
             moveCamera((last_mouse_x-e.getX()), (last_mouse_y-e.getY()));
         }
         repaint();            
         setLastMousePosition(e.getX(), e.getY());
-        System.out.println("Logic cam: "+camera_x+", "+camera_y);
     }
     
     public void handleMouseClick(MouseEvent e) {
-        selected_block = getBlock(e.getX(), e.getY());
+        /*selected_block = getBlock(e.getX(), e.getY());
+        if (selected_block == null) {
+            selected_node = -1;
+        } else {
+            selected_node = selected_block.getNode(e.getX(), e.getY());
+        }
+        
+        System.out.println("Selected block "+selected_block+", node "+selected_node)*/
+        
+        if (selected_flow == null) return;
+        Block b = getBlock(e.getX(), e.getY());
+        int d = b == null ? -1 : b.getNode(e.getX(), e.getY());
+        
+        if (b != null) {
+            if (d > -1) {
+                if (selected_node < 0) {
+                    //do not allow the "from" to be param or IN
+                    //this is handled in block.connectTo but I don't want the editor to allow
+                    //you to start a connection from these nodes
+                    if (d < Block.NODE_COUNT && d != Block.IN) selected_node = d;
+                } else {
+                    int to = d, from = selected_node;
+                    boolean accept_connection = selected_block.connectTo(b, to, from);
+                    System.out.println("Connection: ["+selected_block.getType()+", "+from+"] <-> "
+                                +"["+b.getType()+", "+to+"]"+(accept_connection ? " accepted" : " rejected"));
+                    if (accept_connection) {
+                        selected_block = null;
+                        selected_node = -1;
+                    }
+                }
+            } else {
+                selected_block = b;
+                selected_node = -1;
+            }
+            selected_block = b;
+        } else {
+            selected_block = null;
+            selected_node = -1;
+        }
+        
+        last_mouse_click_x = e.getX();
+        last_mouse_click_y = e.getY();
+        
         repaint();
         grabFocus();
     }
