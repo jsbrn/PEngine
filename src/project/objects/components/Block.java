@@ -1,6 +1,5 @@
 package project.objects.components;
 
-import gui.FlowCanvas;
 import gui.GUI;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -8,13 +7,11 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,8 +21,8 @@ import misc.MiscMath;
 public class Block {
     
     public static final int NODE_COUNT = 4, IN = 0, OUT = 1, YES = 2, NO = 3;
-    public static final int FUNCTION_BLOCK = 0, CONDITIONAL_BLOCK = 1,
-            EVENT_BLOCK = 2, VARIABLE_BLOCK = 3;
+    public static final int ENTRY_BLOCK = 0, FUNCTION_BLOCK = 1,
+            VARIABLE_BLOCK = 2, CONDITIONAL_BLOCK = 3, WHEN_BLOCK = 4;
     public static final int TYPE_NONE = 0, TYPE_ANY = 1, TYPE_NUMBER = 2, TYPE_STRING = 3;
     public static final String[] TYPE_NAMES = {"None", "Any", "Number", "Text"};
     
@@ -34,7 +31,7 @@ public class Block {
     
     private Object[][] parametres; //a list of {name, type, default_value} entries
     
-    private int output_type; //the type of value that the OUT connection supplies
+    private int output_type, block_type; //the type of value that the OUT connection supplies
     
     private Flow parent;
     
@@ -83,7 +80,8 @@ public class Block {
         this.nodes = new boolean[]{
         
             (block_type == FUNCTION_BLOCK && output_type == TYPE_NONE) //in
-                || block_type == CONDITIONAL_BLOCK || block_type == VARIABLE_BLOCK,
+                || block_type == CONDITIONAL_BLOCK || block_type == VARIABLE_BLOCK
+                || block_type == WHEN_BLOCK,
             block_type != CONDITIONAL_BLOCK, //out
             block_type == CONDITIONAL_BLOCK, //yes
             block_type == CONDITIONAL_BLOCK //no
@@ -91,6 +89,7 @@ public class Block {
         };
         this.connections = new int[NODE_COUNT+params.length][2];
         this.output_type = output_type;
+        this.block_type = block_type;
         this.parametres = params;
         
     }    
@@ -107,28 +106,43 @@ public class Block {
      * @return A boolean indicating success.
      */
     public boolean connectTo(Block b, int to, int from) {
-        if (b == null) return false;
-        boolean accept_connection = false;
-        //accept parameter connections from OUT to PARAMS
-        if (to >= Block.NODE_COUNT) {
-            accept_connection = from == Block.OUT
-                    && (int)b.getParametre(to-NODE_COUNT)[2] == (int)getParametre(from-NODE_COUNT)[2];
-        }
-        //accept out, yes and no to IN
-        if (to == Block.IN) accept_connection = from == Block.OUT || from == Block.YES || from == Block.NO;
-        if (!accept_connection) return false;
         
+        
+        if (!canConnectTo(b, to, from)) return false;
+        
+        //check if the nodes are out of bounds
         if (to < 0 || to >= b.connections.length) return false;
         if (from < 0 || from >= connections.length) return false;
-        
+        //clear the connections first
         if (b.connections[to][0] > 0) b.clearConnection(to, true);
         if (connections[from][0] > 0) clearConnection(from, true);
+        //set the new ones
         b.connections[to] = new int[]{id, from};
         connections[from] = new int[]{b.id, to};
-        
+        //allow multiple entries into IN node
         if (to == IN) b.connections[to] = new int[]{0, -1};
         
         return true;
+    }
+    
+    private boolean canConnectTo(Block b, int to, int from) {
+        if (b == null) return false;
+        boolean accept_connection = false;
+        
+        int node_type = (int)b.getParametre(to-NODE_COUNT)[1];
+        
+        //accept parameter connections from OUT to PARAMS as long as the types match
+        //type ANY accepts from all but NONE
+        //also won't accept if this is a VARIABLE_BLOCK
+        if (to >= Block.NODE_COUNT) {
+            accept_connection = from == Block.OUT 
+                    && (node_type == output_type || (node_type == TYPE_ANY && output_type != TYPE_NONE))
+                    && block_type != VARIABLE_BLOCK;
+        }
+        //accept out, yes and no to IN but only from blocks with no return type
+        if (to == Block.IN) accept_connection = (from == Block.OUT || from == Block.YES || from == Block.NO)
+                && output_type == TYPE_NONE;
+        return accept_connection;
     }
     
     /**
@@ -215,14 +229,15 @@ public class Block {
     
     /**
      * Returns an integer describing the dot that was clicked. 0-4 represents the in/out/yes/no/etc dots,
-     * while anything above represents the parameter dots.
+     * while anything above represents the parameter dots. Will not return the parameter nodes if
+     * this block is a VARIABLE_BLOCK (they are not to be shown in the editor).
      * @param x Coordinates from the origin.
      * @param y Coordinates from the origin.
      * @return An integer (see above). Returns -1 if no dot was clicked.
      */
     public int getNode(double x, double y) {
         //check for parametres
-        for (int i = 0; i < NODE_COUNT + paramCount(); i++) {
+        for (int i = 0; i < NODE_COUNT + (block_type != VARIABLE_BLOCK ? paramCount() : 0); i++) {
             if (i < nodes.length) if (!nodes[i]) continue;
             int[] rc = getRenderCoords();
             int[] offset = getNodeOffset(i);
@@ -276,7 +291,13 @@ public class Block {
         return output_type;
     }
     
-    public void setDefaultValue(int p_index, String new_value) {
+    /**
+     * Sets the default value of the parameter. If the block is a VARIABLE_BLOCK,
+     * then the value will be used as the return value for that specific index.
+     * @param p_index
+     * @param new_value 
+     */
+    public void setValue(int p_index, String new_value) {
         parametres[p_index][2] = new_value;
     }
     
@@ -325,7 +346,7 @@ public class Block {
         int[] rc = getRenderCoords();
         
         Color[] b_colors = {Color.lightGray, Color.blue, Color.green, Color.red, Color.yellow.darker()};
-        for (int i = 0; i < NODE_COUNT + paramCount(); i++) {
+        for (int i = 0; i < NODE_COUNT + (block_type != VARIABLE_BLOCK ? paramCount() : 0); i++) {
             
             if (i < nodes.length) if (!nodes[i]) continue;
             int[] offset = getNodeOffset(i);

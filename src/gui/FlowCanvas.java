@@ -108,18 +108,20 @@ public class FlowCanvas extends JPanel {
         if (selected_flow == null) return;
         
         String[] text = new String[]{"Input", "Output", "Yes", "No"};
+        String hover_text = ""; int hover_width = 0;
         
         for (int i = 0; i < selected_flow.blockCount(); i++) {
             Block b = selected_flow.getBlock(i);
             b.draw(g);
             int node = b.getNode(last_mouse_x, last_mouse_y);
-            String t = node < 0 ? "" : (node < text.length ? text[node] : b.getParametre(node-Block.NODE_COUNT)[0]
-                    +" ("+Block.TYPE_NAMES[(int)b.getParametre(node-Block.NODE_COUNT)[1]]+")");
-            g.setColor(new Color(0, 0, 0, 100));
-            int[] rect = new int[]{(int)last_mouse_x + 20, (int)last_mouse_y, t.length() > 0 ? b.getFontWidth(t, g) + 10 : 0, 20};
-            g.fillRect(rect[0], rect[1], rect[2], rect[3]);
-            g.setColor(Color.white);
-            g.drawString(t, rect[0] + 5, rect[1] + 15);
+            if (node < Block.NODE_COUNT && node > -1) hover_text = text[node];
+            if (node == Block.OUT) hover_text += " ("+Block.TYPE_NAMES[b.getOutputType()]+")";
+            if (node >= Block.NODE_COUNT) {
+                Object[] p = b.getParametre(node-Block.NODE_COUNT);
+                hover_text = (String)p[0]
+                        + " ("+Block.TYPE_NAMES[(int)p[1]]+")";
+            }
+            hover_width = b.getFontWidth(hover_text, g);
         }
             
         //draw the line
@@ -144,6 +146,13 @@ public class FlowCanvas extends JPanel {
             g.setColor(Color.black);
             g.drawRect(osc[0]-2, osc[1]-2, width+4, height+4);
         }
+        
+        g.setColor(new Color(0, 0, 0, 100));
+        int[] rect = new int[]{(int)last_mouse_x + 20, 
+            (int)last_mouse_y, hover_text.length() > 0 ? hover_width + 10 : 0, 20};
+        g.fillRect(rect[0], rect[1], rect[2], rect[3]);
+        g.setColor(Color.white);
+        g.drawString(hover_text, rect[0] + 5, rect[1] + 15);
         
     }  
     
@@ -222,10 +231,8 @@ public class FlowCanvas extends JPanel {
                     boolean accept_connection = selected_block.connectTo(b, to, from);
                     System.out.println("Connection: ["+selected_block.getType()+", "+from+"] <-> "
                                 +"["+b.getType()+", "+to+"]"+(accept_connection ? " accepted" : " rejected"));
-                    if (accept_connection) {
-                        selected_block = null;
-                        selected_node = -1;
-                    }
+                    selected_block = null;
+                    selected_node = -1;
                 }
             } else {
                 selected_block = b;

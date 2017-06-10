@@ -2122,7 +2122,7 @@ public class GUI extends javax.swing.JFrame {
         if (p == null) return;
         String input = JOptionPane.showInputDialog(objectEditor, Block.TYPE_NAMES[(int)p[1]]+":", (String)p[2]);
         if (input == null) return;
-        b.setDefaultValue(parameterChooser.getSelectedIndex(), input);
+        b.setValue(parameterChooser.getSelectedIndex(), input);
     }//GEN-LAST:event_setDefaultValueButtonActionPerformed
 
     /**

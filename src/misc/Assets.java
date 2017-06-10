@@ -78,13 +78,16 @@ public class Assets {
             ex.printStackTrace();
         }*/
         blocks = new Block[5];
-        blocks[0] = new Block("Function", "f", Block.FUNCTION_BLOCK, Block.TYPE_NONE, new Object[][]{{"Sound file", Block.TYPE_STRING, ""}});
-        blocks[1] = new Block("String function", "sf", Block.FUNCTION_BLOCK, Block.TYPE_STRING, 
-                new Object[][]{{"Sound file", Block.TYPE_STRING, ""}, {"Volume", Block.TYPE_NUMBER, "100"}});
-        blocks[2] = new Block("Event", "e", Block.EVENT_BLOCK, Block.TYPE_NONE, new Object[][]{});
-        blocks[3] = new Block("If", "c", Block.CONDITIONAL_BLOCK, Block.TYPE_NONE, 
+        blocks[0] = new Block("Set position", "sp", Block.FUNCTION_BLOCK, Block.TYPE_NONE, 
+                new Object[][]{{"x", Block.TYPE_NUMBER, "0"}, {"y", Block.TYPE_NUMBER, "0"}});
+        blocks[1] = new Block("Get X position", "gxp", Block.FUNCTION_BLOCK, Block.TYPE_NUMBER, 
+                new Object[][]{});
+        blocks[2] = new Block("Flow beginning", "fb", Block.ENTRY_BLOCK, Block.TYPE_NONE, new Object[][]{{"id", Block.TYPE_STRING, ""}});
+        blocks[3] = new Block("Strings equal", "se", Block.CONDITIONAL_BLOCK, Block.TYPE_NONE, 
                 new Object[][]{{"x", Block.TYPE_STRING, ""}, {"y", Block.TYPE_STRING, ""}});
-        blocks[4] = new Block("Variable", "v", Block.VARIABLE_BLOCK, Block.TYPE_NUMBER, new Object[][]{});
+        blocks[3] = new Block("When x == y", "wxy", Block.WHEN_BLOCK, Block.TYPE_NONE, 
+                new Object[][]{{"x", Block.TYPE_STRING, ""}, {"y", Block.TYPE_STRING, ""}});
+        blocks[4] = new Block("Number", "nv", Block.VARIABLE_BLOCK, Block.TYPE_NUMBER, new Object[][]{{"Number", Block.TYPE_NUMBER, "0"}});
     }
     
     public static Object get(String key) {
