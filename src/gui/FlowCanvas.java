@@ -1,10 +1,12 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Line2D;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import project.objects.components.Block;
@@ -25,6 +27,7 @@ public class FlowCanvas extends JPanel {
     
     public void setSelectedBlock(Block o) {
         selected_block = o;
+        if (o == null) selected_node = -1;
     }
     
     public void setSelectedFlow(Flow f) { selected_flow = f; }
@@ -113,18 +116,34 @@ public class FlowCanvas extends JPanel {
             String t = node < 0 ? "" : (node < text.length ? text[node] : b.getParametre(node-Block.NODE_COUNT)[0]
                     +" ("+Block.TYPE_NAMES[(int)b.getParametre(node-Block.NODE_COUNT)[1]]+")");
             g.setColor(new Color(0, 0, 0, 100));
-            int[] rect = new int[]{(int)last_mouse_x + 20, (int)last_mouse_y, t.length() > 0 ? t.length()*6 + 10 : 0, 20};
+            int[] rect = new int[]{(int)last_mouse_x + 20, (int)last_mouse_y, t.length() > 0 ? b.getFontWidth(t, g) + 10 : 0, 20};
             g.fillRect(rect[0], rect[1], rect[2], rect[3]);
             g.setColor(Color.white);
             g.drawString(t, rect[0] + 5, rect[1] + 15);
         }
             
         //draw the line
-        /*if (selected_block != null && selected_node > -1) {
+        if (selected_block != null && selected_node > -1) {
             g.setColor(new Color(0, 0, 0, 100));
+            int[] rc = selected_block.getRenderCoords();
+            int[] n = selected_block.getNodeOffset(selected_node);
+            int[] p1 = new int[]{rc[0]+n[0]+10, rc[1]+n[1]+10};
             
-            g.drawLine(ORIGIN_X + LAST_MOUSE_CLICK_X, ORIGIN_Y + LAST_MOUSE_CLICK_Y, LAST_MOUSE_X, LAST_MOUSE_Y);
-        }*/
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setStroke(new BasicStroke(2));
+            g2.draw(new Line2D.Float(p1[0], p1[1], (int)last_mouse_x, (int)last_mouse_y));
+
+        }
+        
+        if (selected_block != null) {
+            int osc[] = selected_block.getRenderCoords();
+            int width = selected_block.dimensions()[0];
+            int height = selected_block.dimensions()[1];
+            g.setColor(Color.white);
+            g.drawRect(osc[0]-1, osc[1]-1, width+2, height+2);
+            g.setColor(Color.black);
+            g.drawRect(osc[0]-2, osc[1]-2, width+4, height+4);
+        }
         
     }  
     
@@ -133,6 +152,10 @@ public class FlowCanvas extends JPanel {
         g.drawString(str, x+1, y+1);
         g.setColor(Color.white);
         g.drawString(str, x, y);
+    }
+    
+    public Flow getFlow() {
+        return selected_flow;
     }
     
     public void setFlow(Flow f) {
@@ -219,6 +242,7 @@ public class FlowCanvas extends JPanel {
         
         repaint();
         grabFocus();
+        GUI.refreshFlowOptions();
     }
     
 }

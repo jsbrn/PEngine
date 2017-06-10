@@ -21,11 +21,6 @@ public class Flow {
         this.locked = false;
         this.blocks = new ArrayList<Block>();
         this.name = "";
-        addBlock(Assets.getBlock(0));
-        addBlock(Assets.getBlock(1));
-        addBlock(Assets.getBlock(2));
-        addBlock(Assets.getBlock(3));
-        addBlock(Assets.getBlock(4));
     }
     
     public void autoName(SceneObject o) {

@@ -2,8 +2,14 @@ package project.objects.components;
 
 import gui.FlowCanvas;
 import gui.GUI;
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Line2D;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -12,12 +18,13 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import misc.Assets;
 import misc.MiscMath;
 
 public class Block {
     
     public static final int NODE_COUNT = 4, IN = 0, OUT = 1, YES = 2, NO = 3;
-    public static final int ACTION_BLOCK = 0, CONDITIONAL_BLOCK = 1,
+    public static final int FUNCTION_BLOCK = 0, CONDITIONAL_BLOCK = 1,
             EVENT_BLOCK = 2, VARIABLE_BLOCK = 3;
     public static final int TYPE_NONE = 0, TYPE_ANY = 1, TYPE_NUMBER = 2, TYPE_STRING = 3;
     public static final String[] TYPE_NAMES = {"None", "Any", "Number", "Text"};
@@ -36,6 +43,20 @@ public class Block {
     
     private int x = 50, y = 50;
     
+    private static final Font font = new Font("Arial", Font.BOLD, 11);
+    private int title_width;
+    
+    public static Block create(String type) {
+        Block template = Assets.getBlock(type);
+        if (template == null) {
+            System.err.println("Cannot find a block by type \""+type+"\"");
+            return null;
+        }
+        Block new_b = new Block();
+        template.copyTo(new_b, false);
+        return new_b;
+    }
+    
     public Block() {
         this.id = Math.abs(new Random().nextInt());
         this.title = "";
@@ -44,8 +65,8 @@ public class Block {
         this.connections = new int[NODE_COUNT][2];
         this.output_type = TYPE_NONE;
         this.parametres = new Object[NODE_COUNT][3]; //name, type, default value
+        this.title_width = 75;
     }
-    
     
     /**
      * Creates a new flowchart block for the list of template blocks.
@@ -61,7 +82,7 @@ public class Block {
         this.type = type;
         this.nodes = new boolean[]{
         
-            block_type == ACTION_BLOCK //in
+            (block_type == FUNCTION_BLOCK && output_type == TYPE_NONE) //in
                 || block_type == CONDITIONAL_BLOCK || block_type == VARIABLE_BLOCK,
             block_type != CONDITIONAL_BLOCK, //out
             block_type == CONDITIONAL_BLOCK, //yes
@@ -89,7 +110,10 @@ public class Block {
         if (b == null) return false;
         boolean accept_connection = false;
         //accept parameter connections from OUT to PARAMS
-        if (to >= Block.NODE_COUNT) accept_connection = from == Block.OUT;
+        if (to >= Block.NODE_COUNT) {
+            accept_connection = from == Block.OUT
+                    && (int)b.getParametre(to-NODE_COUNT)[2] == (int)getParametre(from-NODE_COUNT)[2];
+        }
         //accept out, yes and no to IN
         if (to == Block.IN) accept_connection = from == Block.OUT || from == Block.YES || from == Block.NO;
         if (!accept_connection) return false;
@@ -209,8 +233,19 @@ public class Block {
     
     public String getType() { return type; }
     
-    public void setX(int new_x) { x = new_x; if (x < 0) x = 0; }
-    public void setY(int new_y) { y = new_y; if (y < 0) y = 0; }
+    public void setX(int new_x) { x = new_x; }
+    public void setY(int new_y) { y = new_y; }
+    
+    /**
+     * Pass in the graphics context that is being used to draw this block,
+     * and a String, and get back the actual width of the rendered text.
+     * @param s
+     * @param g
+     * @return An integer.
+     */
+    public int getFontWidth(String s, Graphics g) {
+        return (int)g.getFontMetrics().getStringBounds(s, g).getWidth();
+    }
     
     public boolean[] nodes() {
         return nodes;
@@ -231,13 +266,18 @@ public class Block {
     public String getTitle() { return title; }
     
     public int[] dimensions() {
-        int b_width = (getTitle().length()*5), b_height = 25 + (20*paramCount());
-        if (b_width < 100) b_width = 100;
+        int b_width = title_width + 10, 
+                b_height = paramCount() > 0 ? 20*paramCount() + 10 : 30;
+        if (b_width < 75) b_width = 75;
         return new int[]{b_width, b_height};
     }
     
     public int getOutputType() {
         return output_type;
+    }
+    
+    public void setDefaultValue(int p_index, String new_value) {
+        parametres[p_index][2] = new_value;
     }
     
     public Object[] getParametre(int index) {
@@ -263,16 +303,23 @@ public class Block {
         b.output_type = output_type;
         b.nodes = new boolean[nodes.length];
         b.connections = new int[connections.length][2];
+        b.parametres = new Object[parametres.length][3];
         for (int i = 0; i != nodes.length; i++) {
             b.nodes[i] = nodes[i];
         }
         for (int i = 0; i != connections.length; i++) {
             b.connections[i] = new int[]{connections[i][0], connections[i][1]};
         }
+        for (int i = 0; i != parametres.length; i++) {
+            b.parametres[i] = new Object[]{parametres[i][0], parametres[i][1], parametres[i][2]};
+        }
         b.parametres = parametres;
     }
     
     public void draw(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(2));
+        
         int[] dims = dimensions();
         
         int[] rc = getRenderCoords();
@@ -282,10 +329,12 @@ public class Block {
             
             if (i < nodes.length) if (!nodes[i]) continue;
             int[] offset = getNodeOffset(i);
-            g.setColor(b_colors[i > 4 ? 4 : i]);
-            g.fillRect(rc[0] + offset[0], rc[1] + offset[1], 20, 20);
-            g.setColor(b_colors[i > 4 ? 4 : i].darker());
-            g.drawRect(rc[0] + offset[0], rc[1] + offset[1], 20, 20);
+            
+            Color from_color = b_colors[i > 4 ? 4 : i];
+            g2.setColor(from_color);
+            g2.fillRect(rc[0] + offset[0], rc[1] + offset[1], 20, 20);
+            g2.setColor(from_color.darker());
+            g2.drawRect(rc[0] + offset[0], rc[1] + offset[1], 20, 20);
             
             int[] conn = connections[i];
             Block b_conn = parent.getBlockByID(conn[0]);
@@ -293,16 +342,26 @@ public class Block {
             int[] brc = b_conn.getRenderCoords();
             int[] bno = b_conn.getNodeOffset(conn[1]);
             
+            Color to_color = b_colors[conn[1] > 4 ? 4 : conn[1]];
+            
             int[] line = new int[]{rc[0]+offset[0]+10, rc[1]+offset[1]+10, brc[0]+bno[0]+10, brc[1]+bno[1]+10};
-            g.drawLine(line[0], line[1], line[2], line[3]);
+            Line2D line2d = new Line2D.Float(line[0], line[1], line[2], line[3]);
+            
+            Graphics2D g2d = (Graphics2D) g;
+            GradientPaint gp1 = new GradientPaint(line[0], line[1], from_color, line[2], line[3], to_color, false);
+            g2d.setPaint(gp1);
+            
+            g2.draw(line2d);
             
         }
         
-        g.setColor(Color.white);
-        g.fillRect(rc[0], rc[1], dims[0], dims[1]);
-        g.setColor(Color.black);
-        g.drawRect(rc[0], rc[1], dims[0], dims[1]);
-        g.drawString(getTitle(), rc[0] + 5, rc[1] + 15);
+        g2.setColor(Color.white);
+        g2.fillRect(rc[0], rc[1], dims[0], dims[1]);
+        g2.setColor(Color.black);
+        g2.drawRect(rc[0], rc[1], dims[0], dims[1]);
+        g2.setFont(font);
+        title_width = (int)g2.getFontMetrics().getStringBounds(title, g2).getWidth();
+        g2.drawString(getTitle(), rc[0] + 5, rc[1] + 15);
         
     }
     
@@ -322,7 +381,9 @@ public class Block {
         if (index == OUT) return new int[]{dims[0]/2 - 10, dims[1]};
         if (index == YES) return new int[]{10, dims[1]};
         if (index == NO) return new int[]{dims[0] - 30, dims[1]};
-        if (index >= NODE_COUNT) return new int[]{-20, 20*(index-NODE_COUNT)}; //params
+        int p_h = 20*paramCount();
+        if (index >= NODE_COUNT) return new int[]{-20, 
+            (dims[1]/2) + (20*(index-NODE_COUNT)) - (p_h / 2)}; //params
         return new int[]{0, 0};
     }
     
@@ -345,4 +406,10 @@ public class Block {
     public void setNodes(boolean in, boolean out, boolean yes, boolean no, boolean ok) {
         nodes = new boolean[]{in, out, yes, no, ok};
     }
+    
+    @Override
+    public String toString() {
+        return getTitle()+" ("+getType()+")";
+    }
+    
 }

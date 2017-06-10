@@ -21,12 +21,12 @@ public class Assets {
         if (index > -1 && index < blocks.length) return blocks[index];
         return null;
     }
-    public static Block getBlock(String title) {
-        for (Block b: blocks) {
-            if (b.getTitle().equals(title)) return b;
-        }
+    public static Block getBlock(String type) {
+        for (Block b: blocks)
+            if (b.getType().equals(type)) return b;
         return null;
     }
+    public static Block[] getBlocks() { return blocks; }
     
     /**
      * Loads all assets from the project's assets folder. Clears all previously loaded assets
@@ -78,13 +78,13 @@ public class Assets {
             ex.printStackTrace();
         }*/
         blocks = new Block[5];
-        blocks[0] = new Block("Function", "f", Block.ACTION_BLOCK, Block.TYPE_NONE, new Object[][]{{"Sound file", Block.TYPE_STRING, ""}});
-        blocks[1] = new Block("String function", "sf", Block.ACTION_BLOCK, Block.TYPE_NONE, 
-                new Object[][]{{"Sound file", Block.TYPE_STRING, ""}, {"Volume", Block.TYPE_NUMBER, 100}});
+        blocks[0] = new Block("Function", "f", Block.FUNCTION_BLOCK, Block.TYPE_NONE, new Object[][]{{"Sound file", Block.TYPE_STRING, ""}});
+        blocks[1] = new Block("String function", "sf", Block.FUNCTION_BLOCK, Block.TYPE_STRING, 
+                new Object[][]{{"Sound file", Block.TYPE_STRING, ""}, {"Volume", Block.TYPE_NUMBER, "100"}});
         blocks[2] = new Block("Event", "e", Block.EVENT_BLOCK, Block.TYPE_NONE, new Object[][]{});
-        blocks[3] = new Block("If", "e", Block.CONDITIONAL_BLOCK, Block.TYPE_NONE, 
+        blocks[3] = new Block("If", "c", Block.CONDITIONAL_BLOCK, Block.TYPE_NONE, 
                 new Object[][]{{"x", Block.TYPE_STRING, ""}, {"y", Block.TYPE_STRING, ""}});
-        blocks[4] = new Block("Variable", "v", Block.CONDITIONAL_BLOCK, Block.TYPE_NUMBER, new Object[][]{});
+        blocks[4] = new Block("Variable", "v", Block.VARIABLE_BLOCK, Block.TYPE_NUMBER, new Object[][]{});
     }
     
     public static Object get(String key) {

@@ -151,7 +151,12 @@ public class GUI extends javax.swing.JFrame {
         renameFlowButton = new JButton();
         lockFlowButton = new JToggleButton();
         addBlockButton = new JButton();
-        jButton1 = new JButton();
+        deleteBlockButton = new JButton();
+        jPanel7 = new JPanel();
+        parameterChooser = new JComboBox<>();
+        setDefaultValueButton = new JButton();
+        breakConnsButton = new JButton();
+        jLabel6 = new JLabel();
         animationCanvas = new AnimationCanvas();
         jPanel8 = new JPanel();
         animationChooser = new JComboBox<>();
@@ -611,7 +616,13 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Delete block");
+        deleteBlockButton.setText("Delete block");
+        deleteBlockButton.setEnabled(false);
+        deleteBlockButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                deleteBlockButtonActionPerformed(evt);
+            }
+        });
 
         GroupLayout jPanel9Layout = new GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -630,7 +641,7 @@ public class GUI extends javax.swing.JFrame {
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addBlockButton)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(deleteBlockButton)
                 .addContainerGap(75, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(jPanel9Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -643,7 +654,48 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(renameFlowButton)
                     .addComponent(lockFlowButton)
                     .addComponent(addBlockButton)
-                    .addComponent(jButton1))
+                    .addComponent(deleteBlockButton))
+                .addGap(5, 5, 5))
+        );
+
+        parameterChooser.setModel(new DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        parameterChooser.setEnabled(false);
+
+        setDefaultValueButton.setText("Set default value...");
+        setDefaultValueButton.setEnabled(false);
+        setDefaultValueButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                setDefaultValueButtonActionPerformed(evt);
+            }
+        });
+
+        breakConnsButton.setText("Break connections");
+        breakConnsButton.setEnabled(false);
+
+        jLabel6.setText("Parameter:");
+
+        GroupLayout jPanel7Layout = new GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel6)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(parameterChooser, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(setDefaultValueButton)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(breakConnsButton)
+                .addContainerGap())
+        );
+        jPanel7Layout.setVerticalGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(parameterChooser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(setDefaultValueButton)
+                    .addComponent(breakConnsButton)
+                    .addComponent(jLabel6))
                 .addGap(5, 5, 5))
         );
 
@@ -651,11 +703,13 @@ public class GUI extends javax.swing.JFrame {
         flowCanvas.setLayout(flowCanvasLayout);
         flowCanvasLayout.setHorizontalGroup(flowCanvasLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addComponent(jPanel9, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel7, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         flowCanvasLayout.setVerticalGroup(flowCanvasLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(flowCanvasLayout.createSequentialGroup()
                 .addComponent(jPanel9, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(405, Short.MAX_VALUE))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 372, Short.MAX_VALUE)
+                .addComponent(jPanel7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         );
 
         objectEditorTabs.addTab("Logic", flowCanvas);
@@ -2036,8 +2090,40 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_renameFlowButtonActionPerformed
 
     private void addBlockButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_addBlockButtonActionPerformed
-        //GUI.refreshChooser
+        ArrayList<String> blockList = new ArrayList<String>();
+        for (Block b : Assets.getBlocks()) {
+            blockList.add(b.toString());
+        }
+        Object selection = JOptionPane.showInputDialog(objectEditor, "Choose a block:", "Add block...",
+                JOptionPane.PLAIN_MESSAGE, null, blockList.toArray(), null);
+        if (selection == null) return;
+        String s = (String)selection;
+        String type = s.substring(s.lastIndexOf("(")+1, s.lastIndexOf(")"));
+        Block b = Block.create(type);
+        b.setX((int)flowCanvas.getCameraX());
+        b.setY((int)flowCanvas.getCameraY());
+        flowCanvas.getFlow().addBlock(b);
+        flowCanvas.setSelectedBlock(b);
+        GUI.refreshFlowOptions();
     }//GEN-LAST:event_addBlockButtonActionPerformed
+
+    private void deleteBlockButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_deleteBlockButtonActionPerformed
+        Block b = flowCanvas.getSelectedBlock();
+        if (b == null) return;
+        flowCanvas.getFlow().removeBlock(flowCanvas.getFlow().indexOf(b));
+        flowCanvas.setSelectedBlock(null);
+        GUI.refreshFlowOptions();
+    }//GEN-LAST:event_deleteBlockButtonActionPerformed
+
+    private void setDefaultValueButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_setDefaultValueButtonActionPerformed
+        Block b = flowCanvas.getSelectedBlock();
+        if (b == null) return;
+        Object[] p = b.getParametre(parameterChooser.getSelectedIndex());
+        if (p == null) return;
+        String input = JOptionPane.showInputDialog(objectEditor, Block.TYPE_NAMES[(int)p[1]]+":", (String)p[2]);
+        if (input == null) return;
+        b.setDefaultValue(parameterChooser.getSelectedIndex(), input);
+    }//GEN-LAST:event_setDefaultValueButtonActionPerformed
 
     /**
      * Returns 0 if user made a YES or NO choice. 1 if the user canceled.
@@ -2231,18 +2317,32 @@ public class GUI extends javax.swing.JFrame {
         boolean hitbox = sceneCanvas.getActiveObject().isHitbox();
         deleteFlowButton.setEnabled(inbound);
         renameFlowButton.setEnabled(inbound);
-        addBlockButton.setEnabled(inbound);
         lockFlowButton.setEnabled(inbound && !gallery && !hitbox);
         lockFlowButton.setSelected(false);
-        flowCanvas.setFlow(null);
-        
+        addBlockButton.setEnabled(inbound);
         if (inbound) {
             Flow a = sceneCanvas.getActiveObject().getFlows().get(flowChooser.getSelectedIndex());
             lockAnimationButton.setSelected(a.isLocked());
             flowCanvas.setFlow(a);
             lockFlowButton.setSelected(a.isLocked());
+        } else {
+            flowCanvas.setFlow(null);
         }
-        
+        Block selected = flowCanvas.getSelectedBlock();
+        if (selected != null) {
+            ArrayList<String> params = new ArrayList<String>();
+            for (int i = 0; i < selected.paramCount(); i++) {
+                Object[] p = selected.getParametre(i);
+                params.add((String)p[0]);
+            }
+            GUI.refreshChooser(parameterChooser, params);
+        } else {
+            parameterChooser.removeAllItems();
+        }
+        breakConnsButton.setEnabled(selected != null);
+        parameterChooser.setEnabled(selected != null);
+        setDefaultValueButton.setEnabled(selected != null);
+        deleteBlockButton.setEnabled(inbound && selected != null);
         flowCanvas.repaint();
     }
 
@@ -2373,6 +2473,7 @@ public class GUI extends javax.swing.JFrame {
     private static JCheckBoxMenuItem autoplayBGMusicMenuItem;
     JPanel basicOptionsPanel;
     JMenuItem bottomColorMenuItem;
+    private static JButton breakConnsButton;
     public static JButton bringForwardButton;
     JMenuItem cameraLocationMenuItem;
     private static JButton changeObjectNameButton;
@@ -2380,6 +2481,7 @@ public class GUI extends javax.swing.JFrame {
     private static JButton changeObjectTypeButton;
     public static JButton cloneObjectButton;
     private static JButton deleteAnimationButton;
+    private static JButton deleteBlockButton;
     private static JButton deleteFlowButton;
     private static JButton deleteGalleryObjectButton;
     JButton deleteLevelButton;
@@ -2392,12 +2494,12 @@ public class GUI extends javax.swing.JFrame {
     private static JLabel frameCountLabel;
     private static JComboBox<String> galleryObjectChooser;
     private static JPanel galleryObjectPanel;
-    JButton jButton1;
     JCheckBox jCheckBox1;
     JLabel jLabel1;
     JLabel jLabel2;
     JLabel jLabel3;
     JLabel jLabel4;
+    JLabel jLabel6;
     JMenu jMenu1;
     JMenu jMenu2;
     JMenu jMenu3;
@@ -2411,6 +2513,7 @@ public class GUI extends javax.swing.JFrame {
     JPanel jPanel13;
     JPanel jPanel5;
     JPanel jPanel6;
+    JPanel jPanel7;
     JPanel jPanel8;
     JPanel jPanel9;
     JScrollPane jScrollPane9;
@@ -2449,6 +2552,7 @@ public class GUI extends javax.swing.JFrame {
     private static JTextField objectTypeField;
     JMenuItem openAssetsFolderButton;
     JMenuItem openProjectButton;
+    private static JComboBox<String> parameterChooser;
     private static JToggleButton playAnimationButton;
     public static JButton playButton;
     JMenu projectMenu;
@@ -2464,6 +2568,7 @@ public class GUI extends javax.swing.JFrame {
     JMenuItem selectAmbienceMenuItem;
     JMenuItem selectBGMusic;
     public static JButton sendBackwardsButton;
+    private static JButton setDefaultValueButton;
     private static JButton setHomeButton;
     JMenuItem spawnMenuItem;
     public static JCheckBox startAtCurrentLevelCheckBox;

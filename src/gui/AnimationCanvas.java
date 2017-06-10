@@ -16,7 +16,7 @@ import project.objects.components.Animation;
 public class AnimationCanvas extends JPanel {
     
     private Animation animation;
-    private int frame = 0, zoom = 3;
+    private int frame = 0;
     private BufferedImage img;
     private AnimationThread thread;
     private boolean paused;
@@ -64,16 +64,6 @@ public class AnimationCanvas extends JPanel {
         img = temp_img.getSubimage(frame*w, 0, w, temp_img.getHeight());
     }
     
-    public void addZoom(int z) {
-        setZoom(zoom+z);
-    }
-    
-    public void setZoom(int z) {
-        zoom = zoom + z;
-        zoom = zoom < 0 ? 1 : (zoom > 8 ? 8 : zoom);
-        reset();
-    }
-    
     public void setFrame(int f) {
         frame = f < 0 ? 0 : f;
     }
@@ -100,9 +90,12 @@ public class AnimationCanvas extends JPanel {
         
         if (animation == null) return;
         if (img != null) {
-            g.drawImage(img.getScaledInstance(img.getWidth()*zoom, 
-                    img.getHeight()*zoom, Image.SCALE_SMOOTH), (getWidth() - img.getWidth()*zoom)/2, 
-                    (getHeight() - img.getHeight()*zoom)/2, null);
+            int z = (getWidth() < getHeight() ? (int)(getWidth()) / img.getWidth()
+                : getHeight() / img.getHeight()) / 3;
+            if (z < 1) z = 1;
+            g.drawImage(img.getScaledInstance(img.getWidth()*z, 
+                    img.getHeight()*z, Image.SCALE_SMOOTH), (getWidth() - img.getWidth()*z)/2, 
+                    (getHeight() - img.getHeight()*z)/2, null);
         }
         
     }
