@@ -62,7 +62,7 @@ public class Block {
      * @param output_type The type of value this block outputs.
      * @param params Specify the list of parametres and their starting values.
      */
-    public Block(String name, String type, int block_type, int output_type, Object[] params) {
+    public Block(String name, String type, int block_type, int output_type, Object[][] params) {
         this.id = Math.abs(new Random().nextInt());
         this.title = name;
         this.type = type;
@@ -83,13 +83,13 @@ public class Block {
         
         this.nodes = new Node[NODE_COUNT + (params == null ? 0 : params.length)];
         this.nodes[NODE_IN] = ((block_type == FUNCTION_BLOCK && output_type == TYPE_NONE)
-                || block_type == CONDITIONAL_BLOCK) ? new Node(-1, 0, null, TYPE_NONE) : null;
-        this.nodes[NODE_OUT] = block_type != CONDITIONAL_BLOCK ? new Node(0, -1, null, output_type) : null; 
-        this.nodes[NODE_YES] = block_type == CONDITIONAL_BLOCK ? new Node(0, -1, null, TYPE_NONE) : null; 
-        this.nodes[NODE_NO] = block_type == CONDITIONAL_BLOCK ? new Node(0, -1, null, TYPE_NONE) : null; 
-
+                || block_type == CONDITIONAL_BLOCK) ? new Node(-1, 0, "", TYPE_NONE, "") : null;
+        this.nodes[NODE_OUT] = block_type != CONDITIONAL_BLOCK ? new Node(0, -1, "", output_type, "") : null; 
+        this.nodes[NODE_YES] = block_type == CONDITIONAL_BLOCK ? new Node(0, -1, "", TYPE_NONE, "") : null; 
+        this.nodes[NODE_NO] = block_type == CONDITIONAL_BLOCK ? new Node(0, -1, "", TYPE_NONE, "") : null; 
+        
         for (int n = NODE_COUNT; n < nodes.length; n++) 
-            this.nodes[n] = new Node();
+            this.nodes[n] = new Node(-1, 0, (String)(params[n][0]), (int)(params[n][1]), (String)(params[n][2]));
         
     }    
     
@@ -113,8 +113,8 @@ public class Block {
         Node t_from = getNode(from);
         if (b_to == null || t_from == null) return false;
         
-        int to_index = b_to.addConnection(new Connection(getID(), from), Node.INCOMING);
-        int from_index = t_from.addConnection(new Connection(b.getID(), to), Node.OUTGOING);
+        int to_index = b_to.addConnection(getID(), from, Node.INCOMING);
+        int from_index = t_from.addConnection(b.getID(), to, Node.OUTGOING);
         
         if (to_index == -1 || from_index == -1) return false;
         
@@ -265,7 +265,7 @@ public class Block {
         b.y = y;
         b.nodes = new Node[nodes.length];
         for (int n = 0; n < nodes.length; n++) {
-            b.nodes[n] = new Node(0, 0, "", 0);
+            b.nodes[n] = new Node(0, 0, "", 0, "");
             nodes[n].copyTo(b.nodes[n]);
         }
     }
@@ -290,22 +290,28 @@ public class Block {
             g2.setColor(from_color.darker());
             g2.drawRect(rc[0] + offset[0], rc[1] + offset[1], 20, 20);
             
-            /*Connection c = nodes[i].
-            Block b_conn = parent.getBlockByID(conn[0]);
-            if (b_conn == null) continue;
-            int[] brc = b_conn.getRenderCoords();
-            int[] bno = b_conn.getNodeOffset(conn[1]);
+            for (Node n: nodes) {
+                for (int[] conn: n.connections(Node.INCOMING)) {
+                    Connection c = nodes[i].
+                    Block b_conn = parent.getBlockByID(conn[0]);
+                    if (b_conn == null) continue;
+                    int[] brc = b_conn.getRenderCoords();
+                    int[] bno = b_conn.getNodeOffset(conn[1]);
+
+                    Color to_color = b_colors[conn[1] > 4 ? 4 : conn[1]];
+
+                    int[] line = new int[]{rc[0]+offset[0]+10, rc[1]+offset[1]+10, brc[0]+bno[0]+10, brc[1]+bno[1]+10};
+                    Line2D line2d = new Line2D.Float(line[0], line[1], line[2], line[3]);
+
+                    Graphics2D g2d = (Graphics2D) g;
+                    GradientPaint gp1 = new GradientPaint(line[0], line[1], from_color, line[2], line[3], to_color, false);
+                    g2d.setPaint(gp1);
+
+                    g2.draw(line2d);
+                }
+            }
             
-            Color to_color = b_colors[conn[1] > 4 ? 4 : conn[1]];
             
-            int[] line = new int[]{rc[0]+offset[0]+10, rc[1]+offset[1]+10, brc[0]+bno[0]+10, brc[1]+bno[1]+10};
-            Line2D line2d = new Line2D.Float(line[0], line[1], line[2], line[3]);
-            
-            Graphics2D g2d = (Graphics2D) g;
-            GradientPaint gp1 = new GradientPaint(line[0], line[1], from_color, line[2], line[3], to_color, false);
-            g2d.setPaint(gp1);
-            
-            g2.draw(line2d);*/
             
         }
         
@@ -341,93 +347,9 @@ public class Block {
         return new int[]{0, 0};
     }
     
-    /*public boolean equalTo(Block b) {
-        if (!b.title.equals(title)) return false;
-        if (b.id != id) return false;
-        for (int i = 0; i != nodes.length; i++) {
-            if (b.nodes[i] != nodes[i]) return false;
-            if (b.dot_conns[i] != (dot_conns[i])) return false;
-        }
-        for (int i = 0; i != values.length; i++) {
-            if (!b.values[i][0].equals(values[i][0]) 
-                    || !b.values[i][1].equals(values[i][1])
-                    || !b.values[i][2].equals(values[i][2])) return false;
-            if (b.param_conns[i] != (param_conns[i])) return false;
-        }
-        return true;
-    }*/
-    
     @Override
     public String toString() {
         return getTitle()+" ("+getType()+")";
     }
-    
-}
-
-class Node {
-
-    private String value;
-    private int value_type;
-    private Connection[] incoming, outgoing;
-    private Block parent;
-    
-    public static int INCOMING = 0, OUTGOING = 1;
-    
-    public Node(int in, int out, String default_value, int value_type) {
-        this.incoming = new Connection[in];
-        this.outgoing = new Connection[out];
-        this.value_type = value_type;
-        this.value = default_value;
-    }
-    
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public Block getParent() {
-        return parent;
-    }
-
-    public void setParent(Block parent) {
-        this.parent = parent;
-    }
-    
-    public boolean removeConnection(int index, int direction) {
-        Connection[] list = (direction == Node.INCOMING ? incoming : outgoing);
-        if (index < 0 || index >= list.length) return false;
-        list[index] = null; return true;
-    }
-    
-    public int addConnection(Connection c, int direction) {
-        Connection[] list = (direction == Node.INCOMING ? incoming : outgoing);
-        for (int i = 0; i < list.length; i++)
-            if (list[i] == null) { list[i] = c; return i; }
-        return -1;
-    }
-    
-    public void copyTo(Node n) {
-        n.value = value;
-        n.parent = parent;
-        n.value_type = value_type;
-        n.incoming = new Connection[incoming.length];
-        n.outgoing = new Connection[outgoing.length];
-        for (int i = 0; i < incoming.length; i++) 
-            n.incoming[i] = new Connection(incoming[i].block_id, incoming[i].node_index);
-        for (int i = 0; i < outgoing.length; i++) 
-            n.outgoing[i] = new Connection(outgoing[i].block_id, outgoing[i].node_index);
-    }
-
-}
-
-class Connection {
-    
-    int block_id, node_index;
-    public Connection(int block_id, int node_index) {
-        this.block_id = block_id;
-        this.node_index = node_index;
-    }
-    
-    public int blockID() { return block_id; }
-    public int nodeIndex() { return node_index; }
     
 }

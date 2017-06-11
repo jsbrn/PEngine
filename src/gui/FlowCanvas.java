@@ -118,7 +118,7 @@ public class FlowCanvas extends JPanel {
             if (node < Block.NODE_COUNT && node > -1) hover_text = text[node];
             if (node == Block.NODE_OUT) hover_text += " ("+Block.TYPE_NAMES[b.getOutputType()]+")";
             if (node >= Block.NODE_COUNT) {
-                Object[] p = b.getParametre(node-Block.NODE_COUNT);
+                Node p = b.getNode(node-Block.NODE_COUNT);
                 hover_text = (String)p[0]
                         + " ("+Block.TYPE_NAMES[(int)p[1]]+")";
             }
