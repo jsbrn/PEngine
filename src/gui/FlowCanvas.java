@@ -10,6 +10,7 @@ import java.awt.geom.Line2D;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import project.objects.components.Block;
+import project.objects.components.Block;
 import project.objects.components.Flow;
 import misc.MiscMath;
 
@@ -24,7 +25,7 @@ public class FlowCanvas extends JPanel {
     public FlowCanvas() {
         selected_node = -1;
     }
-    
+
     public void setSelectedBlock(Block o) {
         selected_block = o;
         if (o == null) selected_node = -1;
@@ -113,9 +114,9 @@ public class FlowCanvas extends JPanel {
         for (int i = 0; i < selected_flow.blockCount(); i++) {
             Block b = selected_flow.getBlock(i);
             b.draw(g);
-            int node = b.getNode(last_mouse_x, last_mouse_y);
+            int node = b.getNodeIndex(last_mouse_x, last_mouse_y);
             if (node < Block.NODE_COUNT && node > -1) hover_text = text[node];
-            if (node == Block.OUT) hover_text += " ("+Block.TYPE_NAMES[b.getOutputType()]+")";
+            if (node == Block.NODE_OUT) hover_text += " ("+Block.TYPE_NAMES[b.getOutputType()]+")";
             if (node >= Block.NODE_COUNT) {
                 Object[] p = b.getParametre(node-Block.NODE_COUNT);
                 hover_text = (String)p[0]
@@ -217,7 +218,7 @@ public class FlowCanvas extends JPanel {
         
         if (selected_flow == null) return;
         Block b = getBlock(e.getX(), e.getY());
-        int d = b == null ? -1 : b.getNode(e.getX(), e.getY());
+        int d = b == null ? -1 : b.getNodeIndex(e.getX(), e.getY());
         
         if (b != null) {
             if (d > -1) {
@@ -225,7 +226,7 @@ public class FlowCanvas extends JPanel {
                     //do not allow the "from" to be param or IN
                     //this is handled in block.connectTo but I don't want the editor to allow
                     //you to start a connection from these nodes
-                    if (d < Block.NODE_COUNT && d != Block.IN) selected_node = d;
+                    if (d < Block.NODE_COUNT && d != Block.NODE_IN) selected_node = d;
                 } else {
                     int to = d, from = selected_node;
                     boolean accept_connection = selected_block.connectTo(b, to, from);
