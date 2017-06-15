@@ -18,6 +18,7 @@ import misc.MiscMath;
 import project.Level;
 import project.objects.components.Flow;
 import project.Project;
+import project.objects.components.Block;
 
 public class SceneObject {
     
@@ -306,6 +307,10 @@ public class SceneObject {
     public void newFlow() {
         Flow f = new Flow();
         f.setName("flow"+new Random().nextInt(100000));
+        Block start = Block.create("s");
+        start.setX(0); start.setY(0);
+        start.getInput(0)[2] = "default";
+        f.addBlock(start); //add a start block
         flows.add(f);
     }
     

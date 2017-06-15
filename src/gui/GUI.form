@@ -310,6 +310,9 @@
             </Component>
             <Component class="javax.swing.JButton" name="deleteGalleryObjectButton">
               <Properties>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="0" green="0" red="ff" type="rgb"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Delete object"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
@@ -368,8 +371,8 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="basicOptionsPanel" min="-2" pref="133" max="-2" attributes="0"/>
-                          <EmptySpace pref="294" max="32767" attributes="0"/>
+                          <Component id="basicOptionsPanel" min="-2" pref="134" max="-2" attributes="0"/>
+                          <EmptySpace pref="299" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -437,18 +440,21 @@
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="changeObjectTextureButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="objectTextureField" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lockTextureButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lockTextureButton" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="objectCollidesCheckbox" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="lockCollidesButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lockCollidesButton" alignment="0" max="32767" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="objectCollidesCheckbox" max="32767" attributes="0"/>
+                                          <Component id="objectGravityCheckbox" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="lockGravityButton" alignment="0" max="32767" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   </Group>
-                                  <Component id="lockGravityButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="objectGravityCheckbox" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -538,7 +544,9 @@
                     </Component>
                     <Component class="javax.swing.JToggleButton" name="lockTextureButton">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="\ud83d\udd12" containsInvalidXMLChars="true"/>
+                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/assets/lock.png"/>
+                        </Property>
                         <Property name="actionCommand" type="java.lang.String" value="0"/>
                       </Properties>
                       <Events>
@@ -550,7 +558,9 @@
                     </Component>
                     <Component class="javax.swing.JToggleButton" name="lockGravityButton">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="\ud83d\udd12" containsInvalidXMLChars="true"/>
+                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/assets/lock.png"/>
+                        </Property>
                         <Property name="actionCommand" type="java.lang.String" value="1"/>
                       </Properties>
                       <Events>
@@ -562,7 +572,9 @@
                     </Component>
                     <Component class="javax.swing.JToggleButton" name="lockCollidesButton">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="\ud83d\udd12" containsInvalidXMLChars="true"/>
+                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/assets/lock.png"/>
+                        </Property>
                         <Property name="actionCommand" type="java.lang.String" value="2"/>
                       </Properties>
                       <Events>
@@ -604,7 +616,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jPanel9" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="372" max="32767" attributes="0"/>
+                          <EmptySpace pref="378" max="32767" attributes="0"/>
                           <Component id="jPanel7" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -644,7 +656,7 @@
                                   <Component id="newFlowButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="deleteFlowButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="renameFlowButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lockFlowButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lockFlowButton" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                                   <Component id="addBlockButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="deleteBlockButton" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
@@ -681,6 +693,9 @@
                     </Component>
                     <Component class="javax.swing.JButton" name="deleteFlowButton">
                       <Properties>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="0" green="0" red="ff" type="rgb"/>
+                        </Property>
                         <Property name="text" type="java.lang.String" value="Delete"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -705,7 +720,9 @@
                     </Component>
                     <Component class="javax.swing.JToggleButton" name="lockFlowButton">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="\ud83d\udd12" containsInvalidXMLChars="true"/>
+                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/assets/lock.png"/>
+                        </Property>
                         <Property name="actionCommand" type="java.lang.String" value="f"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -748,28 +765,42 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
+                          <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="blockInputChooser" min="-2" pref="150" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="parameterChooser" min="-2" pref="150" max="-2" attributes="0"/>
+                              <Component id="setBlockInputValue" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="jSeparator1" min="-2" pref="12" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="setDefaultValueButton" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="blockOutputChooser" min="-2" pref="150" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="setBlockOutputValue" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
-                              <Component id="breakConnsButton" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="1" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="parameterChooser" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="setDefaultValueButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="breakConnsButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jSeparator1" max="32767" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="blockInputChooser" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="setBlockInputValue" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="blockOutputChooser" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="setBlockOutputValue" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
                               </Group>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                           </Group>
@@ -777,7 +808,7 @@
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JComboBox" name="parameterChooser">
+                    <Component class="javax.swing.JComboBox" name="blockInputChooser">
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="4">
@@ -794,30 +825,62 @@
                         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
                       </AuxValues>
                     </Component>
-                    <Component class="javax.swing.JButton" name="setDefaultValueButton">
+                    <Component class="javax.swing.JButton" name="setBlockInputValue">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Set default value..."/>
+                        <Property name="text" type="java.lang.String" value="Set value..."/>
+                        <Property name="actionCommand" type="java.lang.String" value="i"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="setDefaultValueButtonActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="setBlockInputValueActionPerformed"/>
                       </Events>
-                      <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
-                      </AuxValues>
-                    </Component>
-                    <Component class="javax.swing.JButton" name="breakConnsButton">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Break connections"/>
-                        <Property name="enabled" type="boolean" value="false"/>
-                      </Properties>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
                       </AuxValues>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel6">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Parameter:"/>
+                        <Property name="text" type="java.lang.String" value="Input:"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel5">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Output:"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JComboBox" name="blockOutputChooser">
+                      <Properties>
+                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                          <StringArray count="4">
+                            <StringItem index="0" value="Item 1"/>
+                            <StringItem index="1" value="Item 2"/>
+                            <StringItem index="2" value="Item 3"/>
+                            <StringItem index="3" value="Item 4"/>
+                          </StringArray>
+                        </Property>
+                        <Property name="enabled" type="boolean" value="false"/>
+                      </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
+                      </AuxValues>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="setBlockOutputValue">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Set value..."/>
+                        <Property name="actionCommand" type="java.lang.String" value="o"/>
+                        <Property name="enabled" type="boolean" value="false"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="setBlockInputValueActionPerformed"/>
+                      </Events>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
+                      </AuxValues>
+                    </Component>
+                    <Component class="javax.swing.JSeparator" name="jSeparator1">
+                      <Properties>
+                        <Property name="orientation" type="int" value="1"/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -847,7 +910,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jPanel8" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="372" max="32767" attributes="0"/>
+                          <EmptySpace pref="378" max="32767" attributes="0"/>
                           <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -889,7 +952,7 @@
                                   <Component id="renameAnimationButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="animationSpeedButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="animationSpriteButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lockAnimationButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lockAnimationButton" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                           </Group>
@@ -924,6 +987,9 @@
                     </Component>
                     <Component class="javax.swing.JButton" name="deleteAnimationButton">
                       <Properties>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="0" green="0" red="ff" type="rgb"/>
+                        </Property>
                         <Property name="text" type="java.lang.String" value="Delete"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -972,7 +1038,9 @@
                     </Component>
                     <Component class="javax.swing.JToggleButton" name="lockAnimationButton">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="\ud83d\udd12" containsInvalidXMLChars="true"/>
+                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/assets/lock.png"/>
+                        </Property>
                         <Property name="actionCommand" type="java.lang.String" value="a"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -1646,7 +1714,9 @@
           <SubComponents>
             <Component class="javax.swing.JButton" name="bringForwardButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&#x2191;"/>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/assets/arrow.png"/>
+                </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Send forward"/>
                 <Property name="actionCommand" type="java.lang.String" value="f"/>
                 <Property name="enabled" type="boolean" value="false"/>
@@ -1669,7 +1739,9 @@
             </Component>
             <Component class="javax.swing.JButton" name="sendBackwardsButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&#x2193;"/>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/assets/arrow_down.png"/>
+                </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Send backwards"/>
                 <Property name="actionCommand" type="java.lang.String" value="b"/>
                 <Property name="enabled" type="boolean" value="false"/>
@@ -1751,6 +1823,9 @@
             </Component>
             <Component class="javax.swing.JButton" name="deleteObjectButton">
               <Properties>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="0" green="0" red="ff" type="rgb"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Delete"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>

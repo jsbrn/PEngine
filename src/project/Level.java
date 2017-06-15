@@ -265,7 +265,7 @@ public class Level {
     
     @Override
     public String toString() {
-        return getName()+(equals(Project.getProject().getHomeLevel()) ? " ★" : "");
+        return getName()+(equals(Project.getProject().getHomeLevel()) ? " [Home]" : "");
     }
     
 }

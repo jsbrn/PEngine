@@ -73,9 +73,15 @@ public class Flow {
     
     public boolean removeBlock(int index) {
         if (index < 0 || index >= blocks.size()) return false;
-        Block b = blocks.get(index);
-        b.clearAllConnections();
-        return blocks.remove(index) != null;
+        if (blocks.remove(index) != null) {
+            clean();
+            return true;
+        }
+        return false;
+    }
+    
+    private void clean() {
+        for (Block b: blocks) b.clean();
     }
     
     public void save(BufferedWriter bw) {
@@ -99,7 +105,7 @@ public class Flow {
                 if (line.indexOf("id=") == 0) name = line.trim().replace("id=", "");
                 if (line.equals("b")) {
                     Block b = new Block();
-                    if (b.load(br)) blocks.add(b);
+                    if (b.load(br)) addBlock(b);
                 }
             }
         } catch (FileNotFoundException ex) {

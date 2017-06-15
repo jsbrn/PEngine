@@ -9,9 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import project.objects.components.Block;
-import project.objects.components.Block;
-import project.objects.components.Flow;
+import project.objects.components.*;
 import misc.MiscMath;
 
 public class FlowCanvas extends JPanel {
@@ -53,7 +51,7 @@ public class FlowCanvas extends JPanel {
     
     public Block getBlock(int x, int y) {
         if (selected_flow == null) return null;
-        for (int i = 0; i != selected_flow.blockCount(); i++) {
+        for (int i = selected_flow.blockCount()-1; i > -1; i--) {
             Block b = selected_flow.getBlock(i);
             if (MiscMath.pointIntersects(x, y, b.getRenderCoords()[0]-20, b.getRenderCoords()[1]-20, 
                     b.dimensions()[0]+40, b.dimensions()[1]+40)) {
@@ -114,15 +112,6 @@ public class FlowCanvas extends JPanel {
         for (int i = 0; i < selected_flow.blockCount(); i++) {
             Block b = selected_flow.getBlock(i);
             b.draw(g);
-            int node = b.getNodeIndex(last_mouse_x, last_mouse_y);
-            if (node < Block.NODE_COUNT && node > -1) hover_text = text[node];
-            if (node == Block.NODE_OUT) hover_text += " ("+Block.TYPE_NAMES[b.getOutputType()]+")";
-            if (node >= Block.NODE_COUNT) {
-                Node p = b.getNode(node-Block.NODE_COUNT);
-                hover_text = (String)p[0]
-                        + " ("+Block.TYPE_NAMES[(int)p[1]]+")";
-            }
-            hover_width = b.getFontWidth(hover_text, g);
         }
             
         //draw the line

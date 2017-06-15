@@ -4,15 +4,12 @@ import gui.GUI;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.Line2D;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,19 +21,25 @@ public class Block {
     public static final int NODE_COUNT = 4, NODE_IN = 0, NODE_OUT = 1, NODE_YES = 2, NODE_NO = 3;
     public static final int ENTRY_BLOCK = 0, FUNCTION_BLOCK = 1,
             VARIABLE_BLOCK = 2, CONDITIONAL_BLOCK = 3, WHEN_BLOCK = 4;
-    public static final int TYPE_NONE = 0, TYPE_ANY = 1, TYPE_NUMBER = 2, TYPE_STRING = 3;
-    public static final String[] TYPE_NAMES = {"None", "Any", "Number", "Text"};
+    public static final int TYPE_NONE = 0, TYPE_ANY = 1, TYPE_NUMBER = 2, TYPE_STRING = 3, TYPE_BOOLEAN = 4;
+    public static final String[] TYPE_NAMES = {"None", "Any", "Number", "Text", "Boolean"};
     
-    private Node[] nodes; //in, out, yes, no
-    private int block_type;
+    private boolean[] nodes; //in, out, yes, no
+    private int[][] conns;
+    private Object[][] inputs, outputs;
     private Flow parent;
-    private String title, type;
+    private String name, type, summary;
     private int id;
     private int x = 50, y = 50;
     
     private static final Font font = new Font("Arial", Font.BOLD, 11);
-    private static int title_width = 75;
+    private int title_width = 75, summary_width = 75;
     
+    /**
+     * Creates a new Block from the specified template block in Assets.
+     * @param type The type/class of the block.
+     * @return null if no block by that type, else the new Block.
+     */
     public static Block create(String type) {
         Block template = Assets.getBlock(type);
         if (template == null) {
@@ -50,47 +53,29 @@ public class Block {
     
     public Block() {
         this.id = Math.abs(new Random().nextInt());
-        this.title = "";
+        this.name = "";
         this.type = "";
-        this.nodes = new Node[NODE_COUNT];
+        this.nodes = new boolean[NODE_COUNT];
+        this.conns = new int[NODE_COUNT][2];
     }
     
     /**
-     * Creates a new flowchart block for the list of template blocks.
+     * Creates a new flowchart block.
      * @param name The title visible in the menu and in the editor.
-     * @param block_type An integer representing the block's type (which determines its form).
-     * @param output_type The type of value this block outputs.
-     * @param params Specify the list of parametres and their starting values.
+     * @param type The internal identifier class of this block.
+     * @param node_str A string ("tttt", "ffff", etc.) that determines which nodes are enabled.
+     * @param inputs The inputs (a list of {name, type} object arrays). null will initialize to an empty array.
+     * @param outputs See inputs.
      */
-    public Block(String name, String type, int block_type, int output_type, Object[][] params) {
+    public Block(String name, String summary, String type, String node_str, Object[][] inputs, Object[][] outputs) {
         this.id = Math.abs(new Random().nextInt());
-        this.title = name;
+        this.name = name;
         this.type = type;
-        this.block_type = block_type;
-        
-        /**
-         * this.nodes = new boolean[]{
-        
-            (block_type == FUNCTION_BLOCK && output_type == TYPE_NONE) //in
-                || block_type == CONDITIONAL_BLOCK || block_type == VARIABLE_BLOCK
-                || block_type == WHEN_BLOCK,
-            block_type != CONDITIONAL_BLOCK, //out
-            block_type == CONDITIONAL_BLOCK, //yes
-            block_type == CONDITIONAL_BLOCK //no
-            
-        };
-         */
-        
-        this.nodes = new Node[NODE_COUNT + (params == null ? 0 : params.length)];
-        this.nodes[NODE_IN] = ((block_type == FUNCTION_BLOCK && output_type == TYPE_NONE)
-                || block_type == CONDITIONAL_BLOCK) ? new Node(-1, 0, "", TYPE_NONE, "") : null;
-        this.nodes[NODE_OUT] = block_type != CONDITIONAL_BLOCK ? new Node(0, -1, "", output_type, "") : null; 
-        this.nodes[NODE_YES] = block_type == CONDITIONAL_BLOCK ? new Node(0, -1, "", TYPE_NONE, "") : null; 
-        this.nodes[NODE_NO] = block_type == CONDITIONAL_BLOCK ? new Node(0, -1, "", TYPE_NONE, "") : null; 
-        
-        for (int n = NODE_COUNT; n < nodes.length; n++) 
-            this.nodes[n] = new Node(-1, 0, (String)(params[n][0]), (int)(params[n][1]), (String)(params[n][2]));
-        
+        this.summary = summary == null ? "" : summary;
+        this.nodes = MiscMath.toBooleanArray(node_str.replace("t", "true ").replace("f", "false "));
+        this.conns = new int[NODE_COUNT][2];
+        this.inputs = inputs != null ? inputs : new Object[0][3];
+        this.outputs = outputs != null ? outputs : new Object[0][3];
     }    
     
     
@@ -105,31 +90,16 @@ public class Block {
      * @return A boolean indicating success.
      */
     public boolean connectTo(Block b, int to, int from) {
-        
-        
-        if (!canConnectTo(b, to, from)) return false;
-        
-        Node b_to = b.getNode(to);
-        Node t_from = getNode(from);
-        if (b_to == null || t_from == null) return false;
-        
-        int to_index = b_to.addConnection(getID(), from, Node.INCOMING);
-        int from_index = t_from.addConnection(b.getID(), to, Node.OUTGOING);
-        
-        if (to_index == -1 || from_index == -1) return false;
-        
+        boolean accept = false;
+        if (from == NODE_OUT || from == NODE_YES || from == NODE_NO) accept = to == NODE_IN;
+        if (accept) { conns[from] = new int[]{b.getID(), to}; return true; }
+        return false;
+    }
+    
+    public boolean disconnect(int node_index) {
+        if (node_index < 0 || node_index >= nodes.length) return false;
+        conns[node_index] = new int[]{-1, -1};
         return true;
-    }
-    
-    private boolean canConnectTo(Block b, int to, int from) {
-        if (b == null) return false;
-        boolean accept_connection = true;
-        
-        return accept_connection;
-    }
-    
-    public Node getNode(int index) {
-        return nodes[index];
     }
     
     public void move(double x, double y) {
@@ -139,10 +109,17 @@ public class Block {
     public void save(BufferedWriter bw) {
         try {
             bw.write("b\n");
-            bw.write("t="+title+"\n");
+            bw.write("t="+type+"\n");
             bw.write("id="+id+"\n");
             bw.write("x="+x+"\n");
             bw.write("y="+y+"\n");
+            String c = ""; for (int[] conn: conns) c += conn[0]+" "+conn[1]+" ";
+            bw.write("conns="+c.trim()+"\n");
+            c = ""; for (Object[] input: inputs) c += (String)input[2]+"\t";
+            bw.write("inputs="+c.trim()+"\n");
+            c = ""; for (Object[] output: outputs) c += (String)output[2]+"\t";
+            bw.write("outputs="+c.trim()+"\n");
+            bw.write(c.trim()+"\n");
             bw.write("/b\n");
         } catch (IOException ex) {
             Logger.getLogger(Block.class.getName()).log(Level.SEVERE, null, ex);
@@ -157,14 +134,34 @@ public class Block {
                 if (line == null) break;
                 line = line.trim();
                 if (line.equals("/b")) return true;
-                if (line.indexOf("id=") == 0) id = Integer.parseInt(line.trim().replace("id=", ""));
                 if (line.indexOf("t=") == 0) { 
-                    title = line.trim().replace("t=", "");
-                    //Block copy = getBlock(title);
-                    //if (copy != null) copy.copyTo(this);
+                    Block template = Assets.getBlock(line.substring(2));
+                    if (template != null) {
+                        template.copyTo(this, false);
+                    }
                 }
+                if (line.indexOf("id=") == 0) id = Integer.parseInt(line.trim().replace("id=", ""));
                 if (line.indexOf("x=") == 0) x = Integer.parseInt(line.trim().replace("x=", ""));
                 if (line.indexOf("y=") == 0) y = Integer.parseInt(line.trim().replace("y=", ""));
+                if (line.indexOf("conns=") == 0) {
+                    String[] conns_list = line.substring(6).split(" ");
+                    for (int i = 0; i < conns.length; i++) {
+                        conns[i][0] = Integer.parseInt(conns_list[i*2]);
+                        conns[i][1] = Integer.parseInt(conns_list[(i*2)+1]);
+                    }
+                }
+                if (line.indexOf("inputs=") == 0) {
+                    String[] inputs_list = line.substring(7).split("\t");
+                    for (int i = 0; i < inputs.length; i++) {
+                        inputs[i][2] = inputs_list[i];
+                    }
+                }
+                if (line.indexOf("outputs=") == 0) {
+                    String[] outputs_list = line.substring(8).split("\t");
+                    for (int i = 0; i < outputs.length; i++) {
+                        outputs[i][2] = outputs_list[i];
+                    }
+                }
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Block.class.getName()).log(Level.SEVERE, null, ex);
@@ -197,8 +194,8 @@ public class Block {
      */
     public int getNodeIndex(double x, double y) {
         //check for parametres
-        for (int i = 0; i < NODE_COUNT + paramCount(); i++) {
-            if (i < nodes.length) if (nodes[i] == null) continue;
+        for (int i = 0; i < NODE_COUNT; i++) {
+            if (i < nodes.length) if (!nodes[i]) continue;
             int[] rc = getRenderCoords();
             int[] offset = getNodeOffset(i);
             if (MiscMath.pointIntersects(x, y, rc[0]+offset[0], rc[1]+offset[1], 20, 20)) return i;
@@ -207,6 +204,21 @@ public class Block {
     }
     
     public String getType() { return type; }
+    
+    public String getSummary() {
+        String s = summary+"";
+        for (Object[] input: inputs) {
+            String val = (String)input[2];
+            val = val.trim().length() == 0 ? "?" : val;
+            s = s.replaceAll("@"+(String)input[0], val);
+        }
+        for (Object[] output: outputs) {
+            String val = (String)output[2];
+            val = val.trim().length() == 0 ? "?" : val;
+            s = s.replaceAll("@"+(String)output[0], val);
+        }
+        return s;
+    }
     
     public void setX(int new_x) { x = new_x; }
     public void setY(int new_y) { y = new_y; }
@@ -222,35 +234,28 @@ public class Block {
         return (int)g.getFontMetrics().getStringBounds(s, g).getWidth();
     }
     
-    public Node[] nodes() {
-        return nodes;
-    }
-    
     public int getID() { return id; }
     
     public int[] getCoords() { return new int[]{x, y}; }
     
-    public int paramCount() {
-        return nodes.length - NODE_COUNT;
+    public String getTitle() { return name; }
+    
+    public int inputCount() { return inputs.length; }
+    public int outputCount() { return outputs.length; }
+    
+    public Object[] getInput(int index) {
+        return inputs[index];
     }
     
-    public String getTitle() { return title; }
+    public Object[] getOutput(int index) {
+        return outputs[index];
+    }
     
     public int[] dimensions() {
-        int b_width = title_width + 10, 
-                b_height = paramCount() > 0 ? 20*paramCount() + 10 : 30;
+        int b_width = (title_width > summary_width ? title_width : summary_width) + 10, 
+                b_height = 40;
         if (b_width < 75) b_width = 75;
         return new int[]{b_width, b_height};
-    }
-    
-    /**
-     * Sets the default value of the parameter. If the block is a VARIABLE_BLOCK,
-     * then the value will be used as the return value for that specific index.
-     * @param n_index
-     * @param new_value 
-     */
-    public void setValue(int n_index, String new_value) {
-        nodes[n_index].setValue(new_value);
     }
     
     public void randomID() {
@@ -258,16 +263,22 @@ public class Block {
     }
     
     public void copyTo(Block b, boolean copy_id) {
-        b.title = title;
+        b.name = name;
         b.type = type;
+        b.summary = summary;
         if (copy_id) b.id = id;
-        b.x = x;
-        b.y = y;
-        b.nodes = new Node[nodes.length];
-        for (int n = 0; n < nodes.length; n++) {
-            b.nodes[n] = new Node(0, 0, "", 0, "");
-            nodes[n].copyTo(b.nodes[n]);
-        }
+        b.x = x; b.y = y;
+        b.nodes = new boolean[nodes.length];
+        b.conns = new int[conns.length][2];
+        b.inputs = new Object[inputs.length][3];
+        b.outputs = new Object[outputs.length][3];
+        System.arraycopy(nodes, 0, b.nodes, 0, nodes.length);
+        System.out.println(b.nodes.length+" "+b.conns.length+" "+b.inputs.length+" "+b.outputs.length);
+        for (int i = 0; i < conns.length; i++) b.conns[i] = new int[]{conns[i][0], conns[i][1]};
+        for (int i = 0; i < b.inputs.length; i++) b.inputs[i] = 
+                new Object[]{inputs[i][0], inputs[i][1], inputs[i][2]};
+        for (int i = 0; i < b.outputs.length; i++) b.outputs[i] = 
+                new Object[]{outputs[i][0], outputs[i][1], outputs[i][2]};
     }
     
     public void draw(Graphics g) {
@@ -278,40 +289,32 @@ public class Block {
         
         int[] rc = getRenderCoords();
         
-        Color[] b_colors = {Color.lightGray, Color.blue, Color.green, Color.red, Color.yellow.darker()};
-        for (int i = 0; i < NODE_COUNT + (block_type != VARIABLE_BLOCK ? paramCount() : 0); i++) {
-            
-            if (i < nodes.length) if (nodes[i] == null) continue;
+        Color[] b_colors = {Color.lightGray, Color.blue, Color.green, Color.red};
+        for (int i = 0; i < nodes.length; i++) {
+            if (!nodes[i]) continue;
             int[] offset = getNodeOffset(i);
             
-            Color from_color = b_colors[i > 4 ? 4 : i];
-            g2.setColor(from_color);
+            Color line_color = b_colors[i > 4 ? 4 : i];
+            g2.setColor(line_color);
             g2.fillRect(rc[0] + offset[0], rc[1] + offset[1], 20, 20);
-            g2.setColor(from_color.darker());
+            g2.setColor(line_color.darker());
             g2.drawRect(rc[0] + offset[0], rc[1] + offset[1], 20, 20);
             
-            for (Node n: nodes) {
-                for (int[] conn: n.connections(Node.INCOMING)) {
-                    Connection c = nodes[i].
-                    Block b_conn = parent.getBlockByID(conn[0]);
-                    if (b_conn == null) continue;
-                    int[] brc = b_conn.getRenderCoords();
-                    int[] bno = b_conn.getNodeOffset(conn[1]);
-
-                    Color to_color = b_colors[conn[1] > 4 ? 4 : conn[1]];
-
-                    int[] line = new int[]{rc[0]+offset[0]+10, rc[1]+offset[1]+10, brc[0]+bno[0]+10, brc[1]+bno[1]+10};
-                    Line2D line2d = new Line2D.Float(line[0], line[1], line[2], line[3]);
-
-                    Graphics2D g2d = (Graphics2D) g;
-                    GradientPaint gp1 = new GradientPaint(line[0], line[1], from_color, line[2], line[3], to_color, false);
-                    g2d.setPaint(gp1);
-
-                    g2.draw(line2d);
-                }
-            }
+            int[] conn = conns[i];
             
-            
+            Block b_conn = parent.getBlockByID(conn[0]);
+            if (b_conn == null) continue;
+            int[] brc = b_conn.getRenderCoords();
+            int[] bno = b_conn.getNodeOffset(conn[1]);
+
+            int[] line = new int[]{rc[0]+offset[0]+10, rc[1]+offset[1]+10, brc[0]+bno[0]+10, brc[1]+bno[1]+10};
+
+            g2.setStroke(new BasicStroke(4));
+            g2.setColor(Color.black);
+            g2.drawLine(line[0], line[1], line[2], line[3]);
+            g2.setStroke(new BasicStroke(2));
+            g2.setColor(line_color);
+            g2.drawLine(line[0], line[1], line[2], line[3]);
             
         }
         
@@ -320,13 +323,16 @@ public class Block {
         g2.setColor(Color.black);
         g2.drawRect(rc[0], rc[1], dims[0], dims[1]);
         g2.setFont(font);
-        title_width = (int)g2.getFontMetrics().getStringBounds(title, g2).getWidth();
+        title_width = (int)g2.getFontMetrics().getStringBounds(name, g2).getWidth();
         g2.drawString(getTitle(), rc[0] + 5, rc[1] + 15);
-        
+        g2.setFont(font.deriveFont(Font.PLAIN));
+        summary_width = (int)g2.getFontMetrics().getStringBounds(getSummary(), g2).getWidth();
+        g2.drawString(getSummary(), rc[0] + 5, rc[1] + 30);
     }
     
-    //TODO: Implement this!!!
-    public int[] getRenderCoords() { return GUI.getFlowCanvas().getOnscreenCoords(x-dimensions()[0], y-dimensions()[1]); }
+    public int[] getRenderCoords() { 
+        return GUI.getFlowCanvas().getOnscreenCoords(MiscMath.round(x, 32)-(dimensions()[0]/2), MiscMath.round(y, 32)-(dimensions()[1]/2)); 
+    }
     
     /**
      * Returns the offset position of the node relative to the origin at
@@ -341,15 +347,18 @@ public class Block {
         if (index == NODE_OUT) return new int[]{dims[0]/2 - 10, dims[1]};
         if (index == NODE_YES) return new int[]{10, dims[1]};
         if (index == NODE_NO) return new int[]{dims[0] - 30, dims[1]};
-        int p_h = 20*paramCount();
-        if (index >= NODE_COUNT) return new int[]{-20, 
-            (dims[1]/2) + (20*(index-NODE_COUNT)) - (p_h / 2)}; //params
         return new int[]{0, 0};
     }
     
     @Override
     public String toString() {
         return getTitle()+" ("+getType()+")";
+    }
+    
+    protected void clean() {
+        for (int[] conn: conns) System.out.println("conn before: "+conn[0]+", "+conn[1]);
+        for (int[] conn: conns) if (parent.getBlockByID(conn[0]) == null) { conn[0] = -1; conn[1] = -1; }
+        for (int[] conn: conns) System.out.println("conn after: "+conn[0]+", "+conn[1]);
     }
     
 }

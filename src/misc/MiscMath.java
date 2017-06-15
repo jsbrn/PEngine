@@ -222,8 +222,9 @@ public class MiscMath {
     }
     
     public static boolean[] toBooleanArray(String s) {
+        System.out.println("Input string: "+s);
         if (s == null) return new boolean[]{};
-        String parsed[] = s.toLowerCase().split(" ");
+        String parsed[] = s.trim().toLowerCase().split(" ");
         return toBooleanArray(parsed);
     }
     
