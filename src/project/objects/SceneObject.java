@@ -58,7 +58,6 @@ public class SceneObject {
     
     public void setLocked(int index, boolean l) {
         locked[index] = l;
-        System.out.println("Setting locked state: "+index+" = "+l);
     }
     
     public boolean isLocked(int index) {
@@ -307,6 +306,7 @@ public class SceneObject {
     public void newFlow() {
         Flow f = new Flow();
         f.setName("flow"+new Random().nextInt(100000));
+        f.autoName(this);
         Block start = Block.create("s");
         start.setX(0); start.setY(0);
         start.getInput(0)[2] = "default";
@@ -316,7 +316,7 @@ public class SceneObject {
     
     public void newAnimation() {
         Animation a = new Animation();
-        a.setName("animation"+new Random().nextInt(100000));
+        a.autoName(this);
         animations.add(a);
     }
     

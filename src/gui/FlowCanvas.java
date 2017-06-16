@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
+import java.util.HashMap;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import project.objects.components.*;
@@ -196,14 +197,6 @@ public class FlowCanvas extends JPanel {
     }
     
     public void handleMouseClick(MouseEvent e) {
-        /*selected_block = getBlock(e.getX(), e.getY());
-        if (selected_block == null) {
-            selected_node = -1;
-        } else {
-            selected_node = selected_block.getNode(e.getX(), e.getY());
-        }
-        
-        System.out.println("Selected block "+selected_block+", node "+selected_node)*/
         
         if (selected_flow == null) return;
         Block b = getBlock(e.getX(), e.getY());
@@ -230,6 +223,9 @@ public class FlowCanvas extends JPanel {
             }
             selected_block = b;
         } else {
+            //disconnect the connection if you click off
+            if (selected_block != null && selected_node > -1) selected_block.disconnect(selected_node);
+            //reset
             selected_block = null;
             selected_node = -1;
         }

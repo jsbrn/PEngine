@@ -85,7 +85,7 @@ public class Assets {
         blocks[2] = new Block("Start", "@id", "s", "ftff", 
                 new Object[][]{{"id", Block.TYPE_STRING, ""}}, new Object[][]{});
         blocks[3] = new Block("Equal?", "If @x == @y", "se", "tftt", 
-                new Object[][]{{"x", Block.TYPE_STRING, ""}, {"y", Block.TYPE_STRING, ""}}, new Object[][]{});
+                new Object[][]{{"x", Block.TYPE_ANY, ""}, {"y", Block.TYPE_ANY, ""}}, new Object[][]{});
         blocks[4] = new Block("Wait", "Until @x == @y", "wxy", "ttff", 
                 new Object[][]{{"x", Block.TYPE_STRING, ""}, {"y", Block.TYPE_STRING, ""}}, new Object[][]{});
     }

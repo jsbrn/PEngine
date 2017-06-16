@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import misc.Assets;
@@ -15,13 +16,39 @@ public class Flow {
     private ArrayList<Block> blocks;
     private boolean locked;
     
+    private ArrayList<String> vars; //the variables declared in the flow by the user
+    
     private String name;
     
     public Flow() {
         this.locked = false;
         this.blocks = new ArrayList<Block>();
         this.name = "";
+        this.vars = new ArrayList<String>();
     }
+    
+    public void refreshVars() {
+        vars.clear();
+        for (Block b: blocks) {
+            for (int i = 0; i < b.outputCount(); i++) {
+                String s = (String)b.getOutput(i)[2];
+                if (s.length() > 0 && !vars.contains(s)) vars.add(s);
+            }
+        }
+    }
+    
+    public void renameVar(String old, String new_) {
+        for (Block b: blocks) {
+            for (int i = 0; i < b.outputCount(); i++) {
+                String s = (String)b.getOutput(i)[2];
+                if (old.equals(s)) b.getOutput(i)[2] = new_;
+            }
+        }
+    }
+    
+    public boolean varExists(String var) { return vars.contains(var); }
+    
+    public ArrayList<String> getVars() { return vars; }
     
     public void autoName(SceneObject o) {
         int i = 1;

@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,10 +20,8 @@ import misc.MiscMath;
 public class Block {
     
     public static final int NODE_COUNT = 4, NODE_IN = 0, NODE_OUT = 1, NODE_YES = 2, NODE_NO = 3;
-    public static final int ENTRY_BLOCK = 0, FUNCTION_BLOCK = 1,
-            VARIABLE_BLOCK = 2, CONDITIONAL_BLOCK = 3, WHEN_BLOCK = 4;
-    public static final int TYPE_NONE = 0, TYPE_ANY = 1, TYPE_NUMBER = 2, TYPE_STRING = 3, TYPE_BOOLEAN = 4;
-    public static final String[] TYPE_NAMES = {"None", "Any", "Number", "Text", "Boolean"};
+    public static final int TYPE_ANY = 0, TYPE_NUMBER = 1, TYPE_STRING = 2, TYPE_BOOLEAN = 3;
+    public static final String[] TYPE_NAMES = {"Any", "Number", "Text", "Boolean"};
     
     private boolean[] nodes; //in, out, yes, no
     private int[][] conns;
@@ -34,6 +33,29 @@ public class Block {
     
     private static final Font font = new Font("Arial", Font.BOLD, 11);
     private int title_width = 75, summary_width = 75;
+    
+    public static boolean isValidInput(String input, int type) {
+        if (input == null) return false;
+        String i = input;
+        if (i.length() == 0) return false; //false for empty strings
+        if (!i.replaceAll("[{}\t\n\r]", "").equals(i)) return false; //false if you have {} or special chars
+        if (type == TYPE_ANY) return isValidInput(i, TYPE_NUMBER) || isValidInput(i, TYPE_STRING) || isValidInput(i, TYPE_BOOLEAN);
+        if (type == TYPE_NUMBER) return i.replaceAll("[^0-9]", "").equals(i);
+        if (type == TYPE_STRING) return i.charAt(0) == '"' && i.charAt(i.length()-1) == '"';
+        if (type == TYPE_BOOLEAN) return i.equals("true") || i.equals("false");
+        return false;
+    }
+    
+    public static boolean isValidOutput(String output) {
+        return isValidVariable(output);
+    }
+    
+    public static boolean isValidVariable(String output) {
+        if (output == null) return false;
+        String i = output; //remove trailing whitespace
+        String i_ = i.replaceAll("[^A-Za-z]", "");
+        return i_.equals(i) && !i_.equals("true") && !i_.equals("false"); //variable names can only have letters
+    }
     
     /**
      * Creates a new Block from the specified template block in Assets.
@@ -52,12 +74,14 @@ public class Block {
     }
     
     public Block() {
-        this.id = Math.abs(new Random().nextInt());
+        this.id = Math.abs(new Random().nextInt()-1)+1;
         this.name = "";
         this.type = "";
         this.nodes = new boolean[NODE_COUNT];
         this.conns = new int[NODE_COUNT][2];
     }
+    
+    public Flow getParent() { return parent; }
     
     /**
      * Creates a new flowchart block.
@@ -68,7 +92,7 @@ public class Block {
      * @param outputs See inputs.
      */
     public Block(String name, String summary, String type, String node_str, Object[][] inputs, Object[][] outputs) {
-        this.id = Math.abs(new Random().nextInt());
+        this.id = Math.abs(new Random().nextInt()-1)+1;
         this.name = name;
         this.type = type;
         this.summary = summary == null ? "" : summary;
@@ -98,7 +122,7 @@ public class Block {
     
     public boolean disconnect(int node_index) {
         if (node_index < 0 || node_index >= nodes.length) return false;
-        conns[node_index] = new int[]{-1, -1};
+        conns[node_index] = new int[]{0, 0};
         return true;
     }
     
@@ -114,12 +138,12 @@ public class Block {
             bw.write("x="+x+"\n");
             bw.write("y="+y+"\n");
             String c = ""; for (int[] conn: conns) c += conn[0]+" "+conn[1]+" ";
-            bw.write("conns="+c.trim()+"\n");
-            c = ""; for (Object[] input: inputs) c += (String)input[2]+"\t";
-            bw.write("inputs="+c.trim()+"\n");
-            c = ""; for (Object[] output: outputs) c += (String)output[2]+"\t";
-            bw.write("outputs="+c.trim()+"\n");
-            bw.write(c.trim()+"\n");
+            bw.write("conns="+c+"\n");
+            c = "";
+            for (Object[] input: inputs) c += "{"+(String)input[2]+"}";
+            bw.write("inputs="+c+"\n");
+            c = ""; for (Object[] output: outputs) c += "{"+(String)output[2]+"}";
+            bw.write("outputs="+c+"\n");
             bw.write("/b\n");
         } catch (IOException ex) {
             Logger.getLogger(Block.class.getName()).log(Level.SEVERE, null, ex);
@@ -138,6 +162,7 @@ public class Block {
                     Block template = Assets.getBlock(line.substring(2));
                     if (template != null) {
                         template.copyTo(this, false);
+                        System.out.println("Block: "+name+" ("+type+")");
                     }
                 }
                 if (line.indexOf("id=") == 0) id = Integer.parseInt(line.trim().replace("id=", ""));
@@ -151,15 +176,15 @@ public class Block {
                     }
                 }
                 if (line.indexOf("inputs=") == 0) {
-                    String[] inputs_list = line.substring(7).split("\t");
+                    String[] inputs_list = line.substring(7).split("\\}\\{");
                     for (int i = 0; i < inputs.length; i++) {
-                        inputs[i][2] = inputs_list[i];
+                        inputs[i][2] = inputs_list[i].replaceAll("[{}]", "");
                     }
                 }
                 if (line.indexOf("outputs=") == 0) {
-                    String[] outputs_list = line.substring(8).split("\t");
+                    String[] outputs_list = line.substring(8).split("\\}\\{");
                     for (int i = 0; i < outputs.length; i++) {
-                        outputs[i][2] = outputs_list[i];
+                        outputs[i][2] = outputs_list[i].replaceAll("[{}]", "");
                     }
                 }
             }
@@ -170,7 +195,6 @@ public class Block {
         }
         return false;
     }
-    
     
     /**
      * Sets the ID of the block to i. This will break any connections referencing the old ID.
@@ -273,7 +297,6 @@ public class Block {
         b.inputs = new Object[inputs.length][3];
         b.outputs = new Object[outputs.length][3];
         System.arraycopy(nodes, 0, b.nodes, 0, nodes.length);
-        System.out.println(b.nodes.length+" "+b.conns.length+" "+b.inputs.length+" "+b.outputs.length);
         for (int i = 0; i < conns.length; i++) b.conns[i] = new int[]{conns[i][0], conns[i][1]};
         for (int i = 0; i < b.inputs.length; i++) b.inputs[i] = 
                 new Object[]{inputs[i][0], inputs[i][1], inputs[i][2]};
@@ -356,9 +379,7 @@ public class Block {
     }
     
     protected void clean() {
-        for (int[] conn: conns) System.out.println("conn before: "+conn[0]+", "+conn[1]);
-        for (int[] conn: conns) if (parent.getBlockByID(conn[0]) == null) { conn[0] = -1; conn[1] = -1; }
-        for (int[] conn: conns) System.out.println("conn after: "+conn[0]+", "+conn[1]);
+        for (int[] conn: conns) if (parent.getBlockByID(conn[0]) == null) { conn[0] = 0; conn[1] = 0; }
     }
     
 }

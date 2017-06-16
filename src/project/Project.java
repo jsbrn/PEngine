@@ -171,8 +171,6 @@ public class Project {
                 if (line == null) break;
                 line = line.trim();
                 
-                System.out.println("Line: "+line);
-                
                 if (line.equals("l")) {
                     Level l = new Level();
                     if (l.load(br)) addLevel(l);
