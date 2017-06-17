@@ -51,9 +51,18 @@ public class SceneObject {
         int i = 1;
         while (true) {
             String n = prefix+(i > 1 ? ""+i : "");
-            if (!l.containsObject(n)) { setName(n); break; }
+            if (l == null) if (!Project.getProject().containsGalleryObject(n)) { setType(n); break; }
+            if (l != null) if (!l.containsObject(n)) { setName(n); break; }
             i++;
         }
+    }
+    
+    public static boolean isValidName(String name) {
+        if (name == null) return false;
+        if (name.trim().length() == 0) return false;
+        if (name.trim().equals("true") || name.trim().equals("false")
+                || name.trim().toLowerCase().equals("player")) return false;
+        return name.replaceAll("^[a-zA-Z_$][a-zA-Z_$0-9]*$", "").equals("");
     }
     
     public void setLocked(int index, boolean l) {
@@ -280,7 +289,6 @@ public class SceneObject {
             if (o.getFlow(a.getName()) == null) {
                 Flow copy_over = new Flow();
                 a.copyTo(copy_over, true);
-                o.flows.add(copy_over);
             }
         }
         
@@ -309,7 +317,7 @@ public class SceneObject {
         f.autoName(this);
         Block start = Block.create("s");
         start.setX(0); start.setY(0);
-        start.getInput(0)[2] = "default";
+        start.getInput(0)[2] = "\"default\"";
         f.addBlock(start); //add a start block
         flows.add(f);
     }

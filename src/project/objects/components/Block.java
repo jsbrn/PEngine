@@ -12,16 +12,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import misc.Assets;
 import misc.MiscMath;
+import project.Level;
+import project.Project;
+import project.objects.SceneObject;
 
 public class Block {
     
     public static final int NODE_COUNT = 4, NODE_IN = 0, NODE_OUT = 1, NODE_YES = 2, NODE_NO = 3;
-    public static final int TYPE_ANY = 0, TYPE_NUMBER = 1, TYPE_STRING = 2, TYPE_BOOLEAN = 3;
-    public static final String[] TYPE_NAMES = {"Any", "Number", "Text", "Boolean"};
     
     private boolean[] nodes; //in, out, yes, no
     private int[][] conns;
@@ -33,30 +32,7 @@ public class Block {
     
     private static final Font font = new Font("Arial", Font.BOLD, 11);
     private int title_width = 75, summary_width = 75;
-    
-    public static boolean isValidInput(String input, int type) {
-        if (input == null) return false;
-        String i = input;
-        if (i.length() == 0) return false; //false for empty strings
-        if (!i.replaceAll("[{}\t\n\r]", "").equals(i)) return false; //false if you have {} or special chars
-        if (type == TYPE_ANY) return isValidInput(i, TYPE_NUMBER) || isValidInput(i, TYPE_STRING) || isValidInput(i, TYPE_BOOLEAN);
-        if (type == TYPE_NUMBER) return i.replaceAll("[^0-9]", "").equals(i);
-        if (type == TYPE_STRING) return i.charAt(0) == '"' && i.charAt(i.length()-1) == '"';
-        if (type == TYPE_BOOLEAN) return i.equals("true") || i.equals("false");
-        return false;
-    }
-    
-    public static boolean isValidOutput(String output) {
-        return isValidVariable(output);
-    }
-    
-    public static boolean isValidVariable(String output) {
-        if (output == null) return false;
-        String i = output; //remove trailing whitespace
-        String i_ = i.replaceAll("[^A-Za-z]", "");
-        return i_.equals(i) && !i_.equals("true") && !i_.equals("false"); //variable names can only have letters
-    }
-    
+
     /**
      * Creates a new Block from the specified template block in Assets.
      * @param type The type/class of the block.
@@ -100,8 +76,7 @@ public class Block {
         this.conns = new int[NODE_COUNT][2];
         this.inputs = inputs != null ? inputs : new Object[0][3];
         this.outputs = outputs != null ? outputs : new Object[0][3];
-    }    
-    
+    }
     
     /**
      * Connects this block to the specified block via the specified nodes.
@@ -146,7 +121,7 @@ public class Block {
             bw.write("outputs="+c+"\n");
             bw.write("/b\n");
         } catch (IOException ex) {
-            Logger.getLogger(Block.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
     
@@ -177,21 +152,23 @@ public class Block {
                 }
                 if (line.indexOf("inputs=") == 0) {
                     String[] inputs_list = line.substring(7).split("\\}\\{");
-                    for (int i = 0; i < inputs.length; i++) {
+                    for (int i = 0; i < inputs_list.length; i++) {
+                        if (i >= inputs.length) break;
                         inputs[i][2] = inputs_list[i].replaceAll("[{}]", "");
                     }
                 }
                 if (line.indexOf("outputs=") == 0) {
                     String[] outputs_list = line.substring(8).split("\\}\\{");
-                    for (int i = 0; i < outputs.length; i++) {
+                    for (int i = 0; i < outputs_list.length; i++) {
+                        if (i >= outputs.length) break;
                         outputs[i][2] = outputs_list[i].replaceAll("[{}]", "");
                     }
                 }
             }
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(Block.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         } catch (IOException ex) {
-            Logger.getLogger(Block.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
         return false;
     }

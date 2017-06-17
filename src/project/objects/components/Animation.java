@@ -3,10 +3,7 @@ package project.objects.components;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import misc.MiscMath;
+import project.Level;
 import project.Project;
 import project.objects.SceneObject;
 
@@ -31,6 +28,14 @@ public class Animation {
             if (!o.containsAnimation(n)) { setName(n); break; }
             i++;
         }
+    }
+    
+    public static boolean isValidName(String name) {
+        if (name == null) return false;
+        if (name.trim().length() == 0) return false;
+        //remove all valid chars so that the invalids are leftover.
+        //if your string is empty then there are no invalid chars
+        return name.replaceAll("^[a-zA-Z_$][a-zA-Z_$0-9]*$", "").equals("");
     }
     
     public int getFrameDuration() { return frame_dur; }
@@ -92,7 +97,7 @@ public class Animation {
             bw.write("fc="+frame_count+"\n");
             bw.write("/a\n");
         } catch (IOException ex) {
-            Logger.getLogger(Animation.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
     

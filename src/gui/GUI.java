@@ -22,23 +22,17 @@ import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
-import java.awt.image.BufferedImage;
-import java.awt.image.RasterFormatException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Logger;
-import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -59,21 +53,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import misc.Assets;
 import misc.MiscMath;
+import misc.Types;
 import project.objects.components.Animation;
 import project.objects.components.Block;
 import project.objects.components.Flow;
@@ -216,8 +207,11 @@ public class GUI extends javax.swing.JFrame {
         jMenuItem1 = new JMenuItem();
         levelBoundsMenuItem = new JMenuItem();
         jMenu2 = new JMenu();
+        jMenuItem2 = new JMenuItem();
         topColorMenuItem = new JMenuItem();
         bottomColorMenuItem = new JMenuItem();
+        jMenuItem10 = new JMenuItem();
+        jMenuItem7 = new JMenuItem();
         lightingColorMenuItem = new JMenuItem();
         jMenuItem3 = new JMenuItem();
         jMenu1 = new JMenu();
@@ -1132,7 +1126,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(bringForwardButton, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sendBackwardsButton, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
         topPanelLayout.setVerticalGroup(topPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(topPanelLayout.createSequentialGroup()
@@ -1198,7 +1192,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(topPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 221, Short.MAX_VALUE)
                 .addComponent(jPanel13, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1338,7 +1332,12 @@ public class GUI extends javax.swing.JFrame {
 
         jMenu2.setText("Lighting");
 
-        topColorMenuItem.setText("Background color (top)...");
+        jMenuItem2.setFont(new Font("Segoe UI", 1, 12)); // NOI18N
+        jMenuItem2.setText("Background");
+        jMenuItem2.setEnabled(false);
+        jMenu2.add(jMenuItem2);
+
+        topColorMenuItem.setText("Color (top)...");
         topColorMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 topColorMenuItemActionPerformed(evt);
@@ -1346,7 +1345,7 @@ public class GUI extends javax.swing.JFrame {
         });
         jMenu2.add(topColorMenuItem);
 
-        bottomColorMenuItem.setText("Background color (bottom)...");
+        bottomColorMenuItem.setText("Color (bottom)...");
         bottomColorMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 bottomColorMenuItemActionPerformed(evt);
@@ -1354,7 +1353,20 @@ public class GUI extends javax.swing.JFrame {
         });
         jMenu2.add(bottomColorMenuItem);
 
-        lightingColorMenuItem.setText("Ambience color...");
+        jMenuItem10.setText("Swap colors");
+        jMenuItem10.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem10);
+
+        jMenuItem7.setFont(new Font("Segoe UI", 1, 12)); // NOI18N
+        jMenuItem7.setText("Ambience");
+        jMenuItem7.setEnabled(false);
+        jMenu2.add(jMenuItem7);
+
+        lightingColorMenuItem.setText("Color...");
         lightingColorMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 lightingColorMenuItemActionPerformed(evt);
@@ -1362,7 +1374,7 @@ public class GUI extends javax.swing.JFrame {
         });
         jMenu2.add(lightingColorMenuItem);
 
-        jMenuItem3.setText("Ambience intensity...");
+        jMenuItem3.setText("Intensity...");
         jMenuItem3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 jMenuItem3ActionPerformed(evt);
@@ -1519,10 +1531,10 @@ public class GUI extends javax.swing.JFrame {
     private void saveProjectButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_saveProjectButtonActionPerformed
         while (true) {
             String input = JOptionPane.showInputDialog(this, "Project name:", Project.getProject().getName());
-            if (input == null) {
-                break;
+            if (input == null) return;
+            if (!Project.isValidName(input)) { 
+                JOptionPane.showMessageDialog(levelManagerDialog, "\""+input+"\" is not a valid level name!"); continue; 
             }
-            input = input.replaceAll("[\\/.,]", "");
             if (Project.projectExists(input)) {
                 int overwrite = JOptionPane.showConfirmDialog(this, "A project by that name already exists! Overwrite?",
                         "Careful!",
@@ -1548,9 +1560,10 @@ public class GUI extends javax.swing.JFrame {
         if (promptSave() == 0) {
             while (true) {
                 String input = JOptionPane.showInputDialog(this, "Project name:", "New project...", JOptionPane.PLAIN_MESSAGE);
-                if (input == null) break;
-                input = input.replaceAll("[\\/.,]", "").trim();
-                if (input.length() == 0) continue;
+                if (input == null) return;
+                if (!Project.isValidName(input)) { 
+                    JOptionPane.showMessageDialog(levelManagerDialog, "\""+input+"\" is not a valid level name!"); continue; 
+                }
                 if (Project.projectExists(input)) {
                     JOptionPane.showMessageDialog(this, "Project \"" + input + "\" already exists!");
                 } else {
@@ -1620,7 +1633,9 @@ public class GUI extends javax.swing.JFrame {
         Level l = Project.getProject().getLevel(levelChooser.getSelectedIndex());
         if (l == null) return;
         String input = JOptionPane.showInputDialog(levelManagerDialog, "Name:", l.getName());
-        if (input == null) return;
+        if (!Level.isValidName(input)) { 
+            JOptionPane.showMessageDialog(levelManagerDialog, "\""+input+"\" is not a valid level name!"); return; 
+        }
         if (Project.getProject().containsLevel(input)) {
             JOptionPane.showMessageDialog(objectEditor, "A level already exists by that name!");
             return;
@@ -1791,7 +1806,9 @@ public class GUI extends javax.swing.JFrame {
         o.setWorldY((int) sceneCanvas.getCameraY());
         Project.getProject().getCurrentLevel().add(o);
 
+        sceneCanvas.setSelectedObject(o);
         sceneCanvas.repaint();
+        GUI.refreshObjectProperties();
         System.out.println("Added new object: " + o.getName());
     }//GEN-LAST:event_spawnObjectAction
 
@@ -1927,28 +1944,38 @@ public class GUI extends javax.swing.JFrame {
     private void changeObjectProperty(ActionEvent evt) {//GEN-FIRST:event_changeObjectProperty
         char cmd = evt.getActionCommand().charAt(0);
         SceneObject o = sceneCanvas.getActiveObject();
-        String input = JOptionPane.showInputDialog(objectEditor,
-                cmd == 'c' ? "Type:" : (cmd == 'n' ? "Name:" : "Texture:"),
-                cmd == 'c' ? o.getType() : (cmd == 'n' ? o.getName() : o.getTexture()));
-        if (input == null) {
-            return;
-        }
-        boolean gallery = Project.getProject().containsGalleryObject(input);
-        boolean level = Project.getProject().getCurrentLevel().containsObject(input);
-        if ((cmd == 'c' && gallery) || (cmd == 'n' && level)) {
-            JOptionPane.showMessageDialog(objectEditor, "This name is already taken!");
-            return;
-        }
-        if (cmd == 'c') {
+        
+        while (true) {
+            String input = JOptionPane.showInputDialog(objectEditor,
+                    cmd == 'c' ? "Type:" : (cmd == 'n' ? "Name:" : "Texture:"),
+                    cmd == 'c' ? o.getType() : (cmd == 'n' ? o.getName() : o.getTexture()));
+            if (input == null) return;
+            if (!Project.isValidName(input) && cmd != 't') { 
+                JOptionPane.showMessageDialog(levelManagerDialog, 
+                        "\""+input+"\" is not a valid "+(cmd == 'c' ? "type" : "name")+"!"); continue; 
+            }
+            boolean gallery = Project.getProject().containsGalleryObject(input);
+            boolean level = Project.getProject().getCurrentLevel().containsObject(input);
+            if ((cmd == 'c' && gallery) || (cmd == 'n' && level)) {
+                JOptionPane.showMessageDialog(objectEditor, "This "+(cmd == 'c' ? "type " : "")+"name is already taken!");
+                continue;
+            }
+            
+            if (cmd == 'c') {
             for (SceneObject o2: Project.getProject().getObjectsByType(sceneCanvas.getActiveObject().getType())) o2.setType(input);
-            sceneCanvas.getActiveObject().setType(input);
+                sceneCanvas.getActiveObject().setType(input);
+                GUI.refreshChooser(galleryObjectChooser, Project.getProject().getGalleryObjects());
+            }
+            if (cmd == 'n') {
+                sceneCanvas.getActiveObject().setName(input);
+            }
+            if (cmd == 't') {
+                sceneCanvas.getActiveObject().setTexture(input);
+            }
+            
+            break;
         }
-        if (cmd == 'n') {
-            sceneCanvas.getActiveObject().setName(input);
-        }
-        if (cmd == 't') {
-            sceneCanvas.getActiveObject().setTexture(input);
-        }
+
         GUI.refreshBasicObjectOptions();
     }//GEN-LAST:event_changeObjectProperty
 
@@ -2009,11 +2036,8 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_galleryObjectChooserActionPerformed
 
     private void newGalleryObjectButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_newGalleryObjectButtonActionPerformed
-        String input = JOptionPane.showInputDialog(objectEditor, "Name:", "New gallery object...", JOptionPane.PLAIN_MESSAGE);
-        if (input == null) return;
-        input = input.replaceAll("[\\/.,!@#$%^&*()_+]", "");
         SceneObject o = new SceneObject();
-        o.setType(input);
+        o.autoName("object", null); //autoname gallery object
         Project.getProject().addGalleryObject(o);
         GUI.refreshChooser(galleryObjectChooser, Project.getProject().getGalleryObjects());
         galleryObjectChooser.setSelectedIndex(Project.getProject().getGalleryObjects().size() - 1);
@@ -2034,13 +2058,19 @@ public class GUI extends javax.swing.JFrame {
 
     private void renameAnimationButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_renameAnimationButtonActionPerformed
         Animation a = sceneCanvas.getActiveObject().getAnimations().get(animationChooser.getSelectedIndex());
-        String input = JOptionPane.showInputDialog(objectEditor, "Name:", a.getName());
-        if (input == null) return;
-        if (sceneCanvas.getActiveObject().containsAnimation(input)) {
-            JOptionPane.showMessageDialog(objectEditor, "An animation already exists by that name!");
-            return;
+        while (true) {
+            String input = JOptionPane.showInputDialog(objectEditor, "Name:", a.getName());
+            if (input == null) return;
+            if (!Animation.isValidName(input)) { 
+                JOptionPane.showMessageDialog(levelManagerDialog, "\""+input+"\" is not a valid flowchart name!"); continue; 
+            }
+            if (sceneCanvas.getActiveObject().containsAnimation(input)) {
+                JOptionPane.showMessageDialog(objectEditor, "An animation already exists by that name!");
+                continue;
+            }
+            a.setName(input); break;
         }
-        a.setName(input);
+        
         GUI.refreshChooser(animationChooser, sceneCanvas.getActiveObject().getAnimations());
     }//GEN-LAST:event_renameAnimationButtonActionPerformed
 
@@ -2154,13 +2184,18 @@ public class GUI extends javax.swing.JFrame {
     private void renameFlowButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_renameFlowButtonActionPerformed
         double[] cam = new double[]{flowCanvas.getCameraX(), flowCanvas.getCameraY()};
         Flow a = sceneCanvas.getActiveObject().getFlows().get(flowChooser.getSelectedIndex());
-        String input = JOptionPane.showInputDialog(objectEditor, "Name:", a.getName());
-        if (input == null) return;
-        if (sceneCanvas.getActiveObject().containsFlow(input)) {
-            JOptionPane.showMessageDialog(objectEditor, "A flowchart already exists by that name!");
-            return;
+        while (true) {
+            String input = JOptionPane.showInputDialog(objectEditor, "Name:", a.getName());
+            if (input == null) return;
+            if (!Flow.isValidName(input)) { 
+                JOptionPane.showMessageDialog(levelManagerDialog, "\""+input+"\" is not a valid flowchart name!"); continue; 
+            }
+            if (sceneCanvas.getActiveObject().containsFlow(input)) {
+                JOptionPane.showMessageDialog(objectEditor, "A flowchart already exists by that name!");
+                continue;
+            }
+            a.setName(input); break;
         }
-        a.setName(input);
         GUI.refreshChooser(flowChooser, sceneCanvas.getActiveObject().getFlows());
         flowCanvas.setCamera((int)cam[0], (int)cam[1]);
     }//GEN-LAST:event_renameFlowButtonActionPerformed
@@ -2199,11 +2234,11 @@ public class GUI extends javax.swing.JFrame {
             : b.getOutput(blockOutputChooser.getSelectedIndex());
         if (p == null) return;
         while (true) {
-            String input = JOptionPane.showInputDialog(objectEditor, (String)p[0]+" ("+Block.TYPE_NAMES[(int)p[1]]+"):", (String)p[2]);
+            String input = JOptionPane.showInputDialog(objectEditor, (String)p[0]+" ("+Types.getTypeName((int)p[1])+"):", (String)p[2]);
             if (input == null) return;
-            boolean valid_var = Block.isValidVariable(input);
+            boolean valid_var = Types.isValidInput(input, Types.VARIABLE);
             boolean var_exists = b.getParent().varExists(input);
-            boolean valid_in = Block.isValidInput(input, (int)p[1]);
+            boolean valid_in = Types.isValidInput(input, (int)p[1]);
             boolean accept = false;
             
             if (cmd == 'i') {
@@ -2213,9 +2248,16 @@ public class GUI extends javax.swing.JFrame {
                 } else {
                     if (!valid_in) {
                         JOptionPane.showMessageDialog(objectEditor, 
-                                "Input is invalid for type \""+Block.TYPE_NAMES[(int)p[1]]+"\".");
+                                "Input is invalid for type \""+Types.getTypeName((int)p[1])+"\".");
                     } else {
                         accept = true;
+                        if (Types.isComplex((int)p[1])) {
+                            String verify = Types.verifyParams(input, (int)p[1]);
+                            if (verify != null) {
+                                JOptionPane.showMessageDialog(objectEditor, verify);
+                                continue;
+                            }
+                        }
                     }
                 }
             }
@@ -2241,7 +2283,7 @@ public class GUI extends javax.swing.JFrame {
         while (true) {
             String input = JOptionPane.showInputDialog(objectEditor, "Rename variable:", prev);
             if (input == null) return;
-            if (!Block.isValidVariable(input)) {
+            if (!Types.isValidInput(input, Types.VARIABLE)) {
                 JOptionPane.showMessageDialog(objectEditor, 
                             "\""+input+"\" is not a valid variable name!\nOnly alphabetical characters allowed."
                                     + "\nTrue/false reserved for booleans.");
@@ -2250,6 +2292,15 @@ public class GUI extends javax.swing.JFrame {
             f.renameVar(prev, input); GUI.refreshFlowOptions(); break;
         }
     }//GEN-LAST:event_renameVariableButtonActionPerformed
+
+    private void jMenuItem10ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        Level curr = Project.getProject().getCurrentLevel();
+        Color top = curr.getTopBGColor();
+        Color bottom = curr.getBottomBGColor();
+        curr.setTopBGColor(bottom);
+        curr.setBottomBGColor(top);
+        sceneCanvas.repaint();
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     /**
      * Returns 0 if user made a YES or NO choice. 1 if the user canceled.
@@ -2310,6 +2361,7 @@ public class GUI extends javax.swing.JFrame {
         d.setVisible(false);
         this.setEnabled(true);
         this.setVisible(true);
+        this.toFront();
         System.out.println("Hiding " + d.getTitle());
     }
 
@@ -2463,13 +2515,13 @@ public class GUI extends javax.swing.JFrame {
             ArrayList<String> params = new ArrayList<String>();
             for (int i = 0; i < selected.inputCount(); i++) {
                 Object[] p = selected.getInput(i);
-                params.add((String)p[0]+" ("+Block.TYPE_NAMES[(int)p[1]]+")");
+                params.add((String)p[0]+" ("+Types.getTypeName((int)p[1])+")");
             }
             GUI.refreshChooser(blockInputChooser, params);
             params.clear();
             for (int i = 0; i < selected.outputCount(); i++) {
                 Object[] p = selected.getOutput(i);
-                params.add((String)p[0]+" ("+Block.TYPE_NAMES[(int)p[1]]+")");
+                params.add((String)p[0]+" ("+Types.getTypeName((int)p[1])+")");
             }
             GUI.refreshChooser(blockOutputChooser, params);
         } else {
@@ -2645,10 +2697,13 @@ public class GUI extends javax.swing.JFrame {
     JMenu jMenu2;
     JMenu jMenu3;
     JMenuItem jMenuItem1;
+    JMenuItem jMenuItem10;
+    JMenuItem jMenuItem2;
     JMenuItem jMenuItem3;
     JMenuItem jMenuItem4;
     JMenuItem jMenuItem5;
     JMenuItem jMenuItem6;
+    JMenuItem jMenuItem7;
     JMenuItem jMenuItem8;
     JMenuItem jMenuItem9;
     JPanel jPanel13;

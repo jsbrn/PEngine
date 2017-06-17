@@ -46,6 +46,14 @@ public class Flow {
         }
     }
     
+    public static boolean isValidName(String name) {
+        if (name == null) return false;
+        if (name.trim().length() == 0) return false;
+        if (name.trim().equals("true") || name.trim().equals("false")
+                || name.trim().toLowerCase().equals("player")) return false;
+        return name.replaceAll("^[a-zA-Z_$][a-zA-Z_$0-9]*$", "").equals("");
+    }
+    
     public boolean varExists(String var) { return vars.contains(var); }
     
     public ArrayList<String> getVars() { return vars; }

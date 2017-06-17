@@ -3,8 +3,6 @@ package project;
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import misc.MiscMath;
@@ -45,6 +43,14 @@ public class Level {
             if (!Project.getProject().containsLevel(n)) { setName(n); break; }
             i++;
         }
+    }
+    
+    public static boolean isValidName(String name) {
+        if (name == null) return false;
+        if (name.trim().length() == 0) return false;
+        if (name.trim().equals("true") || name.trim().equals("false")
+                || name.trim().toLowerCase().equals("player")) return false;
+        return name.replaceAll("^[a-zA-Z_$][a-zA-Z_$0-9]*$", "").equals("");
     }
     
     public boolean loopBGMusic() { return loop_bg_music; }

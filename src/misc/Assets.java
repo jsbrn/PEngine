@@ -77,17 +77,27 @@ public class Assets {
         } catch (IOException ex) {
             ex.printStackTrace();
         }*/
-        blocks = new Block[5];
+        blocks = new Block[10];
         blocks[0] = new Block("Set coordinates", "(@x, @y)", "sp", "ttff", 
-                new Object[][]{{"x", Block.TYPE_NUMBER, ""}, {"y", Block.TYPE_NUMBER, ""}}, new Object[][]{});
+                new Object[][]{{"x", Types.NUMBER, ""}, {"y", Types.NUMBER, ""}}, new Object[][]{});
         blocks[1] = new Block("Get coordinates", "@x = X, @y = Y", "gxp", "ttff", 
-                new Object[][]{}, new Object[][]{{"x", Block.TYPE_NUMBER, ""}, {"y", Block.TYPE_NUMBER, ""}});
+                new Object[][]{}, new Object[][]{{"x", Types.NUMBER, ""}, {"y", Types.NUMBER, ""}});
         blocks[2] = new Block("Start", "@id", "s", "ftff", 
-                new Object[][]{{"id", Block.TYPE_STRING, ""}}, new Object[][]{});
+                new Object[][]{{"id", Types.TEXT, ""}}, new Object[][]{});
         blocks[3] = new Block("Equal?", "If @x == @y", "se", "tftt", 
-                new Object[][]{{"x", Block.TYPE_ANY, ""}, {"y", Block.TYPE_ANY, ""}}, new Object[][]{});
+                new Object[][]{{"x", Types.ANY, ""}, {"y", Types.ANY, ""}}, new Object[][]{});
         blocks[4] = new Block("Wait", "Until @x == @y", "wxy", "ttff", 
-                new Object[][]{{"x", Block.TYPE_STRING, ""}, {"y", Block.TYPE_STRING, ""}}, new Object[][]{});
+                new Object[][]{{"x", Types.TEXT, ""}, {"y", Types.TEXT, ""}}, new Object[][]{});
+        blocks[5] = new Block("Set animation", "@anim", "sa", "ttff", 
+                new Object[][]{{"anim", Types.ANIM, ""}}, new Object[][]{});
+        blocks[6] = new Block("Switch to level", "@level", "stl", "ttff", 
+                new Object[][]{{"level", Types.LEVEL, ""}}, new Object[][]{});
+        blocks[7] = new Block("Delete object", "@obj", "dso", "ttff", 
+                new Object[][]{{"obj", Types.OBJECT, ""}}, new Object[][]{});
+        blocks[8] = new Block("Load asset", "@ass", "la", "ttff", 
+                new Object[][]{{"ass", Types.ASSET, ""}}, new Object[][]{});
+        blocks[9] = new Block("Start flow", "@flow", "sf", "ttff", 
+                new Object[][]{{"flow", Types.FLOW, ""}}, new Object[][]{});
     }
     
     public static Object get(String key) {

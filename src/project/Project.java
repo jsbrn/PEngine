@@ -269,4 +269,10 @@ public class Project {
         }
     }
     
+    public static boolean isValidName(String name) {
+        if (name == null) return false;
+        if (name.trim().length() == 0) return false;
+        return name.replaceAll("^[^*&%\\\\/.]+$", "").equals("");
+    }
+    
 }
