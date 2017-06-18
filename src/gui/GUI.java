@@ -1967,8 +1967,14 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_autoplayAmbientSoundMenuItemActionPerformed
 
     private void playButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_playButtonActionPerformed
-        runProject(startAtCurrentLevelCheckBox.isSelected()
-                ? Project.getProject().getCurrentLevel().getName() : null);
+        if (!Project.getProject().existsOnDisk()) {
+            JOptionPane.showMessageDialog(this, "Project files have not been created!\nSave your project first.");
+        } else {
+            promptSave();
+            runProject(startAtCurrentLevelCheckBox.isSelected()
+                ? Project.getProject().getCurrentLevel().getName() : Project.getProject().getHomeLevel().getName());
+        }
+        
     }//GEN-LAST:event_playButtonActionPerformed
 
     private void levelBoundsMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_levelBoundsMenuItemActionPerformed
@@ -2653,8 +2659,9 @@ public class GUI extends javax.swing.JFrame {
             //start the runtime jar and pass in the project directory and the name of the level to start in
             //you will need to update this in the runtime jar when you reach that point
 
-            String cmd = "java -jar \"" + Assets.USER_HOME + "/.pengine/jars/runtime.jar\" \"" + Project.getProject().getDirectory() + "\""
-                    + (level_name != null ? " \"" + level_name + "\"" : "");
+            String cmd = "java -jar \"" + Assets.USER_HOME + "\\.pengine\\jars\\runtime.jar\" " 
+                    + "\""+Project.getProject().getDirectory()+"\""
+                    + " \""+(level_name != null ? level_name : "")+"\"";
             System.out.println(cmd);
 
             Process p = Runtime.getRuntime()
@@ -2664,16 +2671,16 @@ public class GUI extends javax.swing.JFrame {
             window.setVisible(false);
             //log the runtime's output
             System.out.println("---START OF GAME OUTPUT---");
-            String results = "";
-            String line = "";
+            String results = "", line = "";
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
                 results += line + "\n";
             }
             System.out.println("---END OF GAME OUTPUT---");
             resultsTextBox.setText(results);
-            showDialog(testOutputDialog);
             window.setVisible(true);
+            window.toFront();
+            showDialog(testOutputDialog);
             GUI.statusIndicator.setText("");
         } catch (IOException ex) {
             //Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);

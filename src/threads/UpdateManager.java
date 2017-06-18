@@ -21,6 +21,9 @@ public class UpdateManager extends Thread {
     private static boolean editor_update = false, runtime_update = false, blocked = false;
     private static Thread thread;
     
+    //for debugging purposes
+    public static final boolean DISABLE_UPDATES = true;
+    
     public static int VERSION_ID = 0, RUNTIME_VERSION_ID = -1;
     public static int LATEST_VERSION_ID, LATEST_RUNTIME_VERSION_ID;
     public static final String VERSION_NAME = "1.3.1-beta";
@@ -155,8 +158,8 @@ public class UpdateManager extends Thread {
         return blocked;
     }
     
-    public static boolean editorUpdate() { return editor_update; }
-    public static boolean runtimeUpdate() { return runtime_update; }
+    public static boolean editorUpdate() { return editor_update && !DISABLE_UPDATES; }
+    public static boolean runtimeUpdate() { return runtime_update && !DISABLE_UPDATES; }
     
     public static void checkForUpdates() {
         load();

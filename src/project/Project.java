@@ -74,7 +74,7 @@ public class Project {
     public void setName(String n) { 
         name = n;
     }
-    public String getDirectory() { return Assets.USER_HOME+"/.pengine/projects/"+name; }
+    public String getDirectory() { return Assets.USER_HOME+"\\.pengine\\projects\\"+name; }
     public boolean existsOnDisk() { return projectExists(getName()); }
     
     public SceneObject getGalleryObject(int i) { return object_gallery.get(i); }
@@ -132,7 +132,11 @@ public class Project {
     
     public boolean save() {
         mkdirs();
-        File f = new File(getDirectory()+"/project.txt");
+        return save("project.txt", false) && save("game.txt", true);
+    }
+    
+    private boolean save(String file, boolean game) {
+        File f = new File(getDirectory()+"/"+file);
         FileWriter fw;
         System.out.println("Saving to file " + f.getAbsoluteFile().getAbsolutePath());
         try {
@@ -141,12 +145,18 @@ public class Project {
             BufferedWriter bw = new BufferedWriter(fw);
             
             for (Level l : levels) l.save(bw);
-            for (SceneObject o: object_gallery) o.save(bw);
+            if (!game) for (SceneObject o: object_gallery) o.save(bw);
             
-            bw.write("curr="+current_level.getName()+"\n");
+            if (game) {
+                bw.write("player\n");
+                object_gallery.get(0).save(bw); //save the player data as a global object
+                bw.write("/player\n");
+            }
+            
+            if (!game) bw.write("curr="+current_level.getName()+"\n");
             bw.write("home="+home_level.getName()+"\n");
-            bw.write("camera="+(int)GUI.getSceneCanvas().getCameraX()+" "+(int)GUI.getSceneCanvas().getCameraY()+"\n");
-            bw.write("zoom="+(int)GUI.getSceneCanvas().getZoom()+"\n");
+            if (!game) bw.write("camera="+(int)GUI.getSceneCanvas().getCameraX()+" "+(int)GUI.getSceneCanvas().getCameraY()+"\n");
+            if (!game) bw.write("zoom="+(int)GUI.getSceneCanvas().getZoom()+"\n");
             
             bw.close();
             System.out.println("Saved to "+f.getAbsolutePath());
