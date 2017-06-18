@@ -34,7 +34,11 @@ public class Types {
         new TypeAsset()
     };
     
-    protected static int getType(String input) {
+    public static Type getType(int index) {
+        return types[index];
+    }
+    
+    public static int getType(String input) {
         for (int i = 1; i < types.length; i++) if (types[i].typeOf(input)) return i;
         return -1;
     }
@@ -141,13 +145,19 @@ class TypeAny extends Type {
     @Override
     public boolean typeOf(String value) {
         if (!super.typeOf(value)) return false;
-        return Types.getType(value) != -1;
+        int t = Types.getType(value);
+        if (t < 0) return false;
+        Type type = Types.getType(t);
+        if (type instanceof ComplexType) {
+            return ((ComplexType)type).verifyParams(value) == null;
+        }
+        return true;
     }    
 }
 
 class TypeVar extends Type {
     public TypeVar() { 
-        setName("Var"); 
+        setName("Variable"); 
     }
     @Override
     public boolean typeOf(String value) {

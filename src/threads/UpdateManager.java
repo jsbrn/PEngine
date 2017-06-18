@@ -14,9 +14,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import misc.Assets;
-import misc.MiscMath;
-import project.Level;
-import project.objects.SceneObject;
 
 public class UpdateManager extends Thread {
     
@@ -26,7 +23,7 @@ public class UpdateManager extends Thread {
     
     public static int VERSION_ID = 0, RUNTIME_VERSION_ID = -1;
     public static int LATEST_VERSION_ID, LATEST_RUNTIME_VERSION_ID;
-    public static final String VERSION_NAME = "1.3-beta";
+    public static final String VERSION_NAME = "1.3.1-beta";
     
     /**
      * Downloads a file in the main thread. Only use this for smaller files.

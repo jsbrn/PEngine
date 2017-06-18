@@ -156,6 +156,10 @@ public class GUI extends javax.swing.JFrame {
         variablesList = new JList<>();
         jLabel7 = new JLabel();
         renameVariableButton = new JButton();
+        valueTestPanel = new JPanel();
+        jLabel8 = new JLabel();
+        valueTestField = new JTextField();
+        jButton1 = new JButton();
         animationCanvas = new AnimationCanvas();
         jPanel8 = new JPanel();
         animationChooser = new JComboBox<>();
@@ -555,7 +559,7 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(sceneObjectCanvasLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(basicOptionsPanel, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(299, Short.MAX_VALUE))
+                .addContainerGap(302, Short.MAX_VALUE))
         );
 
         objectEditorTabs.addTab("Basics", sceneObjectCanvas);
@@ -723,6 +727,8 @@ public class GUI extends javax.swing.JFrame {
                 .addGap(5, 5, 5))
         );
 
+        variablesPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+
         jScrollPane1.setViewportView(variablesList);
 
         jLabel7.setFont(new Font("Tahoma", 1, 11)); // NOI18N
@@ -753,10 +759,54 @@ public class GUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel7)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(renameVariableButton)
                 .addContainerGap())
+        );
+
+        valueTestPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+
+        jLabel8.setText("Test value:");
+
+        valueTestField.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                valueTestFieldActionPerformed(evt);
+            }
+        });
+        valueTestField.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent evt) {
+                valueTestFieldKeyReleased(evt);
+            }
+        });
+
+        jButton1.setText("Test!");
+        jButton1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        GroupLayout valueTestPanelLayout = new GroupLayout(valueTestPanel);
+        valueTestPanel.setLayout(valueTestPanelLayout);
+        valueTestPanelLayout.setHorizontalGroup(valueTestPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(valueTestPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel8)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(valueTestField, GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addContainerGap())
+        );
+        valueTestPanelLayout.setVerticalGroup(valueTestPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(valueTestPanelLayout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(valueTestPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(valueTestField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1))
+                .addGap(5, 5, 5))
         );
 
         GroupLayout flowCanvasLayout = new GroupLayout(flowCanvas);
@@ -766,7 +816,9 @@ public class GUI extends javax.swing.JFrame {
             .addComponent(jPanel7, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(GroupLayout.Alignment.TRAILING, flowCanvasLayout.createSequentialGroup()
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(variablesPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addGroup(flowCanvasLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(variablesPanel, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(valueTestPanel, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         flowCanvasLayout.setVerticalGroup(flowCanvasLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -774,7 +826,9 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(jPanel9, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(variablesPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
+                .addComponent(valueTestPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         );
 
@@ -932,7 +986,7 @@ public class GUI extends javax.swing.JFrame {
         animationCanvasLayout.setVerticalGroup(animationCanvasLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(animationCanvasLayout.createSequentialGroup()
                 .addComponent(jPanel8, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 378, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 381, Short.MAX_VALUE)
                 .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         );
 
@@ -1126,7 +1180,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(bringForwardButton, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sendBackwardsButton, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(43, Short.MAX_VALUE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         topPanelLayout.setVerticalGroup(topPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(topPanelLayout.createSequentialGroup()
@@ -1192,7 +1246,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(topPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 221, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel13, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -2267,12 +2321,11 @@ public class GUI extends javax.swing.JFrame {
                     accept = true;
                 } else {
                     JOptionPane.showMessageDialog(objectEditor, 
-                            "\""+input+"\" is not a valid variable name!\nOnly alphabetical characters allowed."
-                                    + "\nTrue/false reserved for booleans.");
+                            "\""+input+"\" is not a valid variable name!");
                 }
             }
             
-            if (accept) { p[2] = input; GUI.refreshFlowOptions(); return; } else { continue; }
+            if (accept) { p[2] = input; GUI.refreshFlowOptions(); return; }
 
         }
     }//GEN-LAST:event_setBlockInputValueActionPerformed
@@ -2285,8 +2338,7 @@ public class GUI extends javax.swing.JFrame {
             if (input == null) return;
             if (!Types.isValidInput(input, Types.VARIABLE)) {
                 JOptionPane.showMessageDialog(objectEditor, 
-                            "\""+input+"\" is not a valid variable name!\nOnly alphabetical characters allowed."
-                                    + "\nTrue/false reserved for booleans.");
+                            "\""+input+"\" is not a valid variable name!");
                 continue;
             }
             f.renameVar(prev, input); GUI.refreshFlowOptions(); break;
@@ -2301,6 +2353,29 @@ public class GUI extends javax.swing.JFrame {
         curr.setBottomBGColor(top);
         sceneCanvas.repaint();
     }//GEN-LAST:event_jMenuItem10ActionPerformed
+
+    private void valueTestFieldActionPerformed(ActionEvent evt) {//GEN-FIRST:event_valueTestFieldActionPerformed
+
+    }//GEN-LAST:event_valueTestFieldActionPerformed
+
+    private void valueTestFieldKeyReleased(KeyEvent evt) {//GEN-FIRST:event_valueTestFieldKeyReleased
+
+    }//GEN-LAST:event_valueTestFieldKeyReleased
+
+    private void jButton1ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Flow f = flowCanvas.getFlow();
+        String in = valueTestField.getText();
+        String summary = "Input: "+in+"\n";
+        int t = Types.getType(in);
+        summary += t < 0 ? "Type: <none>\n" : "Type: "+Types.getTypeName(t)+"\n";
+        if (Types.isComplex(t)) {
+            String verify = Types.verifyParams(in, t);
+            summary += verify == null ? "" : "Error: "+verify;
+        } else {
+            summary += (t == Types.VARIABLE ? "Exists in flow: "+(f.varExists(in) ? "Yes" : "No") : "");
+        }
+        JOptionPane.showMessageDialog(objectEditor, summary);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * Returns 0 if user made a YES or NO choice. 1 if the user canceled.
@@ -2499,6 +2574,7 @@ public class GUI extends javax.swing.JFrame {
         lockFlowButton.setSelected(false);
         addBlockButton.setEnabled(inbound);
         variablesPanel.setVisible(inbound);
+        valueTestPanel.setVisible(inbound);
         if (inbound) {
             Flow a = sceneCanvas.getActiveObject().getFlows().get(flowChooser.getSelectedIndex());
             a.refreshVars();
@@ -2685,6 +2761,7 @@ public class GUI extends javax.swing.JFrame {
     private static JLabel frameCountLabel;
     private static JComboBox<String> galleryObjectChooser;
     private static JPanel galleryObjectPanel;
+    JButton jButton1;
     JCheckBox jCheckBox1;
     JLabel jLabel1;
     JLabel jLabel2;
@@ -2693,6 +2770,7 @@ public class GUI extends javax.swing.JFrame {
     JLabel jLabel5;
     JLabel jLabel6;
     JLabel jLabel7;
+    JLabel jLabel8;
     JMenu jMenu1;
     JMenu jMenu2;
     JMenu jMenu3;
@@ -2774,6 +2852,8 @@ public class GUI extends javax.swing.JFrame {
     public static JDialog testOutputDialog;
     JMenuItem topColorMenuItem;
     JPanel topPanel;
+    JTextField valueTestField;
+    private static JPanel valueTestPanel;
     private static JList<String> variablesList;
     private static JPanel variablesPanel;
     JMenuItem viewRootButton;
