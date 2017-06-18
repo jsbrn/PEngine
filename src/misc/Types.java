@@ -34,8 +34,9 @@ public class Types {
         new TypeAsset()
     };
     
-    public static Type getType(int index) {
-        return types[index];
+    public static Type getType(int type) {
+        if (type < 0 || type >= types.length) return null;
+        return types[type];
     }
     
     public static int getType(String input) {
@@ -44,6 +45,7 @@ public class Types {
     }
     
     public static String getTypeName(int type) {
+        if (type < 0 || type >= types.length) return null;
         return types[type].getName();
     }
  
@@ -54,15 +56,20 @@ public class Types {
      * @return A String describing any issues, null if no issues.
      */
     public static String verifyParams(String input, int type) {
+        if (type < 0 || type >= types.length) return "Out of bounds: "+type+"!";
         if (!isComplex(type)) return types[type].getName()+" is not a complex type!";
         return ((ComplexType)(types[type])).verifyParams(input);
     }
     
     public static boolean isValidInput(String input, int type) {
+        if (type < 0 || type >= types.length) return false;
         return types[type].typeOf(input);
     }
     
-    public static boolean isComplex(int type) { return types[type] instanceof ComplexType; }
+    public static boolean isComplex(int type) { 
+        if (type < 0 || type >= types.length) return false;
+        return types[type] instanceof ComplexType; 
+    }
     
 }
 
@@ -114,7 +121,7 @@ class ComplexType extends Type {
         String[] names = new String[]{getName(), "Object", "Level"};
         for (int i = results.length - 1; i > -1; i--) {
             if (!results[i]) {
-                return "Can not find "+names[i].toLowerCase()+"!";
+                return "Cannot find "+names[i].toLowerCase()+"!";
             }
         }
         return null;
@@ -175,7 +182,7 @@ class TypeNumber extends Type {
     @Override
     public boolean typeOf(String value) {
         if (!super.typeOf(value)) return false;
-        return value.replaceAll("[^0-9]", "").equals(value);
+        return value.replaceAll("((\\+|-)?([0-9]+)(\\.[0-9]+)?)|((\\+|-)?\\.?[0-9]+)", "").equals("");
     }
 }
 

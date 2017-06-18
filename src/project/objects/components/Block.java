@@ -331,7 +331,7 @@ public class Block {
     }
     
     public int[] getRenderCoords() { 
-        return GUI.getFlowCanvas().getOnscreenCoords(MiscMath.round(x, 32)-(dimensions()[0]/2), MiscMath.round(y, 32)-(dimensions()[1]/2)); 
+        return GUI.getFlowCanvas().getOnscreenCoords(MiscMath.round(x, 16)-(dimensions()[0]/2), MiscMath.round(y, 16)-(dimensions()[1]/2)); 
     }
     
     /**

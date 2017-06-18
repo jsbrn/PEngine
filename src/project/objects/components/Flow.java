@@ -123,6 +123,7 @@ public class Flow {
         try {
             bw.write("f\n");
             bw.write("id="+name+"\n");
+            bw.write("lk="+locked+"\n");
             for (Block b: blocks) b.save(bw);
             bw.write("/f\n");
         } catch (IOException ex) {
@@ -138,6 +139,7 @@ public class Flow {
                 if (line == null) break;
                 if (line.equals("/f")) return true;
                 if (line.indexOf("id=") == 0) name = line.trim().replace("id=", "");
+                if (line.indexOf("lk=") == 0) locked = Boolean.parseBoolean(line.trim().replace("lk=", ""));
                 if (line.equals("b")) {
                     Block b = new Block();
                     if (b.load(br)) addBlock(b);
