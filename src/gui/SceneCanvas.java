@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.Color;
 import java.awt.GradientPaint;
-import project.Project;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -13,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import misc.MiscMath;
 import project.Level;
+import project.Project;
 import project.objects.SceneObject;
 
 public class SceneCanvas extends JPanel {
@@ -134,10 +134,12 @@ public class SceneCanvas extends JPanel {
         g.setColor(Color.yellow);
         g.drawLine(0, origin[1], Integer.MAX_VALUE, origin[1]);
         g.setColor(Color.cyan);
-        g.drawLine((int)(current_level.playerSpawn()[0]*zoom)+(int)origin[0]-3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin[1]-3, 
-                (int)(current_level.playerSpawn()[0]*zoom)+(int)origin[0]+3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin[1]+3);
-        g.drawLine((int)(current_level.playerSpawn()[0]*zoom)+(int)origin[0]+3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin[1]-3, 
-                (int)(current_level.playerSpawn()[0]*zoom)+(int)origin[0]-3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin[1]+3);
+        if (current_level.allowPlayer()) {
+            g.drawLine((int)(current_level.playerSpawn()[0]*zoom)+(int)origin[0]-3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin[1]-3, 
+                    (int)(current_level.playerSpawn()[0]*zoom)+(int)origin[0]+3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin[1]+3);
+            g.drawLine((int)(current_level.playerSpawn()[0]*zoom)+(int)origin[0]+3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin[1]-3, 
+                    (int)(current_level.playerSpawn()[0]*zoom)+(int)origin[0]-3, (int)(current_level.playerSpawn()[1]*zoom)+(int)origin[1]+3);
+        }
         //cam coords
         g.fillRect((int)(current_level.cameraSpawn()[0]*zoom)+(int)origin[0]-3, (int)(current_level.cameraSpawn()[1]*zoom)+(int)origin[1]-3, 
                 6, 6);

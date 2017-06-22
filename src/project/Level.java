@@ -20,7 +20,7 @@ public class Level {
     private int[] bounds;
     private double lighting_intensity = 0;
     private boolean loop_bg_music = true, loop_bg_ambience = true, auto_bg_music = true,
-            auto_bg_ambience = true;
+            auto_bg_ambience = true, allow_player = true;
     private float bg_music_vol = 1, bg_ambience_vol = 1;
     
     private int[] player_spawn = {0, 0}, camera_spawn = {0, 0};
@@ -53,6 +53,9 @@ public class Level {
         return name.replaceAll("^[a-zA-Z_$][a-zA-Z_$0-9]*$", "").equals("");
     }
     
+    public boolean allowPlayer() { return allow_player; }
+    public void allowPlayer(boolean b) { allow_player = b; }
+    
     public boolean loopBGMusic() { return loop_bg_music; }
     public boolean loopBGAmbience() { return loop_bg_ambience; }
     public boolean autoPlayBGMusic() { return auto_bg_music; }
@@ -76,7 +79,7 @@ public class Level {
     public void setLightingColor(Color c) { lighting_color = c; }
     public void setTopBGColor(Color c) { bg_color_top = c; }
     public void setBottomBGColor(Color c) { bg_color_bottom = c; }
-    public void setLightingIntensity(double i) { lighting_intensity = i; }
+    public void setLightingIntensity(double i) { lighting_intensity = MiscMath.clamp(i, 0, 100); }
     
     public void setAmbientSound(String filename) { bg_ambience = filename; }
     public void setBGMusic(String filename) { bg_music = filename; }
@@ -94,7 +97,7 @@ public class Level {
     public int[] bounds() { return bounds; }
     public int getZoom() { return zoom; }
     public void setZoom(int z) { 
-        zoom = zoom + z > 8 ? 8 : (zoom + z < 1 ? 1 : zoom);
+        zoom = (int)MiscMath.clamp(z, 0, 8);
     }
     
     public ArrayList<SceneObject> getObjects(int layer) { return layers[layer]; }
@@ -214,6 +217,7 @@ public class Level {
                 bw.write("av="+bg_ambience_vol+"\n");
                 bw.write("bgm="+bg_music+"\n");
                 bw.write("as="+bg_ambience+"\n");
+                bw.write("apl="+allow_player+"\n");
                 
                 for (SceneObject o: getObjects(ALL_OBJECTS)) o.save(bw);
                 
@@ -257,6 +261,7 @@ public class Level {
                 if (line.indexOf("av=") == 0) bg_ambience_vol = Float.parseFloat(line.substring(3));
                 if (line.indexOf("bgm=") == 0) bg_music = line.substring(4);
                 if (line.indexOf("as=") == 0) bg_ambience = line.substring(3);
+                if (line.indexOf("apl=") == 0) allow_player = Boolean.parseBoolean(line.substring(3));
                 
                 if (line.equals("so")) {
                     SceneObject o = new SceneObject();

@@ -10,13 +10,9 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Random;
 import misc.Assets;
 import misc.MiscMath;
-import project.Level;
-import project.Project;
-import project.objects.SceneObject;
 
 public class Block {
     
@@ -55,6 +51,8 @@ public class Block {
         this.type = "";
         this.nodes = new boolean[NODE_COUNT];
         this.conns = new int[NODE_COUNT][2];
+        this.inputs = new Object[0][0];
+        this.outputs = new Object[0][0];
     }
     
     public Flow getParent() { return parent; }

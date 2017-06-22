@@ -65,13 +65,13 @@ import javax.swing.border.BevelBorder;
 import misc.Assets;
 import misc.MiscMath;
 import misc.Types;
+import project.Level;
+import project.Project;
+import project.objects.SceneObject;
 import project.objects.components.Animation;
 import project.objects.components.Block;
 import project.objects.components.Flow;
 import threads.UpdateManager;
-import project.Level;
-import project.Project;
-import project.objects.SceneObject;
 
 public class GUI extends javax.swing.JFrame {
 
@@ -206,10 +206,14 @@ public class GUI extends javax.swing.JFrame {
         jSeparator4 = new JPopupMenu.Separator();
         viewRootButton = new JMenuItem();
         levelMenu = new JMenu();
+        allowPlayerMenuItem = new JCheckBoxMenuItem();
         spawnMenuItem = new JMenuItem();
+        jSeparator1 = new JPopupMenu.Separator();
         cameraLocationMenuItem = new JMenuItem();
         jMenuItem1 = new JMenuItem();
+        jSeparator2 = new JPopupMenu.Separator();
         levelBoundsMenuItem = new JMenuItem();
+        jSeparator3 = new JPopupMenu.Separator();
         jMenu2 = new JMenu();
         jMenuItem2 = new JMenuItem();
         topColorMenuItem = new JMenuItem();
@@ -1348,6 +1352,15 @@ public class GUI extends javax.swing.JFrame {
 
         levelMenu.setText("Level");
 
+        allowPlayerMenuItem.setSelected(true);
+        allowPlayerMenuItem.setText("Allow player");
+        allowPlayerMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                allowPlayerMenuItemActionPerformed(evt);
+            }
+        });
+        levelMenu.add(allowPlayerMenuItem);
+
         spawnMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK | InputEvent.CTRL_MASK));
         spawnMenuItem.setText("Spawn point...");
         spawnMenuItem.addActionListener(new ActionListener() {
@@ -1356,6 +1369,7 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         levelMenu.add(spawnMenuItem);
+        levelMenu.add(jSeparator1);
 
         cameraLocationMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK | InputEvent.CTRL_MASK));
         cameraLocationMenuItem.setText("Camera location...");
@@ -1374,6 +1388,7 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         levelMenu.add(jMenuItem1);
+        levelMenu.add(jSeparator2);
 
         levelBoundsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.ALT_MASK | InputEvent.CTRL_MASK));
         levelBoundsMenuItem.setText("Bounds...");
@@ -1383,6 +1398,7 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         levelMenu.add(levelBoundsMenuItem);
+        levelMenu.add(jSeparator3);
 
         jMenu2.setText("Lighting");
 
@@ -2383,6 +2399,12 @@ public class GUI extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(objectEditor, summary);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void allowPlayerMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_allowPlayerMenuItemActionPerformed
+        Project.getProject().getCurrentLevel().allowPlayer(
+            !Project.getProject().getCurrentLevel().allowPlayer());
+        GUI.refreshLevelMenu();
+    }//GEN-LAST:event_allowPlayerMenuItemActionPerformed
+
     /**
      * Returns 0 if user made a YES or NO choice. 1 if the user canceled.
      *
@@ -2623,6 +2645,8 @@ public class GUI extends javax.swing.JFrame {
         loopBGMusicMenuItem.setSelected(current.loopBGMusic());
         autoplayAmbientSoundMenuItem.setSelected(current.autoPlayBGAmbience());
         autoplayBGMusicMenuItem.setSelected(current.autoPlayBGMusic());
+        spawnMenuItem.setEnabled(current.allowPlayer());
+        allowPlayerMenuItem.setSelected(current.allowPlayer());
         sceneCanvas.repaint();
     }
 
@@ -2737,6 +2761,7 @@ public class GUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private static JButton addBlockButton;
     private static JButton addFrameButton;
+    private static JCheckBoxMenuItem allowPlayerMenuItem;
     JMenuItem ambientSoundVolumeMenuItem;
     private static AnimationCanvas animationCanvas;
     private static JComboBox<String> animationChooser;
@@ -2799,6 +2824,9 @@ public class GUI extends javax.swing.JFrame {
     JPanel jPanel9;
     JScrollPane jScrollPane1;
     JScrollPane jScrollPane9;
+    JPopupMenu.Separator jSeparator1;
+    JPopupMenu.Separator jSeparator2;
+    JPopupMenu.Separator jSeparator3;
     JPopupMenu.Separator jSeparator4;
     JPopupMenu.Separator jSeparator5;
     JPopupMenu.Separator jSeparator6;
@@ -2853,7 +2881,7 @@ public class GUI extends javax.swing.JFrame {
     private static JButton setBlockInputValue;
     private static JButton setBlockOutputValue;
     private static JButton setHomeButton;
-    JMenuItem spawnMenuItem;
+    private static JMenuItem spawnMenuItem;
     public static JCheckBox startAtCurrentLevelCheckBox;
     public static JMenu statusIndicator;
     public static JDialog testOutputDialog;

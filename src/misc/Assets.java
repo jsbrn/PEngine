@@ -60,44 +60,15 @@ public class Assets {
     }
     
     private static void initBlockList() {   
-        /*ArrayList<Block> list = new ArrayList<Block>();
-        InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("/assets/blocks.txt");
-        if (in == null) return;
-        System.out.println("Loading from file: " + f.getAbsoluteFile().getAbsolutePath());
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            while (true) {
-                String line = br.readLine();
-                if (line == null) break;
-                line = line.trim();
-                String block[] = line.split("\t");
-                Block b = new Block(block[0], block[1], block[2], block[3]);
-            }
-            br.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }*/
-        blocks = new Block[10];
-        blocks[0] = new Block("Set coordinates", "(@x, @y)", "sp", "ttff", 
-                new Object[][]{{"x", Types.NUMBER, ""}, {"y", Types.NUMBER, ""}}, new Object[][]{});
-        blocks[1] = new Block("Get coordinates", "@x = X, @y = Y", "gxp", "ttff", 
-                new Object[][]{}, new Object[][]{{"x", Types.NUMBER, ""}, {"y", Types.NUMBER, ""}});
-        blocks[2] = new Block("Start", "@id", "s", "ftff", 
-                new Object[][]{{"id", Types.TEXT, ""}}, new Object[][]{});
-        blocks[3] = new Block("Equal?", "If @x == @y", "se", "tftt", 
-                new Object[][]{{"x", Types.ANY, ""}, {"y", Types.ANY, ""}}, new Object[][]{});
-        blocks[4] = new Block("Wait", "Until @x == @y", "wxy", "ttff", 
-                new Object[][]{{"x", Types.TEXT, ""}, {"y", Types.TEXT, ""}}, new Object[][]{});
-        blocks[5] = new Block("Set animation", "@anim", "sa", "ttff", 
-                new Object[][]{{"anim", Types.ANIM, ""}}, new Object[][]{});
-        blocks[6] = new Block("Switch to level", "@level", "stl", "ttff", 
-                new Object[][]{{"level", Types.LEVEL, ""}}, new Object[][]{});
-        blocks[7] = new Block("Delete object", "@obj", "dso", "ttff", 
-                new Object[][]{{"obj", Types.OBJECT, ""}}, new Object[][]{});
-        blocks[8] = new Block("Load asset", "@ass", "la", "ttff", 
-                new Object[][]{{"ass", Types.ASSET, ""}}, new Object[][]{});
-        blocks[9] = new Block("Start flow", "@flow", "sf", "ttff", 
-                new Object[][]{{"flow", Types.FLOW, ""}}, new Object[][]{});
+        blocks = new Block[1];
+        blocks[0] = new Block("Start", "@id", "s", "ttff", 
+                new Object[][]{{"id", Types.TEXT, ""}}, null);
+        blocks[1] = new Block("Wait", "@duration", "s", "ttff", 
+                new Object[][]{{"duration", Types.NUMBER, ""}}, null);
+        blocks[2] = new Block("Log", "@message", "s", "ttff", 
+                new Object[][]{{"message", Types.TEXT, ""}}, null);
+        blocks[3] = new Block("Switch to level", "@level", "stl", "ttff", 
+                new Object[][]{{"level", Types.LEVEL, ""}}, null);
     }
     
     public static Object get(String key) {
