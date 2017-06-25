@@ -60,15 +60,26 @@ public class Assets {
     }
     
     private static void initBlockList() {   
-        blocks = new Block[1];
-        blocks[0] = new Block("Start", "@id", "s", "ttff", 
+        blocks = new Block[9];
+        blocks[0] = new Block("Start", "@id", "s", "ftff", 
                 new Object[][]{{"id", Types.TEXT, ""}}, null);
-        blocks[1] = new Block("Wait", "@duration", "s", "ttff", 
+        blocks[1] = new Block("Wait", "@duration", "w", "ttff", 
                 new Object[][]{{"duration", Types.NUMBER, ""}}, null);
-        blocks[2] = new Block("Log", "@message", "s", "ttff", 
+        blocks[2] = new Block("Print to console", "@message", "p", "ttff", 
                 new Object[][]{{"message", Types.TEXT, ""}}, null);
         blocks[3] = new Block("Switch to level", "@level", "stl", "ttff", 
                 new Object[][]{{"level", Types.LEVEL, ""}}, null);
+        blocks[4] = new Block("Set animation", "Set @object animation to @animation", "sa", "ttff", 
+                new Object[][]{{"object", Types.OBJECT, ""}, {"animation", Types.ANIM, ""}}, null);
+        blocks[5] = new Block("Add", "@number1 + @number2", "adn", "ttff", 
+                new Object[][]{{"number1", Types.NUMBER, ""}, {"number2", Types.NUMBER, ""}}, new Object[][]{{"sum", Types.NUMBER, ""}});
+        blocks[6] = new Block("Set variable", "Set @var to @value", "sv", "ttff", 
+                new Object[][]{{"value", Types.ANY, ""}}, new Object[][]{{"var", Types.ANY, ""}});
+        blocks[7] = new Block("Add force", "Add force @name to @object: @angle degrees, @magnitude px/s", "af", "ttff", 
+                new Object[][]{{"object", Types.OBJECT, ""}, {"name", Types.TEXT, ""}, 
+                    {"angle", Types.NUMBER, ""}, {"acceleration", Types.NUMBER, ""}, {"magnitude", Types.NUMBER, ""}}, null);
+        blocks[8] = new Block("Remove force", "Remove force @name from @object", "rf", "ttff", 
+                new Object[][]{{"object", Types.OBJECT, ""}, {"name", Types.TEXT, ""}}, null);
     }
     
     public static Object get(String key) {

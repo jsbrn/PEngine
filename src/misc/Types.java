@@ -117,7 +117,6 @@ class ComplexType extends Type {
     
     public final String verifyParams(String input) {
         boolean[] results = paramsExist(input);
-        String[] params = getParams(input);
         String[] names = new String[]{getName(), "Object", "Level"};
         for (int i = results.length - 1; i > -1; i--) {
             if (!results[i]) {
@@ -207,14 +206,6 @@ class TypeBoolean extends Type {
 /**
  * COMPLEX TYPE CLASSES
  */
-
-/**
- * if (type == TYPE_ANIM) return i.replaceAll("^(Anim\\()"+params_regex+"(\\))$", "").equals("");
-        if (type == TYPE_FLOW) return i.replaceAll("^(Flow\\()"+params_regex+"(\\))$", "").equals("");
-        if (type == TYPE_OBJECT) return i.replaceAll("^(Object\\()"+params_regex+"(\\))$", "").equals("");
-        if (type == TYPE_LEVEL) return i.replaceAll("^(Level\\()"+params_regex+"(\\))$", "").equals("");
-        if (type == TYPE_ASSET) return i.replaceAll("^(Asset\\()"+params_regex+"(\\))$", "").equals("");
- */
 class TypeAnim extends ComplexType {
     public TypeAnim() { 
         setName("Animation"); 
@@ -243,11 +234,12 @@ class TypeFlow extends ComplexType {
     public TypeFlow() { 
         setName("Flow");
         setAlias("Flow");
-        setParams(3, false);
+        setParams(3, true);
     }
     @Override
     public boolean[] paramsExist(String input) {
         String params[] = getParams(input);
+        if (params.length == 0) return new boolean[]{true, true, true};
         Level l = params.length == 3 ? Project.getProject().getLevel(params[2]) : Project.getProject().getCurrentLevel();
         if (l == null) return new boolean[]{false, false, false};
         SceneObject o = params.length >= 2 ? l.getObject(params[1]) : GUI.getSceneCanvas().getActiveObject();
