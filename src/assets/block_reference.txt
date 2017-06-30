@@ -1,10 +1,9 @@
 General
-    Start (id)
-    Wait (duration)
-    Print (text)
-
+    Start (id) !
+    Wait (duration) !
+    Print (text) !
 Operations
-    Add (number, number) -> (number)
+    Add (number, number) -> (number) !
     Subtract (number, number) -> (number)
     Multiply (number, number) -> (number)
     Divide (number, number) -> (number)
@@ -40,3 +39,8 @@ Flow
 Force
     Add force (object, angle, magnitude)
     Remove force (object, name)
+Events
+    Is key pressed? (key)
+    Is key down? (key)
+    Is key released? (key)
+    Wait for collision (object, object)
