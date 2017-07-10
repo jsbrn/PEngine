@@ -1,6 +1,5 @@
 package project;
 
-import project.objects.SceneObject;
 import gui.GUI;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import misc.Assets;
 import misc.MiscMath;
+import project.objects.SceneObject;
 
 public class Project {
     
@@ -33,6 +33,7 @@ public class Project {
             player.setName("player");
             player.setGravity(true);
             player.setCollides(true);
+            player.setLayer(Level.NORMAL_LAYER);
             this.object_gallery.add(player);
         }
         if (home) {
@@ -144,12 +145,12 @@ public class Project {
             fw = new FileWriter(f);
             BufferedWriter bw = new BufferedWriter(fw);
             
-            for (Level l : levels) l.save(bw);
-            if (!game) for (SceneObject o: object_gallery) o.save(bw);
+            for (Level l : levels) l.save(bw, game);
+            if (!game) for (SceneObject o: object_gallery) o.save(bw, game);
             
             if (game) {
                 bw.write("player\n");
-                object_gallery.get(0).save(bw); //save the player data as a global object
+                object_gallery.get(0).save(bw, game); //save the player data as a global object
                 bw.write("/player\n");
             }
             

@@ -22,11 +22,11 @@ public class UpdateManager extends Thread {
     private static Thread thread;
     
     //for debugging purposes
-    public static final boolean DISABLE_UPDATES = true;
+    public static final boolean DISABLE_UPDATES = false;
     
-    public static int VERSION_ID = 0, RUNTIME_VERSION_ID = -1;
+    public static int VERSION_ID = 4, RUNTIME_VERSION_ID = -1;
     public static int LATEST_VERSION_ID, LATEST_RUNTIME_VERSION_ID;
-    public static final String VERSION_NAME = "1.3.1-beta";
+    public static final String VERSION_NAME = "1.3.4-beta";
     
     /**
      * Downloads a file in the main thread. Only use this for smaller files.
@@ -148,7 +148,7 @@ public class UpdateManager extends Thread {
     }
     
     public static void downloadRuntime() {
-        downloadThreaded("https://computerology.bitbucket.io/tools/editor/runtime.jar",
+        downloadThreaded("https://computerology.bitbucket.io/pengine/runtime.jar",
                 Assets.USER_HOME+"/.pengine/jars/runtime.jar");
         RUNTIME_VERSION_ID = LATEST_RUNTIME_VERSION_ID;
         save();
@@ -164,7 +164,7 @@ public class UpdateManager extends Thread {
     public static void checkForUpdates() {
         load();
         try {
-            URL url = new URL("https://computerology.bitbucket.io/tools/editor/versions.txt");
+            URL url = new URL("https://computerology.bitbucket.io/pengine/versions.txt");
             BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
             
             LATEST_RUNTIME_VERSION_ID = Integer.parseInt(br.readLine().replace("runtime = ", ""));

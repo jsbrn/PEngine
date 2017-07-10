@@ -2,23 +2,22 @@ package project.objects;
 
 import gui.GUI;
 import gui.SceneCanvas;
-import project.objects.components.Animation;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import misc.Assets;
 import misc.MiscMath;
 import project.Level;
-import project.objects.components.Flow;
 import project.Project;
+import project.objects.components.Animation;
 import project.objects.components.Block;
+import project.objects.components.Flow;
 
 public class SceneObject {
     
@@ -34,7 +33,7 @@ public class SceneObject {
     boolean hitbox = false;
     
     public SceneObject() {
-        this.layer = Level.MIDDLE_OBJECTS;
+        this.layer = Level.NORMAL_LAYER;
         this.gravity = false;
         this.type = "";
         this.collides = true;
@@ -183,10 +182,17 @@ public class SceneObject {
         return new int[]{(int)MiscMath.round(world_w, 1), (int)MiscMath.round(world_h, 1)};
     }
     
-    public void save(BufferedWriter bw) {
+    public void save(BufferedWriter bw, boolean game) {
         try {
             bw.write("so\n");
-                bw.write("xy="+getWorldCoords()[0]+" "+getWorldCoords()[1]+"\n");
+                
+                if (game) {
+                    double game_x = getWorldCoords()[0] + ((double)getDimensions()[0]/2);
+                    double game_y = getWorldCoords()[1] + ((double)getDimensions()[1]/2);
+                    bw.write("xy="+game_x+" "+game_y+"\n");
+                } else {
+                    bw.write("xy="+getWorldCoords()[0]+" "+getWorldCoords()[1]+"\n");
+                }
                 bw.write("wh="+getDimensions()[0]+" "+getDimensions()[1]+"\n");
                 bw.write("n="+name+"\n");
                 bw.write("t="+type+"\n");

@@ -10,8 +10,8 @@ import project.objects.SceneObject;
 
 public class Level {
     
-    public static final int ALL_OBJECTS = 0, DISTANT_OBJECTS = 1, BACKGROUND_OBJECTS = 2, 
-            MIDDLE_OBJECTS = 3, FOREGROUND_OBJECTS = 4;
+    public static final int ALL_OBJECTS = 0, DISTANT_LAYER = 1, BACKGROUND_LAYER = 2, 
+            NORMAL_LAYER = 3, FOREGROUND_LAYER = 4;
     private final ArrayList<SceneObject> layers[];
     
     private String name = "", bg_ambience = "", bg_music = "";
@@ -30,7 +30,7 @@ public class Level {
         for (int i = 0; i < layers.length; i++) {
             this.layers[i] = new ArrayList<SceneObject>();
         }
-        this.bounds = new int[]{-128, -64, 256, 128};
+        this.bounds = new int[]{-500, -250, 500, 250};
         this.bg_color_top = new Color(0, 0, 0);
         this.bg_color_bottom = new Color(0, 0, 0);
         this.lighting_color = new Color(0, 0, 0);
@@ -117,7 +117,7 @@ public class Level {
     }
     
     public SceneObject getObject(int onscreen_x, int onscreen_y, int skip) {
-        for (int l = FOREGROUND_OBJECTS; l >= DISTANT_OBJECTS; l--) {
+        for (int l = FOREGROUND_LAYER; l >= DISTANT_LAYER; l--) {
             for (int i = layers[l].size()-1; i != -1; i--) {
                 SceneObject o = layers[l].get(i);
                 int[] on_screen = o.getOnscreenCoords();
@@ -137,7 +137,7 @@ public class Level {
     }
     
     public void moveForward(SceneObject o) {
-        for (int i = DISTANT_OBJECTS; i != layers().length; i++) {
+        for (int i = DISTANT_LAYER; i != layers().length; i++) {
             if (i == o.getLayer()) {
                 int orig = layers()[i].indexOf(o);
                 if (orig < layers()[i].size()-1) {
@@ -155,7 +155,7 @@ public class Level {
     }
     
     public void moveBackward(SceneObject o) {
-        for (int i = DISTANT_OBJECTS; i < layers().length; i++) {
+        for (int i = DISTANT_LAYER; i < layers().length; i++) {
             if (i == o.getLayer()) {
                 int orig = layers()[i].indexOf(o);
                 if (orig > 0) {
@@ -168,7 +168,7 @@ public class Level {
     }
     
     public void moveToLayer(int layer, SceneObject o) {
-        for (int i = DISTANT_OBJECTS; i < layers().length; i++) {
+        for (int i = DISTANT_LAYER; i < layers().length; i++) {
             if (i != o.getLayer()) {
                 layers()[i].remove(o);
             } else {
@@ -197,11 +197,12 @@ public class Level {
         return layers;
     }
     
-    public void save(BufferedWriter bw) {
+    public void save(BufferedWriter bw, boolean game) {
         try {
             bw.write("l"+"\n");
                 bw.write("n="+name+"\n");
-                bw.write("b="+bounds[0]+" "+bounds[1]+" "+bounds[2]+" "+bounds[3]+"\n");
+                if (!game) bw.write("b="+bounds[0]+" "+bounds[1]+" "+bounds[2]+" "+bounds[3]+"\n");
+                    else bw.write("b="+bounds[0]+" "+bounds[1]+" "+(bounds[2]-bounds[0])+" "+(bounds[3]-bounds[1])+"\n");
                 bw.write("tc="+bg_color_top.getRed()+" "+bg_color_top.getGreen()+" "+bg_color_top.getBlue()+"\n");
                 bw.write("bc="+bg_color_bottom.getRed()+" "+bg_color_bottom.getGreen()+" "+bg_color_bottom.getBlue()+"\n");
                 bw.write("lc="+lighting_color.getRed()+" "+lighting_color.getGreen()+" "+lighting_color.getBlue()+"\n");
@@ -219,7 +220,7 @@ public class Level {
                 bw.write("as="+bg_ambience+"\n");
                 bw.write("apl="+allow_player+"\n");
                 
-                for (SceneObject o: getObjects(ALL_OBJECTS)) o.save(bw);
+                for (SceneObject o: getObjects(ALL_OBJECTS)) o.save(bw, game);
                 
             bw.write("/l"+"\n");
         } catch (IOException ex) {
@@ -261,7 +262,7 @@ public class Level {
                 if (line.indexOf("av=") == 0) bg_ambience_vol = Float.parseFloat(line.substring(3));
                 if (line.indexOf("bgm=") == 0) bg_music = line.substring(4);
                 if (line.indexOf("as=") == 0) bg_ambience = line.substring(3);
-                if (line.indexOf("apl=") == 0) allow_player = Boolean.parseBoolean(line.substring(3));
+                if (line.indexOf("apl=") == 0) allow_player = Boolean.parseBoolean(line.substring(4));
                 
                 if (line.equals("so")) {
                     SceneObject o = new SceneObject();

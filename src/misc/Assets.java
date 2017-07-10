@@ -60,7 +60,7 @@ public class Assets {
     }
     
     private static void initBlockList() {   
-        blocks = new Block[9];
+        blocks = new Block[12];
         blocks[0] = new Block("Start", "@id", "s", "ftff", 
                 new Object[][]{{"id", Types.TEXT, ""}}, null);
         blocks[1] = new Block("Wait", "@duration", "w", "ttff", 
@@ -80,6 +80,12 @@ public class Assets {
                     {"angle", Types.NUMBER, ""}, {"acceleration", Types.NUMBER, ""}, {"magnitude", Types.NUMBER, ""}}, null);
         blocks[8] = new Block("Remove force", "Remove force @name from @object", "rf", "ttff", 
                 new Object[][]{{"object", Types.OBJECT, ""}, {"name", Types.TEXT, ""}}, null);
+        blocks[9] = new Block("Is key pressed", "@key", "ikp", "tftt", 
+                new Object[][]{{"key", Types.TEXT, ""}}, null);
+        blocks[10] = new Block("Await key press", "@key", "akp", "ttff", 
+                new Object[][]{{"key", Types.TEXT, ""}}, null);
+        blocks[11] = new Block("Await key release", "@key", "akr", "ttff", 
+                new Object[][]{{"key", Types.TEXT, ""}}, null);
     }
     
     public static Object get(String key) {

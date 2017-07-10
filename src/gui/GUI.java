@@ -540,15 +540,12 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(objectTextureField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addComponent(lockTextureButton, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(basicOptionsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(lockCollidesButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(basicOptionsPanelLayout.createSequentialGroup()
-                        .addGroup(basicOptionsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                            .addComponent(objectCollidesCheckbox, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(objectGravityCheckbox, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lockGravityButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addGroup(basicOptionsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                    .addComponent(objectCollidesCheckbox, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(objectGravityCheckbox, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lockGravityButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lockCollidesButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         GroupLayout sceneObjectCanvasLayout = new GroupLayout(sceneObjectCanvas);
@@ -562,8 +559,8 @@ public class GUI extends javax.swing.JFrame {
         sceneObjectCanvasLayout.setVerticalGroup(sceneObjectCanvasLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(sceneObjectCanvasLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(basicOptionsPanel, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(302, Short.MAX_VALUE))
+                .addComponent(basicOptionsPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(300, Short.MAX_VALUE))
         );
 
         objectEditorTabs.addTab("Basics", sceneObjectCanvas);
@@ -1184,7 +1181,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(bringForwardButton, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sendBackwardsButton, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(1010, Short.MAX_VALUE))
         );
         topPanelLayout.setVerticalGroup(topPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(topPanelLayout.createSequentialGroup()
@@ -1221,7 +1218,7 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel2)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 21, Short.MAX_VALUE))
                     .addComponent(jCheckBox1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -1240,9 +1237,9 @@ public class GUI extends javax.swing.JFrame {
             .addComponent(topPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(GroupLayout.Alignment.TRAILING, sceneCanvasLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(sceneCanvasLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel13, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addGroup(sceneCanvasLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel13, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel5, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         sceneCanvasLayout.setVerticalGroup(sceneCanvasLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -1340,7 +1337,7 @@ public class GUI extends javax.swing.JFrame {
         projectMenu.add(openAssetsFolderButton);
         projectMenu.add(jSeparator4);
 
-        viewRootButton.setText("View root directory...");
+        viewRootButton.setText("View root directory");
         viewRootButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 viewRootButtonActionPerformed(evt);
@@ -1351,8 +1348,12 @@ public class GUI extends javax.swing.JFrame {
         menuBar.add(projectMenu);
 
         levelMenu.setText("Level");
+        levelMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                levelMenuActionPerformed(evt);
+            }
+        });
 
-        allowPlayerMenuItem.setSelected(true);
         allowPlayerMenuItem.setText("Allow player");
         allowPlayerMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -1361,8 +1362,7 @@ public class GUI extends javax.swing.JFrame {
         });
         levelMenu.add(allowPlayerMenuItem);
 
-        spawnMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK | InputEvent.CTRL_MASK));
-        spawnMenuItem.setText("Spawn point...");
+        spawnMenuItem.setText("Spawn location...");
         spawnMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 spawnMenuItemActionPerformed(evt);
@@ -1539,10 +1539,19 @@ public class GUI extends javax.swing.JFrame {
         menuBar.add(levelMenu);
 
         jMenu3.setText("Help");
+        jMenu3.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                jMenu3ActionPerformed(evt);
+            }
+        });
 
         jMenuItem5.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
         jMenuItem5.setText("Help topics...");
-        jMenuItem5.setEnabled(false);
+        jMenuItem5.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem5);
 
         jMenuItem6.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0));
@@ -1632,7 +1641,7 @@ public class GUI extends javax.swing.JFrame {
                 String input = JOptionPane.showInputDialog(this, "Project name:", "New project...", JOptionPane.PLAIN_MESSAGE);
                 if (input == null) return;
                 if (!Project.isValidName(input)) { 
-                    JOptionPane.showMessageDialog(levelManagerDialog, "\""+input+"\" is not a valid level name!"); continue; 
+                    JOptionPane.showMessageDialog(levelManagerDialog, "\""+input+"\" is not a valid project name!"); continue; 
                 }
                 if (Project.projectExists(input)) {
                     JOptionPane.showMessageDialog(this, "Project \"" + input + "\" already exists!");
@@ -1647,6 +1656,7 @@ public class GUI extends javax.swing.JFrame {
             sceneCanvas.repaint();
             GUI.refreshObjectProperties();
             objectEditor.setVisible(false);
+            GUI.refreshLevelMenu();
         }
     }//GEN-LAST:event_newProjectButtonActionPerformed
 
@@ -1703,6 +1713,7 @@ public class GUI extends javax.swing.JFrame {
         Level l = Project.getProject().getLevel(levelChooser.getSelectedIndex());
         if (l == null) return;
         String input = JOptionPane.showInputDialog(levelManagerDialog, "Name:", l.getName());
+        if (input == null) return;
         if (!Level.isValidName(input)) { 
             JOptionPane.showMessageDialog(levelManagerDialog, "\""+input+"\" is not a valid level name!"); return; 
         }
@@ -1712,7 +1723,7 @@ public class GUI extends javax.swing.JFrame {
         }
         l.setName(input);
         GUI.refreshChooser(levelChooser, Project.getProject().getLevels());
-
+        GUI.updateWindowTitle();
     }//GEN-LAST:event_renameLevelButtonActionPerformed
 
     private void viewRootButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_viewRootButtonActionPerformed
@@ -1807,6 +1818,7 @@ public class GUI extends javax.swing.JFrame {
         sceneCanvas.repaint();
         GUI.refreshObjectProperties();
         hideObjectEditor();
+        GUI.refreshLevelMenu();
     }//GEN-LAST:event_openProjectButtonActionPerformed
 
     private void sceneCanvasKeyPressed(KeyEvent evt) {//GEN-FIRST:event_sceneCanvasKeyPressed
@@ -1930,16 +1942,6 @@ public class GUI extends javax.swing.JFrame {
         sceneCanvas.repaint();
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
-    private void spawnMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_spawnMenuItemActionPerformed
-        int[] spawn = Project.getProject().getCurrentLevel().playerSpawn();
-        String input = JOptionPane.showInputDialog(this, "Coordinates:", spawn[0]+" "+spawn[1]);
-        int[] parsed = MiscMath.toIntArray(input);
-        if (parsed.length >= 2) {
-            Project.getProject().getCurrentLevel().setPlayerSpawn(parsed[0], parsed[1]);
-        }
-        sceneCanvas.repaint();
-    }//GEN-LAST:event_spawnMenuItemActionPerformed
-
     private void cameraLocationMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_cameraLocationMenuItemActionPerformed
         int[] spawn = Project.getProject().getCurrentLevel().cameraSpawn();
         String input = JOptionPane.showInputDialog(this, "Camera location:", spawn[0]+" "+spawn[1]);
@@ -1997,11 +1999,14 @@ public class GUI extends javax.swing.JFrame {
         int[] bounds = Project.getProject().getCurrentLevel().bounds();
         String input = JOptionPane.showInputDialog(this, "Bounds:", 
                 bounds[0]+" "+bounds[1]+" "+bounds[2]+" "+bounds[3]);
+        if (input == null) return;
         int[] parsed = MiscMath.toIntArray(input);
-        if (parsed.length >= 4) {
-            Project.getProject().getCurrentLevel()
+        boolean valid = true;
+        if (parsed.length < 4) valid = false;
+        if (valid) if (parsed[2]-parsed[0] <= 0 || parsed[3]-parsed[1] <= 0) valid = false;
+        if (valid) Project.getProject().getCurrentLevel()
                     .setBounds(parsed[0], parsed[1], parsed[2], parsed[3]);
-        }
+            else JOptionPane.showMessageDialog(this, "Invalid level bounds!");
         sceneCanvas.repaint();
     }//GEN-LAST:event_levelBoundsMenuItemActionPerformed
 
@@ -2400,10 +2405,38 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void allowPlayerMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_allowPlayerMenuItemActionPerformed
-        Project.getProject().getCurrentLevel().allowPlayer(
-            !Project.getProject().getCurrentLevel().allowPlayer());
+        Project.getProject().getCurrentLevel().allowPlayer(allowPlayerMenuItem.isSelected());
         GUI.refreshLevelMenu();
+        sceneCanvas.repaint();
     }//GEN-LAST:event_allowPlayerMenuItemActionPerformed
+
+    private void jMenu3ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jMenu3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenu3ActionPerformed
+
+    private void jMenuItem5ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        try {
+            java.awt.Desktop.getDesktop().browse(new URI("http://computerology.bitbucket.io/pengine/help/"+UpdateManager.VERSION_NAME+".html"));
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void levelMenuActionPerformed(ActionEvent evt) {//GEN-FIRST:event_levelMenuActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_levelMenuActionPerformed
+
+    private void spawnMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_spawnMenuItemActionPerformed
+        int[] spawn = Project.getProject().getCurrentLevel().playerSpawn();
+        String input = JOptionPane.showInputDialog(this, "Coordinates:", spawn[0]+" "+spawn[1]);
+        int[] parsed = MiscMath.toIntArray(input);
+        if (parsed.length >= 2) {
+            Project.getProject().getCurrentLevel().setPlayerSpawn(parsed[0], parsed[1]);
+        }
+        sceneCanvas.repaint();
+    }//GEN-LAST:event_spawnMenuItemActionPerformed
 
     /**
      * Returns 0 if user made a YES or NO choice. 1 if the user canceled.
@@ -2834,7 +2867,7 @@ public class GUI extends javax.swing.JFrame {
     private static JComboBox<String> levelChooser;
     JMenuItem levelManagerButton;
     public static JDialog levelManagerDialog;
-    JMenu levelMenu;
+    private static JMenu levelMenu;
     JMenuItem lightingColorMenuItem;
     private static JToggleButton lockAnimationButton;
     private static JToggleButton lockCollidesButton;

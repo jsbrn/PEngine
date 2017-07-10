@@ -106,7 +106,7 @@ public class SceneCanvas extends JPanel {
         }
         
         //draw all objects
-        for (int layer = Level.DISTANT_OBJECTS; layer <= Level.FOREGROUND_OBJECTS; layer++) {
+        for (int layer = Level.DISTANT_LAYER; layer <= Level.FOREGROUND_LAYER; layer++) {
             for (SceneObject o: current_level.getObjects(layer)) {
                 if (MiscMath.rectanglesIntersect(o.getOnscreenCoords()[0], o.getOnscreenCoords()[1], 
                         o.getOnscreenWidth(), o.getOnscreenHeight(), 
@@ -128,7 +128,7 @@ public class SceneCanvas extends JPanel {
         g.setColor(Color.green);
         int[] bounds = current_level.bounds();
         int[] osbc = MiscMath.getOnscreenCoords(bounds[0], bounds[1]);
-        g.drawRect(osbc[0], osbc[1], bounds[2]*zoom, bounds[3]*zoom);
+        g.drawRect(osbc[0], osbc[1], (bounds[2]-bounds[0])*zoom, (bounds[3]-bounds[1])*zoom);
         g.setColor(Color.red);
         g.drawLine(origin[0], 0, origin[0], Integer.MAX_VALUE);
         g.setColor(Color.yellow);
