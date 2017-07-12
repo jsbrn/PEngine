@@ -71,7 +71,7 @@ import project.objects.SceneObject;
 import project.objects.components.Animation;
 import project.objects.components.Block;
 import project.objects.components.Flow;
-import threads.UpdateManager;
+import misc.UpdateManager;
 
 public class GUI extends javax.swing.JFrame {
 

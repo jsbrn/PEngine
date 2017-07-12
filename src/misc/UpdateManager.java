@@ -1,4 +1,4 @@
-package threads;
+package misc;
 
 import gui.GUI;
 import java.io.BufferedReader;
@@ -13,7 +13,6 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import misc.Assets;
 
 public class UpdateManager extends Thread {
     
@@ -24,9 +23,9 @@ public class UpdateManager extends Thread {
     //for debugging purposes
     public static final boolean DISABLE_UPDATES = false;
     
-    public static int VERSION_ID = 4, RUNTIME_VERSION_ID = -1;
+    public static int VERSION_ID = 5, RUNTIME_VERSION_ID = -1;
     public static int LATEST_VERSION_ID, LATEST_RUNTIME_VERSION_ID;
-    public static final String VERSION_NAME = "1.3.4-beta";
+    public static final String VERSION_NAME = "1.3.5-beta";
     
     /**
      * Downloads a file in the main thread. Only use this for smaller files.

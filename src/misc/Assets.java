@@ -66,7 +66,7 @@ public class Assets {
         blocks[1] = new Block("Wait", "@duration", "w", "ttff", 
                 new Object[][]{{"duration", Types.NUMBER, ""}}, null);
         blocks[2] = new Block("Print to console", "@message", "p", "ttff", 
-                new Object[][]{{"message", Types.TEXT, ""}}, null);
+                new Object[][]{{"message", Types.ANY, ""}}, null);
         blocks[3] = new Block("Switch to level", "@level", "stl", "ttff", 
                 new Object[][]{{"level", Types.LEVEL, ""}}, null);
         blocks[4] = new Block("Set animation", "Set @object animation to @animation", "sa", "ttff", 
