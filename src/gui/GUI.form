@@ -1417,6 +1417,9 @@
           <SubComponents>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="allowPlayerMenuItem">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+Alt+P"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Allow player"/>
               </Properties>
               <Events>
@@ -1428,6 +1431,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="spawnMenuItem">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+Alt+S"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Spawn location..."/>
               </Properties>
               <Events>

@@ -1354,6 +1354,7 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        allowPlayerMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_MASK | InputEvent.CTRL_MASK));
         allowPlayerMenuItem.setText("Allow player");
         allowPlayerMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -1362,6 +1363,7 @@ public class GUI extends javax.swing.JFrame {
         });
         levelMenu.add(allowPlayerMenuItem);
 
+        spawnMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK | InputEvent.CTRL_MASK));
         spawnMenuItem.setText("Spawn location...");
         spawnMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {

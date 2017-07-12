@@ -12,19 +12,21 @@ public class Types {
     public static final int 
             ANY = 0, 
             VARIABLE = 1, 
-            NUMBER = 2, 
-            TEXT = 3, 
-            BOOLEAN = 4, 
-            ANIM = 5,
-            FLOW = 6, 
-            OBJECT = 7, 
-            LEVEL = 8, 
-            ASSET = 9;
+            NUMBER = 2,
+            TEXT_LIST = 3,
+            TEXT = 4, 
+            BOOLEAN = 5, 
+            ANIM = 6,
+            FLOW = 7, 
+            OBJECT = 8, 
+            LEVEL = 9, 
+            ASSET = 10;
     
     private static Type[] types = {
         new TypeAny(),
         new TypeVar(),
         new TypeNumber(),
+        new TypeTextList(),
         new TypeText(),
         new TypeBoolean(),
         new TypeAnim(),
@@ -190,7 +192,7 @@ class TypeText extends Type {
     @Override
     public boolean typeOf(String value) {
         if (!super.typeOf(value)) return false;
-        return value.charAt(0) == '"' && value.charAt(value.length()-1) == '"';
+        return value.charAt(0) == '"' && value.charAt(value.length()-1) == '"' && value.length() >= 2;
     }
 }
 
@@ -200,6 +202,26 @@ class TypeBoolean extends Type {
     public boolean typeOf(String value) {
         if (!super.typeOf(value)) return false;
         return value.equals("true") || value.equals("false");
+    }
+}
+
+class TypeTextList extends Type {
+    public TypeTextList() { setName("List (Text)"); }
+    @Override
+    public boolean typeOf(String value) {
+        if (!super.typeOf(value)) return false;
+        value = value.trim();
+        if (value.indexOf("List(") == 0 && value.lastIndexOf(")") == value.length()-1) {
+            value = value.substring(5, value.length()-1).trim();
+            String[] params = value.split("\"[ ]*,[ ]*\"");
+            for (int i = 0; i < params.length; i++) { 
+                if (i < params.length - 1) params[i] += "\"";
+                if (i > 0) params[i] = "\""+params[i];
+                if (!Types.getType(Types.TEXT).typeOf(params[i])) return false;
+            }
+            return true;
+        }
+        return false;
     }
 }
 
@@ -314,6 +336,6 @@ class TypeAsset extends ComplexType {
     @Override
     public boolean typeOf(String value) {
         if (!super.typeOf(value)) return false;
-        return value.replaceAll("^("+getAlias()+"\\()"+getParamsRegex()+"(\\))$", "").equals("");
+        return value.replaceAll("^("+getAlias()+"\\()"+getParamsRegex()+"(\\))", "").equals("");
     }    
 }
