@@ -94,7 +94,7 @@ public class Assets {
                 new Object[][]{{"object", Types.OBJECT, "Object()"}, {"message", Types.TEXT, ""},
                     {"lifespan (mills)", Types.NUMBER, "1000"}, {"require keypress", Types.BOOLEAN, "false"}}, null);
         blocks[15] = new Block("Await player choice", "@choices", "apc", "ttff", 
-                new Object[][]{{"choices", Types.TEXT_LIST, "List(\"Choice 1\", \"Choice 2\")"}}, 
+                new Object[][]{{"choices", Types.TEXT_LIST, "[\"Choice 1\"][\"Choice 2\"][\"Choice 3\"]"}}, 
                 new Object[][]{{"choice", Types.NUMBER, ""}});
     }
     

@@ -10,30 +10,34 @@ import project.objects.components.Flow;
 public class Types {
     
     public static final int 
-            ANY = 0, 
-            VARIABLE = 1, 
-            NUMBER = 2,
-            TEXT_LIST = 3,
-            TEXT = 4, 
-            BOOLEAN = 5, 
-            ANIM = 6,
-            FLOW = 7, 
-            OBJECT = 8, 
-            LEVEL = 9, 
-            ASSET = 10;
+        ANY = 0, 
+        VARIABLE = 1, 
+        NUMBER = 2,
+        TEXT = 3, 
+        BOOLEAN = 4, 
+        ANIM = 5,
+        FLOW = 6, 
+        OBJECT = 7, 
+        LEVEL = 8, 
+        ASSET = 9,
+        NUMBER_LIST = 10,
+        TEXT_LIST = 11,
+        BOOLEAN_LIST = 12;
     
-    private static Type[] types = {
+    private static final Type[] types = new Type[]{
         new TypeAny(),
         new TypeVar(),
         new TypeNumber(),
-        new TypeTextList(),
         new TypeText(),
         new TypeBoolean(),
         new TypeAnim(),
         new TypeFlow(),
         new TypeObject(),
         new TypeLevel(),
-        new TypeAsset()
+        new TypeAsset(),
+        new TypeList(NUMBER),
+        new TypeList(TEXT),
+        new TypeList(BOOLEAN)
     };
     
     public static Type getType(int type) {
@@ -192,7 +196,9 @@ class TypeText extends Type {
     @Override
     public boolean typeOf(String value) {
         if (!super.typeOf(value)) return false;
-        return value.charAt(0) == '"' && value.charAt(value.length()-1) == '"' && value.length() >= 2;
+        return value.charAt(0) == '"' && value.charAt(value.length()-1) == '"' 
+                && value.length() >= 2
+                && !(value.contains("[") || value.contains("]"));
     }
 }
 
@@ -205,24 +211,39 @@ class TypeBoolean extends Type {
     }
 }
 
-class TypeTextList extends Type {
-    public TypeTextList() { setName("List (Text)"); }
+class TypeList extends Type {
+    
+    private int subtype = -1;
+    
+    public TypeList(int subtype) { 
+        this.subtype = subtype;
+        setName("List (?)");
+    }
+    
+    @Override
+    public String getName() {
+        return "List ("+Types.getTypeName(subtype)+")";
+    }
+    
     @Override
     public boolean typeOf(String value) {
         if (!super.typeOf(value)) return false;
         value = value.trim();
-        if (value.indexOf("List(") == 0 && value.lastIndexOf(")") == value.length()-1) {
-            value = value.substring(5, value.length()-1).trim();
-            String[] params = value.split("\"[ ]*,[ ]*\"");
-            for (int i = 0; i < params.length; i++) { 
-                if (i < params.length - 1) params[i] += "\"";
-                if (i > 0) params[i] = "\""+params[i];
-                if (!Types.getType(Types.TEXT).typeOf(params[i])) return false;
+        if (value.replaceAll("((\\[)([\\s\\S]*)(\\]))+", "").length() != 0) return false;
+        int open = 0; String val = "";
+        for (char c: value.toCharArray()) {
+            open += c == '[' ? 1 : (c == ']' ? -1 : 0);
+            if (open == 1 && c != '[' && c != ']') val += c;
+            if (c == ']' && open == 0) {
+                if (!Types.getType(subtype).typeOf(val)) return false;
+                val = "";
             }
-            return true;
+            if (open > 1 || open < 0) return false;
         }
-        return false;
+        if (open != 0) return false;
+        return true;
     }
+    
 }
 
 /**
@@ -286,6 +307,7 @@ class TypeObject extends ComplexType {
     @Override
     public boolean[] paramsExist(String input) {
         String params[] = getParams(input);
+        if (params.length == 1) if (params[0].equals("player")) return new boolean[]{true, true, true};
         if (params.length == 0) return new boolean[]{true, true, true};
         Level l = params.length == 2 ? Project.getProject().getLevel(params[1]) : Project.getProject().getCurrentLevel();
         if (l == null) return new boolean[]{false, false, false};

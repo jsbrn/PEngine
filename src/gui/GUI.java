@@ -65,13 +65,13 @@ import javax.swing.border.BevelBorder;
 import misc.Assets;
 import misc.MiscMath;
 import misc.Types;
+import misc.UpdateManager;
 import project.Level;
 import project.Project;
 import project.objects.SceneObject;
 import project.objects.components.Animation;
 import project.objects.components.Block;
 import project.objects.components.Flow;
-import misc.UpdateManager;
 
 public class GUI extends javax.swing.JFrame {
 
@@ -151,6 +151,10 @@ public class GUI extends javax.swing.JFrame {
         jLabel5 = new JLabel();
         blockOutputChooser = new JComboBox<>();
         setBlockOutputValue = new JButton();
+        quickEditInputButton = new JButton();
+        jLabel9 = new JLabel();
+        quickEditOutputButton = new JButton();
+        jLabel10 = new JLabel();
         variablesPanel = new JPanel();
         jScrollPane1 = new JScrollPane();
         variablesList = new JList<>();
@@ -554,13 +558,13 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(sceneObjectCanvasLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(basicOptionsPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(385, Short.MAX_VALUE))
+                .addContainerGap(544, Short.MAX_VALUE))
         );
         sceneObjectCanvasLayout.setVerticalGroup(sceneObjectCanvasLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(sceneObjectCanvasLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(basicOptionsPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(300, Short.MAX_VALUE))
+                .addContainerGap(398, Short.MAX_VALUE))
         );
 
         objectEditorTabs.addTab("Basics", sceneObjectCanvas);
@@ -649,11 +653,11 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(deleteFlowButton)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(renameFlowButton)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(addBlockButton)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(deleteBlockButton)
-                .addContainerGap(75, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(jPanel9Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
@@ -697,20 +701,51 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        quickEditInputButton.setMnemonic('i');
+        quickEditInputButton.setText("Quick Edit");
+        quickEditInputButton.setActionCommand("i");
+        quickEditInputButton.setEnabled(false);
+        quickEditInputButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                quickEditInputButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setText("or");
+
+        quickEditOutputButton.setText("Quick Edit");
+        quickEditOutputButton.setActionCommand("o");
+        quickEditOutputButton.setEnabled(false);
+        quickEditOutputButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                quickEditInputButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel10.setText("or");
+
         GroupLayout jPanel7Layout = new GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel6)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(blockInputChooser, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(quickEditInputButton)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel9, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(blockInputChooser, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(setBlockInputValue)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 124, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(blockOutputChooser, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+                .addComponent(quickEditOutputButton)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel10)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(blockOutputChooser, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(setBlockOutputValue)
                 .addContainerGap())
@@ -724,7 +759,11 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(setBlockInputValue)
                     .addComponent(jLabel5)
                     .addComponent(blockOutputChooser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(setBlockOutputValue))
+                    .addComponent(setBlockOutputValue)
+                    .addComponent(quickEditInputButton)
+                    .addComponent(jLabel9)
+                    .addComponent(quickEditOutputButton)
+                    .addComponent(jLabel10))
                 .addGap(5, 5, 5))
         );
 
@@ -770,6 +809,7 @@ public class GUI extends javax.swing.JFrame {
 
         jLabel8.setText("Test value:");
 
+        valueTestField.setFont(new Font("Consolas", 0, 11)); // NOI18N
         valueTestField.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 valueTestFieldActionPerformed(evt);
@@ -827,7 +867,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(jPanel9, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(variablesPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 183, Short.MAX_VALUE)
                 .addComponent(valueTestPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -904,11 +944,11 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(deleteAnimationButton)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(renameAnimationButton)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 238, Short.MAX_VALUE)
                 .addComponent(animationSpriteButton)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(animationSpeedButton)
-                .addContainerGap(83, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(jPanel8Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
@@ -987,7 +1027,7 @@ public class GUI extends javax.swing.JFrame {
         animationCanvasLayout.setVerticalGroup(animationCanvasLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(animationCanvasLayout.createSequentialGroup()
                 .addComponent(jPanel8, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 381, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 479, Short.MAX_VALUE)
                 .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         );
 
@@ -1181,7 +1221,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(bringForwardButton, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sendBackwardsButton, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(1010, Short.MAX_VALUE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         topPanelLayout.setVerticalGroup(topPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(topPanelLayout.createSequentialGroup()
@@ -1218,7 +1258,7 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel2)
-                        .addGap(0, 21, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jCheckBox1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -2440,6 +2480,16 @@ public class GUI extends javax.swing.JFrame {
         sceneCanvas.repaint();
     }//GEN-LAST:event_spawnMenuItemActionPerformed
 
+    private void quickEditInputButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_quickEditInputButtonActionPerformed
+        char a = evt.getActionCommand().charAt(0);
+        JComboBox chooser = a == 'i' ? blockInputChooser : blockOutputChooser;
+        JButton button = a == 'i' ? setBlockInputValue : setBlockOutputValue;
+        for (int i = 0; i < chooser.getItemCount(); i++) {
+            chooser.setSelectedIndex(i);
+            button.doClick();
+        }
+    }//GEN-LAST:event_quickEditInputButtonActionPerformed
+
     /**
      * Returns 0 if user made a YES or NO choice. 1 if the user canceled.
      *
@@ -2668,6 +2718,9 @@ public class GUI extends javax.swing.JFrame {
         }
         blockInputChooser.setEnabled(selected != null);
         blockOutputChooser.setEnabled(selected != null);
+        quickEditInputButton.setEnabled(selected != null);
+        quickEditOutputButton.setEnabled(selected != null);
+        blockOutputChooser.setEnabled(selected != null);
         setBlockInputValue.setEnabled(selected != null && blockInputChooser.getSelectedIndex() > -1);
         setBlockOutputValue.setEnabled(selected != null && blockOutputChooser.getSelectedIndex() > -1);
         deleteBlockButton.setEnabled(inbound && selected != null);
@@ -2831,6 +2884,7 @@ public class GUI extends javax.swing.JFrame {
     JButton jButton1;
     JCheckBox jCheckBox1;
     JLabel jLabel1;
+    JLabel jLabel10;
     JLabel jLabel2;
     JLabel jLabel3;
     JLabel jLabel4;
@@ -2838,6 +2892,7 @@ public class GUI extends javax.swing.JFrame {
     JLabel jLabel6;
     JLabel jLabel7;
     JLabel jLabel8;
+    JLabel jLabel9;
     JMenu jMenu1;
     JMenu jMenu2;
     JMenu jMenu3;
@@ -2900,6 +2955,8 @@ public class GUI extends javax.swing.JFrame {
     private static JToggleButton playAnimationButton;
     public static JButton playButton;
     JMenu projectMenu;
+    private static JButton quickEditInputButton;
+    private static JButton quickEditOutputButton;
     JMenuItem reloadAssetsButton;
     private static JButton removeFrameButton;
     private static JButton renameAnimationButton;
