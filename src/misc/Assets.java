@@ -60,7 +60,7 @@ public class Assets {
     }
     
     private static void initBlockList() {   
-        blocks = new Block[16];
+        blocks = new Block[39];
         blocks[0] = new Block("Start", "@id", "s", "ftff", 
                 new Object[][]{{"id", Types.TEXT, ""}}, null);
         blocks[1] = new Block("Wait", "@duration", "w", "ttff", 
@@ -69,31 +69,86 @@ public class Assets {
                 new Object[][]{{"message", Types.ANY, ""}}, null);
         blocks[3] = new Block("Switch to level", "@level", "stl", "ttff", 
                 new Object[][]{{"level", Types.LEVEL, ""}}, null);
-        blocks[4] = new Block("Set animation", "Set @object animation to @animation", "sa", "ttff", 
-                new Object[][]{{"object", Types.OBJECT, "Object()"}, {"animation", Types.ANIM, ""}}, null);
-        blocks[5] = new Block("Add", "@number1 + @number2", "adn", "ttff", 
-                new Object[][]{{"number1", Types.NUMBER, ""}, {"number2", Types.NUMBER, ""}}, new Object[][]{{"sum", Types.NUMBER, ""}});
-        blocks[6] = new Block("Set variable", "Set @var to @value", "sv", "ttff", 
-                new Object[][]{{"value", Types.ANY, ""}}, new Object[][]{{"var", Types.ANY, ""}});
-        blocks[7] = new Block("Add force", "Add force @name to @object: @angle degrees, @magnitude px/s", "af", "ttff", 
+        
+        blocks[4] = new Block("Add", "@a + @b", "adn", "ttff", 
+                new Object[][]{{"a", Types.NUMBER, ""}, {"b", Types.NUMBER, ""}}, new Object[][]{{"result", Types.NUMBER, ""}});
+        blocks[5] = new Block("Multiply", "@a * @b", "mun", "ttff", 
+                new Object[][]{{"a", Types.NUMBER, ""}, {"b", Types.NUMBER, ""}}, new Object[][]{{"result", Types.NUMBER, ""}});
+        blocks[6] = new Block("Divide", "@a / @b", "din", "ttff", 
+                new Object[][]{{"a", Types.NUMBER, ""}, {"number2", Types.NUMBER, ""}}, new Object[][]{{"result", Types.NUMBER, ""}});
+        blocks[7] = new Block("Power", "@a ^ @b", "pon", "ttff", 
+                new Object[][]{{"a", Types.NUMBER, ""}, {"b", Types.NUMBER, ""}}, new Object[][]{{"result", Types.NUMBER, ""}});
+        blocks[8] = new Block("Random number", "From 0 to @max", "rnm", "ttff", 
+                new Object[][]{{"max", Types.NUMBER, ""}}, new Object[][]{{"result", Types.NUMBER, ""}});
+        blocks[9] = new Block("Random number", "From @min to @max", "rnmm", "ttff", 
+                new Object[][]{{"min", Types.NUMBER, ""}, {"max", Types.NUMBER, ""}}, new Object[][]{{"result", Types.NUMBER, ""}});
+        blocks[10] = new Block("Concatenate", "@a + @b", "conc", "ttff", 
+                new Object[][]{{"a", Types.TEXT, ""}, {"b", Types.TEXT, ""}}, new Object[][]{{"result", Types.TEXT, ""}});
+        
+        blocks[11] = new Block("Set variable", "Set @variable in @flow to @value", "sv", "ttff", 
+                new Object[][]{{"flow", Types.FLOW, ""}, {"variable", Types.TEXT, ""}, {"value", Types.ANY, ""}}, null);
+        blocks[12] = new Block("Get variable", "Get value of @variable in @flow", "gv", "ttff", 
+                new Object[][]{{"variable", Types.TEXT, ""}, {"variable", Types.TEXT, ""}}, new Object[][]{{"value", Types.ANY, ""}});
+        
+        blocks[13] = new Block("OR Gate", "@a OR @b", "or", "tftt", 
+                new Object[][]{{"a", Types.BOOLEAN, ""}, {"b", Types.BOOLEAN, ""}}, new Object[][]{{"result", Types.BOOLEAN, ""}});
+        blocks[14] = new Block("AND Gate", "@a AND @b", "and", "tftt", 
+                new Object[][]{{"a", Types.BOOLEAN, ""}, {"b", Types.BOOLEAN, ""}}, new Object[][]{{"result", Types.BOOLEAN, ""}});
+        blocks[15] = new Block("NOR Gate", "NOT @a", "not", "tftt", 
+                new Object[][]{{"a", Types.BOOLEAN, ""}}, new Object[][]{{"result", Types.BOOLEAN, ""}});
+        
+        blocks[16] = new Block("Set level background", "to @top, @bottom in @time (ms)ms", "slb", "ttff", 
+                new Object[][]{{"top", Types.NUMBER_LIST, ""}, {"bottom", Types.NUMBER_LIST, ""}, {"time (ms)", Types.NUMBER, ""}}, null);
+        blocks[17] = new Block("Get camera spawn", "@level", "gcs", "ttff", 
+                new Object[][]{{"level", Types.LEVEL, ""}}, new Object[][]{{"x", Types.NUMBER, ""}, {"y", Types.NUMBER, ""}});
+        blocks[18] = new Block("Get player spawn", "@level", "gps", "ttff", 
+                new Object[][]{{"level", Types.LEVEL, ""}}, new Object[][]{{"x", Types.NUMBER, ""}, {"y", Types.NUMBER, ""}});
+        blocks[19] = new Block("Set camera position", "(@x, @y)", "scp", "ttff", 
+                new Object[][]{{"object", Types.OBJECT, ""}, {"x", Types.NUMBER, ""}, {"y", Types.NUMBER, ""}}, null);
+        blocks[20] = new Block("Set camera target", "(@x, @y)", "sctxy", "ttff", 
+                new Object[][]{{"x", Types.NUMBER, ""}, {"y", Types.NUMBER, ""}}, null);
+        blocks[21] = new Block("Set camera target", "@object", "scto", "ttff", 
+                new Object[][]{{"object", Types.OBJECT, ""}}, null);
+        blocks[22] = new Block("Set camera zoom", "@zoomx zoom", "scz", "ttff", 
+                new Object[][]{{"zoom", Types.NUMBER, ""}}, null);
+        blocks[23] = new Block("Remove object", "Remove @object from game", "ro", "ttff", 
+                new Object[][]{{"object", Types.OBJECT, "Object()"}}, null);
+        
+        blocks[24] = new Block("Get object position", "@object", "gop", "ttff", 
+                new Object[][]{{"object", Types.OBJECT, ""}}, new Object[][]{{"x", Types.NUMBER, ""}, {"y", Types.NUMBER, ""}});
+        blocks[25] = new Block("Set object position", "@object to (@x, @y)", "sop", "ttff", 
+                new Object[][]{{"object", Types.OBJECT, ""}, {"x", Types.NUMBER, ""}, {"y", Types.NUMBER, ""}}, null);
+        blocks[26] = new Block("Anchor to", "@object anchors to @object2", "anch", "ttff", 
+                new Object[][]{{"object", Types.OBJECT, ""}, {"object2", Types.OBJECT, ""}}, null);
+        
+        blocks[27] = new Block("Add force", "Add force @name to @object: @angle degrees, @magnitude px/s", "af", "ttff", 
                 new Object[][]{{"object", Types.OBJECT, "Object()"}, {"name", Types.TEXT, ""}, 
                     {"angle", Types.NUMBER, "0"}, {"acceleration", Types.NUMBER, "0"}, {"magnitude", Types.NUMBER, "0"}}, null);
-        blocks[8] = new Block("Remove force", "Remove force @name from @object", "rf", "ttff", 
+        blocks[28] = new Block("Remove force", "Remove force @name from @object", "rf", "ttff", 
                 new Object[][]{{"object", Types.OBJECT, "Object()"}, {"name", Types.TEXT, ""}}, null);
-        blocks[9] = new Block("Is key pressed", "@key", "ikp", "tftt", 
+        blocks[29] = new Block("Set animation", "Set @object animation to @animation", "sa", "ttff", 
+                new Object[][]{{"object", Types.OBJECT, "Object()"}, {"animation", Types.ANIM, ""}}, null);
+        blocks[30] = new Block("Start flow", "@flow at @start_id", "stf", "ttff", 
+                new Object[][]{{"flow", Types.FLOW, ""}, {"start_id", Types.TEXT, ""}}, null);
+        blocks[31] = new Block("Stop flow", "Set @object animation to @animation", "spf", "ttff", 
+                new Object[][]{{"flow", Types.FLOW, "Flow()"}}, null);
+        
+        blocks[32] = new Block("Is key pressed", "@key", "ikp", "tftt", 
                 new Object[][]{{"key", Types.TEXT, ""}}, null);
-        blocks[10] = new Block("Await key press", "@key", "akp", "ttff", 
+        blocks[33] = new Block("Await key press", "@key", "akp", "ttff", 
                 new Object[][]{{"key", Types.TEXT, ""}}, null);
-        blocks[11] = new Block("Await key release", "@key", "akr", "ttff", 
+        blocks[34] = new Block("Await key release", "@key", "akr", "ttff", 
                 new Object[][]{{"key", Types.TEXT, ""}}, null);
-        blocks[12] = new Block("Await collision", "Between @object1 & @object2", "ac", "ttff", 
+        
+        blocks[35] = new Block("Await collision", "Between @object1 & @object2", "ac", "ttff", 
                 new Object[][]{{"object1", Types.OBJECT, ""}, {"object2", Types.OBJECT, ""}}, null);
-        blocks[13] = new Block("If objects intersect", "@object1 & @object2", "ioac", "tftt", 
+        blocks[36] = new Block("If objects intersect", "@object1 & @object2", "ioac", "tftt", 
                 new Object[][]{{"object1", Types.OBJECT, ""}, {"object2", Types.OBJECT, ""}}, null);
-        blocks[14] = new Block("Say", "@object says: @message", "say", "ttff", 
+       
+        blocks[37] = new Block("Say", "@object says: @message", "say", "ttff", 
                 new Object[][]{{"object", Types.OBJECT, "Object()"}, {"message", Types.TEXT, ""},
                     {"lifespan (mills)", Types.NUMBER, "1000"}, {"require keypress", Types.BOOLEAN, "false"}}, null);
-        blocks[15] = new Block("Await player choice", "@choices", "apc", "ttff", 
+        blocks[38] = new Block("Await player choice", "@choices", "apc", "ttff", 
                 new Object[][]{{"choices", Types.TEXT_LIST, "[\"Choice 1\"][\"Choice 2\"][\"Choice 3\"]"}}, 
                 new Object[][]{{"choice", Types.NUMBER, ""}});
     }

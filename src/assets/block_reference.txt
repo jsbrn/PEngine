@@ -4,43 +4,56 @@ General
     Print (text) !
 Operations
     Add (number, number) -> (number) !
-    Subtract (number, number) -> (number)
-    Multiply (number, number) -> (number)
-    Divide (number, number) -> (number)
-    Power (number, number) -> (number)
-    Random (number) -> (number)
-    Random () -> (number)
+    Multiply (number, number) -> (number) !
+    Divide (number, number) -> (number) !
+    Power (number, number) -> (number) !
+    Random (number, number) -> (number) !
+    Random -> (number) !
+    Concatenate (text, text) -> (text) !
+    Set variable (flow, variable_name, value) !
+    Get variable (flow, variable_name) -> (value) !
+    For each (list)
+	Get element in list (index) -> (value)
 Level
-    Set background (color, color, transition_duration)
-    Set ambient light (color, transition_duration)
-    Set light intensity (percent, transition_duration)
-    Get player spawn () -> (x, y)
-    Get camera spawn () -> (x, y)
+    Set background (color, color, transition_duration) !
+    Set ambient light (color, intensity, transition_duration)
+    Get player spawn () -> (x, y) !
+    Get camera spawn () -> (x, y) !
+	Spawn object (type_name, x, y)
+	Remove (object) !
 Camera
-    Set camera speed (speed)
-    Set camera zoom (zoom)
-    Set target (object)
-    Set target (x, y)
+	Set camera position !
+    Set camera zoom (zoom) !
+    Set target (object) !
+    Set target (x, y) !
 Object
-    Set position (object, x, y)
-    Get position (object, x, y)
-    Set animation (object, anim)
+    Set position (object, x, y) !
+    Get position (object, x, y) !
+    Set animation (object, anim) !
     Get animation (object) -> (anim)
     Set texture (object, asset) -> (true/false)
     Get texture (object) -> (asset)
+    Anchor to (object, object) !
 Animation
     Is animation finished? (anim) -> (true/false)
     When animation finishes (anim)
-    Stop animation (anim)
+    Pause animation (anim)
     Set animation speed (anim, number)
 Flow
-    Start flow (flow, start_id) -> (true/false)
-    Stop flow (flow, start_id) -> (true, false) //Should stop all instances if start_id is empty?
+    Start flow (flow, start_id) -> (true/false) !
+    Stop flow (flow) -> (true, false) !
 Force
-    Add force (object, angle, magnitude)
-    Remove force (object, name)
+    Add force (object, angle, magnitude) !
+    Remove force (object, name) !
 Events
-    Is key pressed? (key)
-    Is key down? (key)
-    Is key released? (key)
-    Wait for collision (object, object)
+    Is key pressed? (key) !
+    Is key down? (key) !
+    Is key released? (key) !
+    Await key pressed (key) !
+    Await key released (key) !
+    Are objects colliding (obj, obj) -> (true/false) !
+    Await collision (object, object) !
+Logical
+	AND Gate (bool, bool) -> (bool) !
+	OR Gate (bool, bool) -> (bool) !
+	NOT Gate (bool, bool) -> (bool) !

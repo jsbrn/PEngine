@@ -122,6 +122,7 @@ class ComplexType extends Type {
     }
     
     public final String verifyParams(String input) {
+        if ("none".equals(input)) return null; //allow for "none" as an input
         boolean[] results = paramsExist(input);
         String[] names = new String[]{getName(), "Object", "Level"};
         for (int i = results.length - 1; i > -1; i--) {
@@ -137,6 +138,13 @@ class ComplexType extends Type {
         if (p.length == 1) if (p[0].length() == 0) return new String[0];
         return p;
     }
+    
+    @Override
+    public boolean typeOf(String value) {
+        if (!super.typeOf(value)) return false;
+        if (value.equals("none")) return true;
+        return value.replaceAll("("+getAlias()+"\\()"+getParamsRegex()+"(\\))", "").equals("");
+    }  
     
     public final String getAlias() { return alias; }
     public final void setAlias(String w) { alias = w; }
@@ -174,7 +182,7 @@ class TypeVar extends Type {
     @Override
     public boolean typeOf(String value) {
         if (!super.typeOf(value)) return false;
-        if (value == null) return false;
+        if (value.equals("none")) return false;
         if (value.trim().length() == 0) return false;
         if (value.trim().equals("true") || value.trim().equals("false")
                 || value.trim().toLowerCase().equals("player")) return false;
@@ -266,11 +274,6 @@ class TypeAnim extends ComplexType {
         if (a == null) return new boolean[]{false, true, true};
         return new boolean[]{true, true, true};
     }
-    @Override
-    public boolean typeOf(String value) {
-        if (!super.typeOf(value)) return false;
-        return value.replaceAll("("+getAlias()+"\\()"+getParamsRegex()+"(\\))", "").equals("");
-    }    
 }
 
 class TypeFlow extends ComplexType {
@@ -290,11 +293,6 @@ class TypeFlow extends ComplexType {
         Flow a = params.length >= 1 ? o.getFlow(params[0]) : null;
         if (a == null) return new boolean[]{false, true, true};
         return new boolean[]{true, true, true};
-    }
-    @Override
-    public boolean typeOf(String value) {
-        if (!super.typeOf(value)) return false;
-        return value.replaceAll("("+getAlias()+"\\()"+getParamsRegex()+"(\\))", "").equals("");
     }    
 }
 
@@ -315,11 +313,7 @@ class TypeObject extends ComplexType {
         if (o == null) return new boolean[]{false, true, true};
         return new boolean[]{true, true, true};
     }
-    @Override
-    public boolean typeOf(String value) {
-        if (!super.typeOf(value)) return false;
-        return value.replaceAll("("+getAlias()+"\\()"+getParamsRegex()+"(\\))", "").equals("");
-    }  
+    
 }
 
 class TypeLevel extends ComplexType {
@@ -335,11 +329,6 @@ class TypeLevel extends ComplexType {
         Level l = params.length == 1 ? Project.getProject().getLevel(params[0]) : Project.getProject().getCurrentLevel();
         if (l == null) return new boolean[]{false, false, false};
         return new boolean[]{true, true, true};
-    }
-    @Override
-    public boolean typeOf(String value) {
-        if (!super.typeOf(value)) return false;
-        return value.replaceAll("("+getAlias()+"\\()"+getParamsRegex()+"(\\))", "").equals("");
     }    
 }
 
@@ -354,10 +343,5 @@ class TypeAsset extends ComplexType {
         String params[] = getParams(input);
         if (params.length == 1) return new boolean[]{true, true, true};
         return new boolean[]{false, false, false};
-    }
-    @Override
-    public boolean typeOf(String value) {
-        if (!super.typeOf(value)) return false;
-        return value.replaceAll("^("+getAlias()+"\\()"+getParamsRegex()+"(\\))", "").equals("");
-    }    
+    } 
 }

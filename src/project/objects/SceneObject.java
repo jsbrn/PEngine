@@ -268,13 +268,6 @@ public class SceneObject {
         if (!o.locked[2] || !respect_locks) o.collides = this.collides;
         o.hitbox = this.hitbox;
 
-        /*ArrayList<Animation> new_list = new ArrayList<Animation>();
-        for (Animation a: o.animations) {
-            Animation in_source = this.getAnimation(a.getName());
-            if (in_source != null) {
-                if (!a.isLocked()) in_source.copyTo(a);
-            }
-        }*/
         //DELETE any unlocked anims in O
         for (int i = o.animations.size() - 1; i > -1; i--) 
             if (!o.animations.get(i).isLocked() || !respect_locks) o.animations.remove(i);

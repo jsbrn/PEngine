@@ -23,9 +23,9 @@ public class UpdateManager extends Thread {
     //for debugging purposes
     public static final boolean DISABLE_UPDATES = false;
     
-    public static int VERSION_ID = 5, RUNTIME_VERSION_ID = -1;
+    public static int VERSION_ID = 10, RUNTIME_VERSION_ID = -1;
     public static int LATEST_VERSION_ID, LATEST_RUNTIME_VERSION_ID;
-    public static final String VERSION_NAME = "1.3.5-beta";
+    public static final String VERSION_NAME = "1.3.6-beta";
     
     /**
      * Downloads a file in the main thread. Only use this for smaller files.
