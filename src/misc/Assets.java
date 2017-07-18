@@ -97,8 +97,8 @@ public class Assets {
         blocks[15] = new Block("NOR Gate", "NOT @a", "not", "tftt", 
                 new Object[][]{{"a", Types.BOOLEAN, ""}}, new Object[][]{{"result", Types.BOOLEAN, ""}});
         
-        blocks[16] = new Block("Set level background", "to @top, @bottom in @time (ms)ms", "slb", "ttff", 
-                new Object[][]{{"top", Types.NUMBER_LIST, ""}, {"bottom", Types.NUMBER_LIST, ""}, {"time (ms)", Types.NUMBER, ""}}, null);
+        blocks[16] = new Block("Set level background", "@level: @top, @bottom in @millisecondsms", "slb", "ttff", 
+                new Object[][]{{"level", Types.LEVEL, ""},{"top", Types.NUMBER_LIST, ""}, {"bottom", Types.NUMBER_LIST, ""}, {"milliseconds", Types.NUMBER, ""}}, null);
         blocks[17] = new Block("Get camera spawn", "@level", "gcs", "ttff", 
                 new Object[][]{{"level", Types.LEVEL, ""}}, new Object[][]{{"x", Types.NUMBER, ""}, {"y", Types.NUMBER, ""}});
         blocks[18] = new Block("Get player spawn", "@level", "gps", "ttff", 
@@ -118,8 +118,8 @@ public class Assets {
                 new Object[][]{{"object", Types.OBJECT, ""}}, new Object[][]{{"x", Types.NUMBER, ""}, {"y", Types.NUMBER, ""}});
         blocks[25] = new Block("Set object position", "@object to (@x, @y)", "sop", "ttff", 
                 new Object[][]{{"object", Types.OBJECT, ""}, {"x", Types.NUMBER, ""}, {"y", Types.NUMBER, ""}}, null);
-        blocks[26] = new Block("Anchor to", "@object anchors to @object2", "anch", "ttff", 
-                new Object[][]{{"object", Types.OBJECT, ""}, {"object2", Types.OBJECT, ""}}, null);
+        blocks[26] = new Block("Anchor to", "@object1 anchors to @object2", "anch", "ttff", 
+                new Object[][]{{"object1", Types.OBJECT, ""}, {"object2", Types.OBJECT, ""}}, null);
         
         blocks[27] = new Block("Add force", "Add force @name to @object: @angle degrees, @magnitude px/s", "af", "ttff", 
                 new Object[][]{{"object", Types.OBJECT, "Object()"}, {"name", Types.TEXT, ""}, 
