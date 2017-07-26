@@ -3,8 +3,11 @@ package project;
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import misc.Assets;
 import misc.MiscMath;
 import project.objects.SceneObject;
 
@@ -198,29 +201,30 @@ public class Level {
     }
     
     public void save(BufferedWriter bw, boolean game) {
+        System.out.println("Saving level "+getName());
         try {
             bw.write("l"+"\n");
-                bw.write("n="+name+"\n");
-                if (!game) bw.write("b="+bounds[0]+" "+bounds[1]+" "+bounds[2]+" "+bounds[3]+"\n");
-                    else bw.write("b="+bounds[0]+" "+bounds[1]+" "+(bounds[2]-bounds[0])+" "+(bounds[3]-bounds[1])+"\n");
-                bw.write("tc="+bg_color_top.getRed()+" "+bg_color_top.getGreen()+" "+bg_color_top.getBlue()+"\n");
-                bw.write("bc="+bg_color_bottom.getRed()+" "+bg_color_bottom.getGreen()+" "+bg_color_bottom.getBlue()+"\n");
-                bw.write("lc="+lighting_color.getRed()+" "+lighting_color.getGreen()+" "+lighting_color.getBlue()+"\n");
-                bw.write("li="+lighting_intensity+"\n");
-                bw.write("z="+zoom+"\n");
-                bw.write("ps="+player_spawn[0]+" "+player_spawn[1]+"\n");
-                bw.write("cs="+camera_spawn[0]+" "+camera_spawn[1]+"\n");
-                bw.write("apm="+auto_bg_music+"\n");
-                bw.write("apa="+auto_bg_ambience+"\n");
-                bw.write("lm="+loop_bg_music+"\n");
-                bw.write("la="+loop_bg_ambience+"\n");
-                bw.write("mv="+bg_music_vol+"\n");
-                bw.write("av="+bg_ambience_vol+"\n");
-                bw.write("bgm="+bg_music+"\n");
-                bw.write("as="+bg_ambience+"\n");
-                bw.write("apl="+allow_player+"\n");
-                
-                for (SceneObject o: getObjects(ALL_OBJECTS)) o.save(bw, game);
+            bw.write("n="+name+"\n");
+            if (!game) bw.write("b="+bounds[0]+" "+bounds[1]+" "+bounds[2]+" "+bounds[3]+"\n");
+                else bw.write("b="+bounds[0]+" "+bounds[1]+" "+(bounds[2]-bounds[0])+" "+(bounds[3]-bounds[1])+"\n");
+            bw.write("tc="+bg_color_top.getRed()+" "+bg_color_top.getGreen()+" "+bg_color_top.getBlue()+"\n");
+            bw.write("bc="+bg_color_bottom.getRed()+" "+bg_color_bottom.getGreen()+" "+bg_color_bottom.getBlue()+"\n");
+            bw.write("lc="+lighting_color.getRed()+" "+lighting_color.getGreen()+" "+lighting_color.getBlue()+"\n");
+            bw.write("li="+lighting_intensity+"\n");
+            bw.write("z="+zoom+"\n");
+            bw.write("ps="+player_spawn[0]+" "+player_spawn[1]+"\n");
+            bw.write("cs="+camera_spawn[0]+" "+camera_spawn[1]+"\n");
+            bw.write("apm="+auto_bg_music+"\n");
+            bw.write("apa="+auto_bg_ambience+"\n");
+            bw.write("lm="+loop_bg_music+"\n");
+            bw.write("la="+loop_bg_ambience+"\n");
+            bw.write("mv="+bg_music_vol+"\n");
+            bw.write("av="+bg_ambience_vol+"\n");
+            bw.write("bgm="+bg_music+"\n");
+            bw.write("as="+bg_ambience+"\n");
+            bw.write("apl="+allow_player+"\n");
+
+            for (SceneObject o: getObjects(ALL_OBJECTS)) o.save(bw, game);
                 
             bw.write("/l"+"\n");
         } catch (IOException ex) {
@@ -271,6 +275,22 @@ public class Level {
             }
         } catch (IOException ex) {
             ex.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean export() {
+        File f = new File(Assets.USER_HOME+"/Desktop/"+getName()+".level");
+        FileWriter fw;
+        System.out.println("Exporting " +getName()+" to file " + f.getAbsoluteFile().getAbsolutePath());
+        try {
+            if (!f.exists()) f.createNewFile();
+            fw = new FileWriter(f);
+            BufferedWriter bw = new BufferedWriter(fw);
+            save(bw, true);
+            bw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }

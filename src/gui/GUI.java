@@ -57,6 +57,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
@@ -135,6 +136,7 @@ public class GUI extends javax.swing.JFrame {
         lockTextureButton = new JToggleButton();
         lockGravityButton = new JToggleButton();
         lockCollidesButton = new JToggleButton();
+        jButton2 = new JButton();
         flowCanvas = new FlowCanvas();
         jPanel9 = new JPanel();
         flowChooser = new JComboBox<>();
@@ -178,6 +180,11 @@ public class GUI extends javax.swing.JFrame {
         removeFrameButton = new JButton();
         playAnimationButton = new JToggleButton();
         frameCountLabel = new JLabel();
+        navigatorPanel = new JFrame();
+        jScrollPane2 = new JScrollPane();
+        navigatorTree = new JTree();
+        navigatorSelectButton = new JButton();
+        jLabel11 = new JLabel();
         sceneCanvas = new SceneCanvas();
         jPanel13 = new JPanel();
         playButton = new JButton();
@@ -237,6 +244,8 @@ public class GUI extends javax.swing.JFrame {
         loopAmbientSoundMenuItem = new JCheckBoxMenuItem();
         autoplayAmbientSoundMenuItem = new JCheckBoxMenuItem();
         ambientSoundVolumeMenuItem = new JMenuItem();
+        jSeparator7 = new JPopupMenu.Separator();
+        jMenuItem11 = new JMenuItem();
         jMenu3 = new JMenu();
         jMenuItem5 = new JMenuItem();
         jMenuItem6 = new JMenuItem();
@@ -499,6 +508,13 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        jButton2.setText("Export to desktop");
+        jButton2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         GroupLayout basicOptionsPanelLayout = new GroupLayout(basicOptionsPanel);
         basicOptionsPanel.setLayout(basicOptionsPanelLayout);
         basicOptionsPanelLayout.setHorizontalGroup(basicOptionsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -525,7 +541,8 @@ public class GUI extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(objectCollidesCheckbox)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lockCollidesButton)))
+                        .addComponent(lockCollidesButton))
+                    .addComponent(jButton2))
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         basicOptionsPanelLayout.setVerticalGroup(basicOptionsPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -549,6 +566,8 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(objectGravityCheckbox, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lockGravityButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lockCollidesButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jButton2)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -564,7 +583,7 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(sceneObjectCanvasLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(basicOptionsPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(398, Short.MAX_VALUE))
+                .addContainerGap(357, Short.MAX_VALUE))
         );
 
         objectEditorTabs.addTab("Basics", sceneObjectCanvas);
@@ -1046,6 +1065,34 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(objectEditorTabs))
         );
 
+        jScrollPane2.setViewportView(navigatorTree);
+
+        navigatorSelectButton.setText("Select");
+
+        jLabel11.setText("Choose an element...");
+
+        GroupLayout navigatorPanelLayout = new GroupLayout(navigatorPanel.getContentPane());
+        navigatorPanel.getContentPane().setLayout(navigatorPanelLayout);
+        navigatorPanelLayout.setHorizontalGroup(navigatorPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(GroupLayout.Alignment.TRAILING, navigatorPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(navigatorPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2)
+                    .addComponent(navigatorSelectButton, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel11, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        navigatorPanelLayout.setVerticalGroup(navigatorPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(navigatorPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel11)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 395, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(navigatorSelectButton)
+                .addContainerGap())
+        );
+
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("PEngine");
         setBackground(new Color(1, 1, 1));
@@ -1099,8 +1146,8 @@ public class GUI extends javax.swing.JFrame {
 
         jPanel13.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
+        playButton.setIcon(new ImageIcon(getClass().getResource("/assets/play.png"))); // NOI18N
         playButton.setMnemonic('R');
-        playButton.setText("►");
         playButton.setDoubleBuffered(true);
         playButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -1256,10 +1303,8 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jCheckBox1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jCheckBox1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(jPanel5Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -1577,6 +1622,15 @@ public class GUI extends javax.swing.JFrame {
         jMenu1.add(ambientSoundVolumeMenuItem);
 
         levelMenu.add(jMenu1);
+        levelMenu.add(jSeparator7);
+
+        jMenuItem11.setText("Export to desktop");
+        jMenuItem11.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                jMenuItem11ActionPerformed(evt);
+            }
+        });
+        levelMenu.add(jMenuItem11);
 
         menuBar.add(levelMenu);
 
@@ -2490,6 +2544,14 @@ public class GUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_quickEditInputButtonActionPerformed
 
+    private void jMenuItem11ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
+        Project.getProject().getCurrentLevel().export();
+    }//GEN-LAST:event_jMenuItem11ActionPerformed
+
+    private void jButton2ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        sceneCanvas.getActiveObject().export();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * Returns 0 if user made a YES or NO choice. 1 if the user canceled.
      *
@@ -2882,9 +2944,11 @@ public class GUI extends javax.swing.JFrame {
     private static JComboBox<String> galleryObjectChooser;
     private static JPanel galleryObjectPanel;
     JButton jButton1;
+    JButton jButton2;
     JCheckBox jCheckBox1;
     JLabel jLabel1;
     JLabel jLabel10;
+    JLabel jLabel11;
     JLabel jLabel2;
     JLabel jLabel3;
     JLabel jLabel4;
@@ -2898,6 +2962,7 @@ public class GUI extends javax.swing.JFrame {
     JMenu jMenu3;
     JMenuItem jMenuItem1;
     JMenuItem jMenuItem10;
+    JMenuItem jMenuItem11;
     JMenuItem jMenuItem2;
     JMenuItem jMenuItem3;
     JMenuItem jMenuItem4;
@@ -2913,6 +2978,7 @@ public class GUI extends javax.swing.JFrame {
     JPanel jPanel8;
     JPanel jPanel9;
     JScrollPane jScrollPane1;
+    JScrollPane jScrollPane2;
     JScrollPane jScrollPane9;
     JPopupMenu.Separator jSeparator1;
     JPopupMenu.Separator jSeparator2;
@@ -2920,6 +2986,7 @@ public class GUI extends javax.swing.JFrame {
     JPopupMenu.Separator jSeparator4;
     JPopupMenu.Separator jSeparator5;
     JPopupMenu.Separator jSeparator6;
+    JPopupMenu.Separator jSeparator7;
     JMenuItem levelBoundsMenuItem;
     private static JComboBox<String> levelChooser;
     JMenuItem levelManagerButton;
@@ -2935,6 +3002,9 @@ public class GUI extends javax.swing.JFrame {
     private static JCheckBoxMenuItem loopBGMusicMenuItem;
     public static JMenuBar menuBar;
     JMenuItem musicVolumeMenuItem;
+    private static JFrame navigatorPanel;
+    JButton navigatorSelectButton;
+    JTree navigatorTree;
     private static JButton newAnimationButton;
     private static JButton newFlowButton;
     private static JButton newGalleryObjectButton;

@@ -8,6 +8,8 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -184,26 +186,25 @@ public class SceneObject {
     
     public void save(BufferedWriter bw, boolean game) {
         try {
-            bw.write("so\n");
-                
-                if (game) {
-                    double game_x = getWorldCoords()[0] + ((double)getDimensions()[0]/2);
-                    double game_y = getWorldCoords()[1] + ((double)getDimensions()[1]/2);
-                    bw.write("xy="+game_x+" "+game_y+"\n");
-                } else {
-                    bw.write("xy="+getWorldCoords()[0]+" "+getWorldCoords()[1]+"\n");
-                }
-                bw.write("wh="+getDimensions()[0]+" "+getDimensions()[1]+"\n");
-                bw.write("n="+name+"\n");
-                bw.write("t="+type+"\n");
-                bw.write("lk="+locked[0]+" "+locked[1]+" "+locked[2]+"\n");
-                bw.write("tx="+texture+"\n");
-                bw.write("h="+hitbox+"\n");
-                bw.write("g="+gravity+"\n");
-                bw.write("c="+collides+"\n");
-                bw.write("l="+layer+"\n");
-                for (Flow f: flows) f.save(bw);
-                for (Animation a: animations) a.save(bw);
+            bw.write("so\n");  
+            if (game) {
+                double game_x = getWorldCoords()[0] + ((double)getDimensions()[0]/2);
+                double game_y = getWorldCoords()[1] + ((double)getDimensions()[1]/2);
+                bw.write("xy="+game_x+" "+game_y+"\n");
+            } else {
+                bw.write("xy="+getWorldCoords()[0]+" "+getWorldCoords()[1]+"\n");
+            }
+            bw.write("wh="+getDimensions()[0]+" "+getDimensions()[1]+"\n");
+            bw.write("n="+name+"\n");
+            bw.write("t="+type+"\n");
+            bw.write("lk="+locked[0]+" "+locked[1]+" "+locked[2]+"\n");
+            bw.write("tx="+texture+"\n");
+            bw.write("h="+hitbox+"\n");
+            bw.write("g="+gravity+"\n");
+            bw.write("c="+collides+"\n");
+            bw.write("l="+layer+"\n");
+            for (Flow f: flows) f.save(bw);
+            for (Animation a: animations) a.save(bw);
             bw.write("/so\n");
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -251,6 +252,23 @@ public class SceneObject {
             }
         } catch (IOException ex) {
             ex.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean export() {
+        File f = new File(Assets.USER_HOME+"/Desktop/"+getName()+".sobj");
+        FileWriter fw;
+        System.out.println("Exporting " +getName()+" to file " + f.getAbsoluteFile().getAbsolutePath());
+        try {
+            if (!f.exists()) f.createNewFile();
+            fw = new FileWriter(f);
+            BufferedWriter bw = new BufferedWriter(fw);
+            save(bw, true);
+            bw.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }
